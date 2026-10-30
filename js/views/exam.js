@@ -111,6 +111,7 @@ function pastHTML() {
       <p class="muted small mt">번호마다 ${exams.length}개 회차 중 한 문제를 골라 50문항을 만들어요.</p>
       <button type="button" class="btn btn-ghost btn-block mt" data-act="past-download">📥 기출 ${exams.length}회분 폰에 저장(오프라인용)</button>
       <div class="chips is-wrap mt">${exams.map(x => `<button type="button" class="chip" data-act="past" data-exam="${x.id}">${x.round}회</button>`).join('')}</div>
+      <p class="muted small mt">이 기출문제는 국사편찬위원회가 작성한 '한국사능력검정시험 심화 기출문제'(제${exams.at(-1).round}~${exams[0].round}회)를 이용했으며, <a href="https://www.historyexam.go.kr/pst/list.do?bbs=dat" target="_blank" rel="noopener">국사편찬위원회 한국사능력검정시험 누리집</a>에서 무료로 받을 수 있어요. 저작권은 국사편찬위원회와 원저작자에게 있으며, 요청하시면 바로 내릴게요(wjswoals1228@naver.com).</p>
     </section>`;
 }
 

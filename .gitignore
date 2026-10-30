@@ -1,9 +1,8 @@
 # 공개 저장소에 올리면 안 되는 것
-# - 기출 PDF와 거기서 자른 문제(저작권 확인 전, 개인 학습용)
+# - 기출 원본 PDF와 OCR 중간 파일. 자른 심화 기출(data/past/<회차>s, past-*.json)은 출처를 표기해 공개해요(사용자 결정 10/30).
 source-pdf/
-data/past/
 data/past-ocr/
-data/past-*.json
+data/past/*b/
 extract.log
 # - 비밀 키 (secret 키·VAPID 개인키는 GitHub Secrets에만)
 .env

@@ -46,7 +46,9 @@ async function loadPast() {
         ...p,
         question: p.stem || p.source,
         choices: Array.from({ length: p.choiceCount }, () => ''),
-        explanation: `${p.source} 기출 문제예요.`,
+        source: `${p.source} (국사편찬위원회)`,
+        explanation: `출처: 국사편찬위원회 한국사능력검정시험 ${p.source} 기출문제. 원본은 국사편찬위원회 한국사능력검정시험 누리집에서 무료로 받을 수 있어요.`,
+        refs: ['https://www.historyexam.go.kr/pst/list.do?bbs=dat'],
         past: true,
       });
     }

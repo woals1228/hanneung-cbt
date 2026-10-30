@@ -1,0 +1,218 @@
+[
+ {
+  "id": "80s",
+  "round": 80,
+  "level": "심화",
+  "date": "2026-10-17",
+  "count": 50,
+  "minutes": 80,
+  "choiceCount": 5
+ },
+ {
+  "id": "79s",
+  "round": 79,
+  "level": "심화",
+  "date": "2026-08-09",
+  "count": 50,
+  "minutes": 80,
+  "choiceCount": 5
+ },
+ {
+  "id": "78s",
+  "round": 78,
+  "level": "심화",
+  "date": "2026-05-23",
+  "count": 50,
+  "minutes": 80,
+  "choiceCount": 5
+ },
+ {
+  "id": "77s",
+  "round": 77,
+  "level": "심화",
+  "date": "2026-02-07",
+  "count": 50,
+  "minutes": 80,
+  "choiceCount": 5
+ },
+ {
+  "id": "76s",
+  "round": 76,
+  "level": "심화",
+  "date": "2025-10-18",
+  "count": 50,
+  "minutes": 80,
+  "choiceCount": 5
+ },
+ {
+  "id": "75s",
+  "round": 75,
+  "level": "심화",
+  "date": "2025-08-09",
+  "count": 50,
+  "minutes": 80,
+  "choiceCount": 5
+ },
+ {
+  "id": "74s",
+  "round": 74,
+  "level": "심화",
+  "date": "2025-05-24",
+  "count": 50,
+  "minutes": 80,
+  "choiceCount": 5
+ },
+ {
+  "id": "73s",
+  "round": 73,
+  "level": "심화",
+  "date": "2025-02-16",
+  "count": 50,
+  "minutes": 80,
+  "choiceCount": 5
+ },
+ {
+  "id": "72s",
+  "round": 72,
+  "level": "심화",
+  "date": "2024-10-20",
+  "count": 50,
+  "minutes": 80,
+  "choiceCount": 5
+ },
+ {
+  "id": "71s",
+  "round": 71,
+  "level": "심화",
+  "date": "2024-08-10",
+  "count": 50,
+  "minutes": 80,
+  "choiceCount": 5
+ },
+ {
+  "id": "70s",
+  "round": 70,
+  "level": "심화",
+  "date": "2024-05-25",
+  "count": 50,
+  "minutes": 80,
+  "choiceCount": 5
+ },
+ {
+  "id": "69s",
+  "round": 69,
+  "level": "심화",
+  "date": "2024-02-17",
+  "count": 50,
+  "minutes": 80,
+  "choiceCount": 5
+ },
+ {
+  "id": "68s",
+  "round": 68,
+  "level": "심화",
+  "date": "2023-12-02",
+  "count": 50,
+  "minutes": 80,
+  "choiceCount": 5
+ },
+ {
+  "id": "67s",
+  "round": 67,
+  "level": "심화",
+  "date": "2023-10-21",
+  "count": 50,
+  "minutes": 80,
+  "choiceCount": 5
+ },
+ {
+  "id": "66s",
+  "round": 66,
+  "level": "심화",
+  "date": "2023-08-13",
+  "count": 50,
+  "minutes": 80,
+  "choiceCount": 5
+ },
+ {
+  "id": "65s",
+  "round": 65,
+  "level": "심화",
+  "date": "2023-06-17",
+  "count": 50,
+  "minutes": 80,
+  "choiceCount": 5
+ },
+ {
+  "id": "64s",
+  "round": 64,
+  "level": "심화",
+  "date": "2023-04-15",
+  "count": 50,
+  "minutes": 80,
+  "choiceCount": 5
+ },
+ {
+  "id": "63s",
+  "round": 63,
+  "level": "심화",
+  "date": "2023-02-21",
+  "count": 50,
+  "minutes": 80,
+  "choiceCount": 5
+ },
+ {
+  "id": "62s",
+  "round": 62,
+  "level": "심화",
+  "date": "2022-12-03",
+  "count": 50,
+  "minutes": 80,
+  "choiceCount": 5
+ },
+ {
+  "id": "61s",
+  "round": 61,
+  "level": "심화",
+  "date": "2022-10-22",
+  "count": 50,
+  "minutes": 80,
+  "choiceCount": 5
+ },
+ {
+  "id": "60s",
+  "round": 60,
+  "level": "심화",
+  "date": "2022-08-06",
+  "count": 50,
+  "minutes": 80,
+  "choiceCount": 5
+ },
+ {
+  "id": "59s",
+  "round": 59,
+  "level": "심화",
+  "date": "2022-06-11",
+  "count": 50,
+  "minutes": 80,
+  "choiceCount": 5
+ },
+ {
+  "id": "58s",
+  "round": 58,
+  "level": "심화",
+  "date": "2022-04-10",
+  "count": 50,
+  "minutes": 80,
+  "choiceCount": 5
+ },
+ {
+  "id": "57s",
+  "round": 57,
+  "level": "심화",
+  "date": "2022-02-12",
+  "count": 50,
+  "minutes": 80,
+  "choiceCount": 5
+ }
+]
