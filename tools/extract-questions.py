@@ -147,9 +147,28 @@ def read_answers(pdf):
         sys.exit('pdftotext 를 찾을 수 없어요. Git Bash 에서 실행해 주세요.')
     out = subprocess.run([exe, '-enc', 'UTF-8', '-layout', str(pdf), '-'], capture_output=True, check=True).stdout.decode('utf-8')
     answers = {}
-    for no, mark, points in re.findall(r'(?<!\d)(\d{1,2})\s+([①②③④⑤])\s+([1-3])(?!\d)', out):
-        answers[int(no)] = (CIRCLED.index(mark) + 1, int(points))
+    for no, mark, points in re.findall(r'(?<!\d)(\d{1,2})\s+([①②③④⑤]|없음)\s+([1-3])(?!\d)', out):
+        # '없음' = 이의 심사로 정답 없음(전원 정답) 처리된 문항이에요. 0으로 둬요.
+        answers[int(no)] = (0 if mark == '없음' else CIRCLED.index(mark) + 1, int(points))
+    if len(answers) < 50:
+        answers = read_plain_answers(out) or answers
     return answers
+
+
+def read_plain_answers(out):
+    """정답이 ①이 아니라 숫자로 적힌 표(58·73회). 줄마다 r, r+10, … r+40번이 차례로 있어요.
+    첫 칸은 '12  1'처럼 번호와 정답이 붙어 나와서, 번호를 알고 차례로 찾아요."""
+    answers = {}
+    rows = [line for line in out.splitlines() if re.match(r'^\s*\d', line)]
+    for r, line in enumerate(rows[:10], start=1):
+        pos = 0
+        for no in range(r, 51, 10):
+            m = re.compile(rf'(?<!\d){no}\s*([1-5])\s+([1-3])(?!\d)').search(line, pos)
+            if not m:
+                return None
+            answers[no] = (int(m.group(1)), int(m.group(2)))
+            pos = m.end()
+    return answers if len(answers) == 50 else None
 
 
 # ── 문제지 자르기 ──────────────────────────────────────────────

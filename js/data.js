@@ -40,7 +40,8 @@ async function loadPast() {
       return res.json();
     }));
     db.pastExams = exams.filter(e => e.count === 50).sort((a, b) => b.round - a.round);
-    for (const p of questions) {
+    // answer 0 = 이의 심사로 '정답 없음'(전원 정답) 처리된 문항이라 풀이에서 빼요.
+    for (const p of questions.filter(x => x.answer > 0)) {
       db.byId.set(p.id, {
         ...p,
         question: p.stem || p.source,
