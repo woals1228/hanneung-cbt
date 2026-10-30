@@ -1,5 +1,6 @@
 // 문제·기념일·시험 일정 데이터 (data/*.json)
 import { addDays, daysBetween } from './dates.js';
+import { SHOW_PAST } from './config.js';
 
 export const ERAS = ['선사', '고대', '고려', '조선', '근대', '일제 강점기', '현대'];
 export const EXAM_SIZE = 50;
@@ -33,6 +34,7 @@ export async function loadData() {
 // ── 기출(개인용) ── data/past-*.json은 공개 저장소에 없어요(국사편찬위원회 이용 허락 전, .gitignore).
 // 파일이 있을 때만 회차별 풀기·랜덤 기출 모의고사가 보여요.
 async function loadPast() {
+  if (!SHOW_PAST) return;
   try {
     const [exams, questions] = await Promise.all(['past-exams', 'past-questions'].map(async name => {
       const res = await fetch(`data/${name}.json`);

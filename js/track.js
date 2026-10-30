@@ -5,6 +5,16 @@ import { SUPABASE_URL, SUPABASE_KEY } from './config.js';
 
 const ID_KEY = 'hcbt.anon';
 const PUBLIC_HOST = 'woals1228.github.io';
+// 유입 채널: 홍보 링크의 ?s=코드 를 첫 방문 때 기억해요(supabase/source.sql).
+const SRC_KEY = 'hcbt.src';
+const SOURCES = ['et', 'cafe', 'kakao', 'blog', 'orbi', 'insta', 'etc'];
+try {
+  const s = new URLSearchParams(location.search).get('s');
+  if (SOURCES.includes(s) && !localStorage.getItem(SRC_KEY)) localStorage.setItem(SRC_KEY, s);
+} catch {}
+const source = () => {
+  try { return localStorage.getItem(SRC_KEY); } catch { return null; }
+};
 const sent = new Set();
 const ua = navigator.userAgent;
 
@@ -41,6 +51,6 @@ export function track(kind) {
     method: 'POST',
     keepalive: true,
     headers: { 'Content-Type': 'application/json', apikey: SUPABASE_KEY },
-    body: JSON.stringify({ p_anon: id, p_kind: kind, p_platform: platform }),
+    body: JSON.stringify({ p_anon: id, p_kind: kind, p_platform: platform, p_src: source() }),
   }).catch(() => {});
 }
