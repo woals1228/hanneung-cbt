@@ -1,7 +1,7 @@
 // 오프라인에서도 열리도록 앱 파일을 저장해 둬요.
 // 배포할 때마다 CACHE 이름의 숫자를 올려 주세요. 파일을 새로 추가하면 SHELL 목록에도 넣어요.
 // 개인용 기출(data/past/…)은 공개하지 않으니 여기에 넣지 않아요.
-const CACHE = 'hcbt-v34';
+const CACHE = 'hcbt-v35';
 const SHELL = [
   './',
   'index.html',
@@ -14,6 +14,7 @@ const SHELL = [
   'js/dates.js',
   'js/store.js',
   'js/track.js',
+  'js/push.js',
   'js/ui.js',
   'js/views/home.js',
   'js/views/quiz.js',
@@ -75,4 +76,22 @@ self.addEventListener('fetch', event => {
       })
       .catch(async () => (await caches.match(request, { ignoreSearch: true })) ?? caches.match('index.html')),
   );
+});
+
+// ── 매일 알림 ── 보내는 쪽: tools/send-push.mjs
+self.addEventListener('push', event => {
+  let msg = {};
+  try { msg = event.data?.json() ?? {}; } catch {}
+  event.waitUntil(self.registration.showNotification(msg.title ?? '한능검 CBT', {
+    body: msg.body ?? '오늘의 문제가 도착했어요',
+    icon: 'icons/icon-192.png',
+    badge: 'icons/favicon-32.png',
+    data: { url: msg.url ?? '#/' },
+  }));
+});
+
+self.addEventListener('notificationclick', event => {
+  event.notification.close();
+  const url = `${self.registration.scope}?src=push${event.notification.data?.url ?? '#/'}`;
+  event.waitUntil(self.clients.openWindow(url));
 });

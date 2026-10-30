@@ -1,0 +1,27 @@
+# 매일 알림: 매시 17분에 돌아서, 고른 시각이 된 구독에 하루 한 번 보내요(tools/send-push.mjs).
+name: daily-push
+on:
+  schedule:
+    - cron: '17 * * * *'
+  workflow_dispatch:
+concurrency:
+  group: daily-push
+  cancel-in-progress: false
+permissions:
+  contents: read
+jobs:
+  send:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 20
+      - run: npm install --no-save --no-package-lock web-push@3.6.7
+      - run: node tools/send-push.mjs
+        env:
+          SUPABASE_URL: ${{ secrets.SUPABASE_URL }}
+          SUPABASE_SECRET_KEY: ${{ secrets.SUPABASE_SECRET_KEY }}
+          VAPID_PUBLIC_KEY: ${{ secrets.VAPID_PUBLIC_KEY }}
+          VAPID_PRIVATE_KEY: ${{ secrets.VAPID_PRIVATE_KEY }}

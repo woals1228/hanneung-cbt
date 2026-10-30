@@ -3,8 +3,39 @@ import * as data from '../data.js';
 import * as store from '../store.js';
 import { todayStr, toDateStr, dateOverride, setDateOverride, addDays, formatLong, formatShort } from '../dates.js';
 import { esc, installInfo, promptInstall, confirmModal, toast, refresh } from '../ui.js';
+import { pushReady, savedHour, currentSubscription, subscribe, unsubscribe } from '../push.js';
+import { track } from '../track.js';
 
 const VERSION = '0.2.0';
+
+// 매일 알림: 오늘의 문제·기념일·전야제 중 하나를 하루 한 번, 고른 시각에 보내요.
+function pushIntroHTML() {
+  return '<p class="muted small">알림 상태를 확인하는 중…</p>';
+}
+
+async function drawPush(box) {
+  const { ios, standalone } = installInfo();
+  if (!pushReady()) {
+    box.innerHTML = '<b>매일 알림</b><p class="muted small">오늘의 문제·기념일·전야제 알림을 곧 켤 수 있어요.</p>';
+    return;
+  }
+  if (ios && !standalone) {
+    box.innerHTML = '<b>매일 알림</b><p class="muted small">아이폰은 <b>홈 화면에 추가</b>한 앱에서만 알림을 받을 수 있어요. 위 ‘앱 설치’를 먼저 해 주세요.</p>';
+    return;
+  }
+  const on = Boolean(await currentSubscription().catch(() => null));
+  const hour = savedHour();
+  const hours = Array.from({ length: 17 }, (_, i) => i + 7);
+  box.innerHTML = `<div class="setting-row">
+      <div class="grow"><b>매일 알림 ${on ? '<span class="ok-text">켜짐</span>' : ''}</b>
+        <p class="muted small">하루 한 번: 오늘의 문제, 기념일 퀴즈, 시험 전날 전야제</p></div>
+    </div>
+    <div class="row mt">
+      <select id="push-hour" aria-label="알림 시각">${hours.map(h => `<option value="${h}" ${h === hour ? 'selected' : ''}>${h < 12 ? '오전' : '오후'} ${h % 12 || 12}시</option>`).join('')}</select>
+      <button type="button" class="btn btn-primary grow" data-push="on">${on ? '시각 바꾸기' : '알림 켜기'}</button>
+      ${on ? '<button type="button" class="btn btn-ghost" data-push="off">끄기</button>' : ''}
+    </div>`;
+}
 
 export function render(el) {
   const today = todayStr();
@@ -29,12 +60,7 @@ export function render(el) {
     <section class="card" id="install">${installSectionHTML()}</section>
 
     <h2 class="section-title">알림</h2>
-    <section class="card">
-      <div class="setting-row">
-        <div class="grow"><b>기념일·시험 전날 알림</b><p class="muted small">푸시 알림은 2단계에서 추가될 예정이에요.</p></div>
-        <span class="switch" aria-hidden="true"></span>
-      </div>
-    </section>
+    <section class="card" id="push">${pushIntroHTML()}</section>
 
     <h2 class="section-title">테스트용 날짜</h2>
     <section class="card">
@@ -72,7 +98,27 @@ export function render(el) {
     refresh();
   }
 
+  drawPush(el.querySelector('#push'));
+
   el.addEventListener('click', async e => {
+    const pushAct = e.target.closest('[data-push]')?.dataset.push;
+    if (pushAct) {
+      const box = el.querySelector('#push');
+      try {
+        if (pushAct === 'on') {
+          await subscribe(Number(box.querySelector('#push-hour').value));
+          track('push_sub');
+          toast('매일 알림을 켰어요');
+        } else {
+          await unsubscribe();
+          toast('알림을 껐어요');
+        }
+      } catch (err) {
+        toast(err.message === 'denied' ? '알림이 막혀 있어요. 아이폰 설정 → 알림에서 허용해 주세요' : '알림 설정에 실패했어요. 잠시 뒤 다시 해 주세요');
+      }
+      drawPush(box);
+      return;
+    }
     const preset = e.target.closest('[data-date]');
     if (preset) {
       applyDate(preset.dataset.date);

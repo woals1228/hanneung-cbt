@@ -5,3 +5,7 @@ export const SUPABASE_KEY = 'sb_publishable_jUQSxxux_navnAvTfIl4ZQ_K0afEkPY';
 
 // 기출(57~80회) 화면을 보여 줄지. 국사편찬위원회가 중단을 요청하면 false로 바꾸고 data/past*도 지워요.
 export const SHOW_PAST = true;
+
+// 매일 알림용 VAPID 공개 키(공개돼도 되는 키). 비어 있으면 알림 켜기가 안 보여요.
+// 개인 키는 절대 여기에 넣지 말고 GitHub Secrets(VAPID_PRIVATE_KEY)에만 넣어요.
+export const VAPID_PUBLIC_KEY = '';
