@@ -85,7 +85,11 @@ export function questionHTML(q, { number = null, selected = null, revealed = fal
 // 사료·대화·연표 자료 상자. 정답 주인공은 (가)로 가려져 있어요.
 export function passageHTML(q) {
   if (!q.passage) return '';
-  const body = esc(q.passage).replace(/\n/g, '<br>');
+  // [역사 신문] 같은 제목 줄과 '학생 A:' 같은 말하는 사람은 굵게 보여 줘요.
+  const body = esc(q.passage).split('\n').map(line => {
+    if (/^\[[^\]]+\]/.test(line)) return line.replace(/^(\[[^\]]+\])/, '<b class="passage-title">$1</b>');
+    return line.replace(/^([^:：]{1,12})([:：])/, '<b>$1</b>$2');
+  }).join('<br>');
   return `<figure class="passage"><div class="passage-body">${body}</div>${q.cite ? `<figcaption>— ${esc(q.cite)}</figcaption>` : ''}</figure>`;
 }
 

@@ -433,3 +433,4 @@ input[type="date"] {
 .choice-notes li.is-answer .choice-no { color: var(--ok); }
 .choice-notes li.is-mine { background: var(--bad-soft); }
 .choice-notes li.is-mine .choice-no { color: var(--bad); }
+.passage-title { font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; color: var(--primary); }
