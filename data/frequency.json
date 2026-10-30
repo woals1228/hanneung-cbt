@@ -1,0 +1,980 @@
+[
+  {
+    "topic": "구석기",
+    "era": "선사",
+    "all": 22,
+    "recent": 7,
+    "trend": "",
+    "ids": [
+      "eve-01"
+    ]
+  },
+  {
+    "topic": "청동기",
+    "era": "선사",
+    "all": 20,
+    "recent": 7,
+    "trend": "",
+    "ids": [
+      "pre-02",
+      "eve-02"
+    ]
+  },
+  {
+    "topic": "신석기",
+    "era": "선사",
+    "all": 19,
+    "recent": 7,
+    "trend": "",
+    "ids": [
+      "pre-01",
+      "add-01"
+    ]
+  },
+  {
+    "topic": "삼국 통일 과정",
+    "era": "고대",
+    "all": 21,
+    "recent": 6,
+    "trend": "",
+    "ids": [
+      "anc-06"
+    ]
+  },
+  {
+    "topic": "신문왕",
+    "era": "고대",
+    "all": 20,
+    "recent": 8,
+    "trend": "",
+    "ids": [
+      "eve-08"
+    ]
+  },
+  {
+    "topic": "진흥왕",
+    "era": "고대",
+    "all": 20,
+    "recent": 6,
+    "trend": "",
+    "ids": [
+      "anc-03"
+    ]
+  },
+  {
+    "topic": "옥저·동예",
+    "era": "고대",
+    "all": 20,
+    "recent": 5,
+    "trend": "",
+    "ids": [
+      "eve-04"
+    ]
+  },
+  {
+    "topic": "고구려·수·당 전쟁",
+    "era": "고대",
+    "all": 19,
+    "recent": 6,
+    "trend": "",
+    "ids": [
+      "eve-05"
+    ]
+  },
+  {
+    "topic": "고조선",
+    "era": "고대",
+    "all": 18,
+    "recent": 8,
+    "trend": "up",
+    "ids": [
+      "an-1003",
+      "anc-01"
+    ]
+  },
+  {
+    "topic": "삼한",
+    "era": "고대",
+    "all": 18,
+    "recent": 7,
+    "trend": "",
+    "ids": [
+      "add-03"
+    ]
+  },
+  {
+    "topic": "신라 말",
+    "era": "고대",
+    "all": 18,
+    "recent": 7,
+    "trend": "",
+    "ids": [
+      "eve-10"
+    ]
+  },
+  {
+    "topic": "부여",
+    "era": "고대",
+    "all": 18,
+    "recent": 5,
+    "trend": "",
+    "ids": [
+      "eve-03"
+    ]
+  },
+  {
+    "topic": "법흥왕",
+    "era": "고대",
+    "all": 18,
+    "recent": 5,
+    "trend": "",
+    "ids": [
+      "eve-07"
+    ]
+  },
+  {
+    "topic": "발해",
+    "era": "고대",
+    "all": 18,
+    "recent": 5,
+    "trend": "",
+    "ids": [
+      "anc-04",
+      "eve-09"
+    ]
+  },
+  {
+    "topic": "무령왕",
+    "era": "고대",
+    "all": 17,
+    "recent": 5,
+    "trend": "",
+    "ids": [
+      "add-04"
+    ]
+  },
+  {
+    "topic": "백제 성왕",
+    "era": "고대",
+    "all": 15,
+    "recent": 6,
+    "trend": "",
+    "ids": [
+      "eve-06"
+    ]
+  },
+  {
+    "topic": "지증왕",
+    "era": "고대",
+    "all": 14,
+    "recent": 4,
+    "trend": "down",
+    "ids": [
+      "add-05"
+    ]
+  },
+  {
+    "topic": "고대 승려",
+    "era": "고대",
+    "all": 13,
+    "recent": 4,
+    "trend": "",
+    "ids": [
+      "add-08"
+    ]
+  },
+  {
+    "topic": "광개토 대왕",
+    "era": "고대",
+    "all": 12,
+    "recent": 4,
+    "trend": "",
+    "ids": [
+      "anc-02"
+    ]
+  },
+  {
+    "topic": "가야",
+    "era": "고대",
+    "all": 9,
+    "recent": 4,
+    "trend": "",
+    "ids": [
+      "add-07"
+    ]
+  },
+  {
+    "topic": "고구려 초기 풍습",
+    "era": "고대",
+    "all": 6,
+    "recent": 3,
+    "trend": "",
+    "ids": []
+  },
+  {
+    "topic": "장수왕",
+    "era": "고대",
+    "all": 6,
+    "recent": 0,
+    "trend": "down",
+    "ids": [
+      "add-06"
+    ]
+  },
+  {
+    "topic": "근초고왕",
+    "era": "고대",
+    "all": 2,
+    "recent": 0,
+    "trend": "down",
+    "ids": [
+      "anc-05"
+    ]
+  },
+  {
+    "topic": "고려 경제",
+    "era": "고려",
+    "all": 24,
+    "recent": 8,
+    "trend": "",
+    "ids": [
+      "eve-18"
+    ]
+  },
+  {
+    "topic": "성종(고려)",
+    "era": "고려",
+    "all": 23,
+    "recent": 8,
+    "trend": "",
+    "ids": [
+      "eve-12"
+    ]
+  },
+  {
+    "topic": "무신 정권",
+    "era": "고려",
+    "all": 23,
+    "recent": 8,
+    "trend": "",
+    "ids": [
+      "add-11",
+      "eve-15"
+    ]
+  },
+  {
+    "topic": "고려 문화유산",
+    "era": "고려",
+    "all": 23,
+    "recent": 7,
+    "trend": "",
+    "ids": [
+      "gor-03",
+      "add-10",
+      "add-13"
+    ]
+  },
+  {
+    "topic": "원 간섭기",
+    "era": "고려",
+    "all": 22,
+    "recent": 7,
+    "trend": "",
+    "ids": [
+      "eve-16"
+    ]
+  },
+  {
+    "topic": "공민왕",
+    "era": "고려",
+    "all": 22,
+    "recent": 7,
+    "trend": "",
+    "ids": [
+      "gor-04"
+    ]
+  },
+  {
+    "topic": "여진·별무반",
+    "era": "고려",
+    "all": 21,
+    "recent": 8,
+    "trend": "",
+    "ids": [
+      "eve-13"
+    ]
+  },
+  {
+    "topic": "이자겸·묘청",
+    "era": "고려",
+    "all": 21,
+    "recent": 7,
+    "trend": "",
+    "ids": [
+      "eve-14"
+    ]
+  },
+  {
+    "topic": "몽골 항쟁",
+    "era": "고려",
+    "all": 21,
+    "recent": 6,
+    "trend": "",
+    "ids": [
+      "gor-02"
+    ]
+  },
+  {
+    "topic": "고려 말 왜구·홍건적",
+    "era": "고려",
+    "all": 21,
+    "recent": 6,
+    "trend": "",
+    "ids": [
+      "eve-17"
+    ]
+  },
+  {
+    "topic": "거란의 침입",
+    "era": "고려",
+    "all": 19,
+    "recent": 6,
+    "trend": "",
+    "ids": [
+      "gor-05"
+    ]
+  },
+  {
+    "topic": "광종",
+    "era": "고려",
+    "all": 18,
+    "recent": 7,
+    "trend": "",
+    "ids": [
+      "gor-01"
+    ]
+  },
+  {
+    "topic": "태조 왕건",
+    "era": "고려",
+    "all": 17,
+    "recent": 8,
+    "trend": "up",
+    "ids": [
+      "eve-11"
+    ]
+  },
+  {
+    "topic": "위화도 회군·과전법",
+    "era": "고려",
+    "all": 16,
+    "recent": 5,
+    "trend": "",
+    "ids": [
+      "add-12"
+    ]
+  },
+  {
+    "topic": "고려 불교",
+    "era": "고려",
+    "all": 14,
+    "recent": 4,
+    "trend": "down",
+    "ids": [
+      "add-09"
+    ]
+  },
+  {
+    "topic": "세도 정치·농민 봉기",
+    "era": "조선",
+    "all": 24,
+    "recent": 8,
+    "trend": "",
+    "ids": [
+      "eve-25"
+    ]
+  },
+  {
+    "topic": "정조",
+    "era": "조선",
+    "all": 23,
+    "recent": 7,
+    "trend": "",
+    "ids": [
+      "jos-01",
+      "eve-24"
+    ]
+  },
+  {
+    "topic": "조선 후기 경제",
+    "era": "조선",
+    "all": 22,
+    "recent": 7,
+    "trend": "",
+    "ids": [
+      "jos-03",
+      "eve-26"
+    ]
+  },
+  {
+    "topic": "세종",
+    "era": "조선",
+    "all": 22,
+    "recent": 6,
+    "trend": "",
+    "ids": [
+      "an-1009",
+      "eve-19"
+    ]
+  },
+  {
+    "topic": "영조",
+    "era": "조선",
+    "all": 21,
+    "recent": 8,
+    "trend": "",
+    "ids": [
+      "jos-04",
+      "eve-23"
+    ]
+  },
+  {
+    "topic": "임진왜란",
+    "era": "조선",
+    "all": 21,
+    "recent": 7,
+    "trend": "",
+    "ids": [
+      "jos-02",
+      "eve-21"
+    ]
+  },
+  {
+    "topic": "천주교·동학",
+    "era": "조선",
+    "all": 21,
+    "recent": 6,
+    "trend": "",
+    "ids": [
+      "eve-27"
+    ]
+  },
+  {
+    "topic": "사화·조광조",
+    "era": "조선",
+    "all": 20,
+    "recent": 7,
+    "trend": "",
+    "ids": [
+      "eve-20"
+    ]
+  },
+  {
+    "topic": "예송·환국",
+    "era": "조선",
+    "all": 19,
+    "recent": 7,
+    "trend": "",
+    "ids": [
+      "eve-22"
+    ]
+  },
+  {
+    "topic": "실학자",
+    "era": "조선",
+    "all": 19,
+    "recent": 5,
+    "trend": "",
+    "ids": [
+      "jos-06",
+      "eve-28"
+    ]
+  },
+  {
+    "topic": "효종 북벌·나선 정벌",
+    "era": "조선",
+    "all": 18,
+    "recent": 6,
+    "trend": "",
+    "ids": [
+      "add-18"
+    ]
+  },
+  {
+    "topic": "성종(조선)",
+    "era": "조선",
+    "all": 18,
+    "recent": 4,
+    "trend": "down",
+    "ids": [
+      "add-16"
+    ]
+  },
+  {
+    "topic": "조선 후기 문화",
+    "era": "조선",
+    "all": 17,
+    "recent": 6,
+    "trend": "",
+    "ids": [
+      "add-19"
+    ]
+  },
+  {
+    "topic": "광해군",
+    "era": "조선",
+    "all": 17,
+    "recent": 5,
+    "trend": "",
+    "ids": [
+      "add-17"
+    ]
+  },
+  {
+    "topic": "정묘·병자호란",
+    "era": "조선",
+    "all": 17,
+    "recent": 5,
+    "trend": "",
+    "ids": [
+      "jos-05"
+    ]
+  },
+  {
+    "topic": "태조·정도전",
+    "era": "조선",
+    "all": 16,
+    "recent": 6,
+    "trend": "",
+    "ids": [
+      "add-14"
+    ]
+  },
+  {
+    "topic": "세조",
+    "era": "조선",
+    "all": 14,
+    "recent": 4,
+    "trend": "down",
+    "ids": [
+      "add-15"
+    ]
+  },
+  {
+    "topic": "태종",
+    "era": "조선",
+    "all": 9,
+    "recent": 2,
+    "trend": "",
+    "ids": []
+  },
+  {
+    "topic": "병인·신미양요",
+    "era": "근대",
+    "all": 23,
+    "recent": 8,
+    "trend": "",
+    "ids": [
+      "eve-29"
+    ]
+  },
+  {
+    "topic": "개화 정책·조미 조약",
+    "era": "근대",
+    "all": 23,
+    "recent": 8,
+    "trend": "",
+    "ids": [
+      "add-24",
+      "eve-30"
+    ]
+  },
+  {
+    "topic": "국권 피탈 과정",
+    "era": "근대",
+    "all": 22,
+    "recent": 8,
+    "trend": "",
+    "ids": [
+      "an-1117",
+      "an-1117b",
+      "eve-36"
+    ]
+  },
+  {
+    "topic": "독립 협회·아관 파천",
+    "era": "근대",
+    "all": 22,
+    "recent": 7,
+    "trend": "",
+    "ids": [
+      "mod-03",
+      "eve-34"
+    ]
+  },
+  {
+    "topic": "갑오·을미개혁",
+    "era": "근대",
+    "all": 21,
+    "recent": 8,
+    "trend": "",
+    "ids": [
+      "eve-33"
+    ]
+  },
+  {
+    "topic": "동학 농민 운동",
+    "era": "근대",
+    "all": 21,
+    "recent": 7,
+    "trend": "",
+    "ids": [
+      "mod-04",
+      "eve-32"
+    ]
+  },
+  {
+    "topic": "갑신정변",
+    "era": "근대",
+    "all": 20,
+    "recent": 8,
+    "trend": "",
+    "ids": [
+      "mod-02",
+      "eve-31"
+    ]
+  },
+  {
+    "topic": "근대 문물",
+    "era": "근대",
+    "all": 20,
+    "recent": 8,
+    "trend": "",
+    "ids": [
+      "add-20"
+    ]
+  },
+  {
+    "topic": "대한 제국·광무개혁",
+    "era": "근대",
+    "all": 20,
+    "recent": 7,
+    "trend": "",
+    "ids": [
+      "eve-35"
+    ]
+  },
+  {
+    "topic": "애국 계몽 운동",
+    "era": "근대",
+    "all": 20,
+    "recent": 5,
+    "trend": "",
+    "ids": [
+      "eve-37"
+    ]
+  },
+  {
+    "topic": "흥선 대원군",
+    "era": "근대",
+    "all": 19,
+    "recent": 7,
+    "trend": "",
+    "ids": [
+      "mod-01"
+    ]
+  },
+  {
+    "topic": "강화도 조약",
+    "era": "근대",
+    "all": 17,
+    "recent": 3,
+    "trend": "down",
+    "ids": [
+      "mod-05"
+    ]
+  },
+  {
+    "topic": "독도·간도",
+    "era": "근대",
+    "all": 16,
+    "recent": 8,
+    "trend": "up",
+    "ids": [
+      "add-23"
+    ]
+  },
+  {
+    "topic": "항일 의병",
+    "era": "근대",
+    "all": 15,
+    "recent": 6,
+    "trend": "",
+    "ids": [
+      "add-22"
+    ]
+  },
+  {
+    "topic": "임오군란",
+    "era": "근대",
+    "all": 10,
+    "recent": 5,
+    "trend": "up",
+    "ids": [
+      "add-21"
+    ]
+  },
+  {
+    "topic": "1910년대 무단 통치",
+    "era": "일제 강점기",
+    "all": 24,
+    "recent": 8,
+    "trend": "",
+    "ids": [
+      "jpn-01",
+      "eve-38"
+    ]
+  },
+  {
+    "topic": "1940년대 독립운동",
+    "era": "일제 강점기",
+    "all": 24,
+    "recent": 8,
+    "trend": "",
+    "ids": [
+      "jpn-03",
+      "eve-45"
+    ]
+  },
+  {
+    "topic": "1920년대 무장 투쟁",
+    "era": "일제 강점기",
+    "all": 23,
+    "recent": 8,
+    "trend": "",
+    "ids": [
+      "eve-40"
+    ]
+  },
+  {
+    "topic": "대한민국 임시 정부",
+    "era": "일제 강점기",
+    "all": 22,
+    "recent": 7,
+    "trend": "",
+    "ids": [
+      "an-0411",
+      "eve-39"
+    ]
+  },
+  {
+    "topic": "1930년대 무장 투쟁",
+    "era": "일제 강점기",
+    "all": 22,
+    "recent": 7,
+    "trend": "",
+    "ids": [
+      "eve-44"
+    ]
+  },
+  {
+    "topic": "신간회·학생 운동",
+    "era": "일제 강점기",
+    "all": 21,
+    "recent": 8,
+    "trend": "",
+    "ids": [
+      "an-1103",
+      "an-1103b",
+      "eve-42"
+    ]
+  },
+  {
+    "topic": "의열단·한인 애국단",
+    "era": "일제 강점기",
+    "all": 20,
+    "recent": 7,
+    "trend": "",
+    "ids": [
+      "jpn-02",
+      "eve-41"
+    ]
+  },
+  {
+    "topic": "사회 운동",
+    "era": "일제 강점기",
+    "all": 19,
+    "recent": 8,
+    "trend": "up",
+    "ids": [
+      "eve-43"
+    ]
+  },
+  {
+    "topic": "1910년대 독립운동",
+    "era": "일제 강점기",
+    "all": 19,
+    "recent": 7,
+    "trend": "",
+    "ids": [
+      "add-25"
+    ]
+  },
+  {
+    "topic": "1920년대 식민 정책",
+    "era": "일제 강점기",
+    "all": 18,
+    "recent": 7,
+    "trend": "",
+    "ids": [
+      "add-26"
+    ]
+  },
+  {
+    "topic": "민족 말살·전시 동원",
+    "era": "일제 강점기",
+    "all": 17,
+    "recent": 6,
+    "trend": "",
+    "ids": [
+      "add-27"
+    ]
+  },
+  {
+    "topic": "실력 양성 운동",
+    "era": "일제 강점기",
+    "all": 16,
+    "recent": 7,
+    "trend": "up",
+    "ids": [
+      "jpn-04"
+    ]
+  },
+  {
+    "topic": "국학·민족 문화",
+    "era": "일제 강점기",
+    "all": 16,
+    "recent": 6,
+    "trend": "",
+    "ids": [
+      "add-28"
+    ]
+  },
+  {
+    "topic": "3·1 운동",
+    "era": "일제 강점기",
+    "all": 8,
+    "recent": 4,
+    "trend": "",
+    "ids": [
+      "an-0301"
+    ]
+  },
+  {
+    "topic": "통일 정책",
+    "era": "현대",
+    "all": 24,
+    "recent": 8,
+    "trend": "",
+    "ids": [
+      "mdn-02",
+      "eve-50"
+    ]
+  },
+  {
+    "topic": "박정희 정부",
+    "era": "현대",
+    "all": 23,
+    "recent": 8,
+    "trend": "",
+    "ids": [
+      "mdn-01",
+      "eve-48"
+    ]
+  },
+  {
+    "topic": "광복과 정부 수립",
+    "era": "현대",
+    "all": 22,
+    "recent": 7,
+    "trend": "",
+    "ids": [
+      "an-0815",
+      "add-29",
+      "eve-46"
+    ]
+  },
+  {
+    "topic": "김영삼·김대중 정부",
+    "era": "현대",
+    "all": 20,
+    "recent": 7,
+    "trend": "",
+    "ids": [
+      "eve-49"
+    ]
+  },
+  {
+    "topic": "이승만 정부·4·19",
+    "era": "현대",
+    "all": 20,
+    "recent": 5,
+    "trend": "",
+    "ids": [
+      "an-0419",
+      "eve-47"
+    ]
+  },
+  {
+    "topic": "6월 민주 항쟁",
+    "era": "현대",
+    "all": 19,
+    "recent": 5,
+    "trend": "",
+    "ids": [
+      "an-0610"
+    ]
+  },
+  {
+    "topic": "6·25 전쟁",
+    "era": "현대",
+    "all": 18,
+    "recent": 4,
+    "trend": "down",
+    "ids": [
+      "an-0625",
+      "an-1001"
+    ]
+  },
+  {
+    "topic": "5·18·전두환 정부",
+    "era": "현대",
+    "all": 12,
+    "recent": 4,
+    "trend": "",
+    "ids": [
+      "an-0518"
+    ]
+  },
+  {
+    "topic": "제주 4·3·반민특위·농지 개혁",
+    "era": "현대",
+    "all": 12,
+    "recent": 3,
+    "trend": "",
+    "ids": [
+      "an-0717",
+      "add-29"
+    ]
+  },
+  {
+    "topic": "장면 내각·5·16",
+    "era": "현대",
+    "all": 8,
+    "recent": 3,
+    "trend": "",
+    "ids": [
+      "add-30"
+    ]
+  }
+]

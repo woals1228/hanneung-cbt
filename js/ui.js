@@ -106,9 +106,10 @@ export function explanationHTML(q, selected) {
   const refs = (q.refs ?? []).filter(url => url.startsWith('https://'))
     .map((url, i) => `<a href="${esc(url)}" target="_blank" rel="noopener">근거 ${i + 1}</a>`).join(' · ');
   const key = q.keyPoint ? `<p class="keypoint"><b>핵심</b> ${esc(q.keyPoint)}</p>` : '';
+  const freq = q.freq ? `<p class="freq-line">📊 <b>${esc(q.freq.topic)}</b> · 최근 24회 중 ${q.freq.all}회 출제${q.freq.trend === 'up' ? ' <span class="trend up">⬆ 최근 늘어남</span>' : q.freq.trend === 'down' ? ' <span class="trend down">⬇ 최근 줄어듦</span>' : ''}</p>` : '';
   const notes = Array.isArray(q.choiceNotes) ? `<ol class="choice-notes">${q.choiceNotes.map((note, i) => `<li class="${i + 1 === q.answer ? 'is-answer' : ''}${i + 1 === selected && selected !== q.answer ? ' is-mine' : ''}">
       <span class="choice-no">${CIRCLED[i]}</span><span>${esc(note)}</span></li>`).join('')}</ol>` : '';
-  return `<div class="explain ${cls}"><strong>${title}</strong>${key}<p>${esc(q.explanation)}</p>${notes}${refs ? `<p class="refs">${refs}</p>` : ''}</div>`;
+  return `<div class="explain ${cls}"><strong>${title}</strong>${key}${freq}<p>${esc(q.explanation)}</p>${notes}${refs ? `<p class="refs">${refs}</p>` : ''}</div>`;
 }
 
 // 가로 막대 한 줄 (분석·시험 결과)

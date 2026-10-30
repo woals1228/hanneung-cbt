@@ -21,6 +21,18 @@ function buildSet(mode, params, today) {
       const pool = data.morePool(today).filter(q => !tried.has(q.id) && (!era || q.era === era));
       return { title: era ? `${era} 문제 더 풀기` : '문제 더 풀기', ids: ids(shuffle(pool).slice(0, MORE_COUNT)) };
     }
+    case 'hot': {
+      // 빈출 예상 주제부터, 아직 안 푼 문제를 먼저
+      const tried = new Set(store.getState().attempts.map(a => a.q));
+      const pool = shuffle(data.hotPool(today));
+      pool.sort((a, b) => tried.has(a.id) - tried.has(b.id));
+      return { title: '81회 빈출 예상 문제', ids: ids(pool.slice(0, SET_LIMIT)) };
+    }
+    case 'topic': {
+      const f = data.frequency().find(x => x.topic === params.get('t'));
+      const open = new Set(data.examPool(today).map(q => q.id));
+      return { title: f ? `${f.topic} 문제` : '주제 문제', ids: f ? shuffle(f.ids.filter(id => open.has(id))) : [] };
+    }
     case 'review':
       return { title: '오답 복습', ids: store.dueIds(today).filter(id => data.getQuestion(id)).slice(0, SET_LIMIT) };
     case 'wrong': {
@@ -49,12 +61,12 @@ function buildSet(mode, params, today) {
   }
 }
 
-const EVENT_OF = { more: 'more', anniv: 'anniv', eve: 'eve_start' };
+const EVENT_OF = { more: 'more', hot: 'more', anniv: 'anniv', eve: 'eve_start' };
 
 export function render(el, route) {
   const today = todayStr();
   const mode = route.params.get('mode') ?? 'more';
-  const key = [mode, route.params.get('era'), route.params.get('date'), route.params.get('id')].filter(Boolean).join(':');
+  const key = [mode, route.params.get('era'), route.params.get('date'), route.params.get('id'), route.params.get('t')].filter(Boolean).join(':');
 
   // 같은 묶음을 풀던 중이면 이어서 풀어요.
   if (store.getDraft('study')?.key === key) {

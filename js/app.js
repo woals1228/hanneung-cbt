@@ -8,9 +8,10 @@ import * as notebook from './views/notebook.js';
 import * as exam from './views/exam.js';
 import * as stats from './views/stats.js';
 import * as settings from './views/settings.js';
+import * as hot from './views/hot.js';
 
 // solve = 학습 모드 풀이 화면 (모의고사와 같은 화면을 써요)
-const routes = { '': home, quiz, notebook, exam, solve: exam, stats, settings };
+const routes = { '': home, quiz, notebook, exam, solve: exam, stats, settings, hot };
 const root = document.getElementById('app');
 const tabbar = document.getElementById('tabbar');
 let cleanup = null;

@@ -24,6 +24,7 @@ export async function loadData() {
     pastExams: [],
   };
   await loadPast();
+  await loadFrequency();
   // 전야제 문제(eve: 회차)는 시험 전날부터 나와요.
   const eveOn = new Map(db.exams.map(e => [e.round, addDays(e.date, -1)]));
   for (const q of questions) if (q.eve) db.scheduledOn.set(q.id, eveOn.get(q.eve));
@@ -52,6 +53,28 @@ async function loadPast() {
     db.pastExams = [];
   }
 }
+
+// ── 빈출 예측 ── data/frequency.json: 57~80회 심화 24번에서 주제마다 나온 횟수(박사 분석)
+async function loadFrequency() {
+  try {
+    const res = await fetch('data/frequency.json');
+    db.frequency = res.ok ? await res.json() : [];
+  } catch {
+    db.frequency = [];
+  }
+  // 문제마다 가장 많이 나온 주제를 붙여요(해설에 '기출 빈도'로 보여 줘요).
+  for (const f of db.frequency) {
+    for (const id of f.ids) {
+      const q = db.byId.get(id);
+      if (q && (!q.freq || q.freq.all < f.all)) q.freq = f;
+    }
+  }
+}
+
+export const frequency = () => db.frequency;
+// 빈출 예상: 24번 중 20번 넘게 나왔거나 최근 늘어난 주제의 문제(전야제 문제는 그날 전까지 빼요)
+export const isHot = f => Boolean(f) && (f.all >= 20 || f.trend === 'up');
+export const hotPool = today => examPool(today).filter(q => isHot(q.freq));
 
 export const pastExams = () => db.pastExams;
 export const pastExamIds = examId => [...db.byId.values()].filter(q => q.past && q.exam === examId).sort((a, b) => a.no - b.no).map(q => q.id);
