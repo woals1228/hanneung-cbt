@@ -466,7 +466,10 @@ def main():
         })
         print(f'{exam_id}: 문제 {len(items)}개 · 배점 합 {total_points} · 시대 {dict(Counter(eras))}')
     (data / 'past-exams.json').write_text(json.dumps(exams, ensure_ascii=False, indent=1), encoding='utf-8')
-    (data / 'past-questions.json').write_text(json.dumps(questions, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
+    # 앱에는 가벼운 목록만 올리고, OCR 글자 전체는 해설 쓰기용으로 past-ocr에 따로 둬요(공개 안 함).
+    (data / 'past-ocr' / 'past-text.json').write_text(json.dumps({q['id']: q['text'] for q in questions}, ensure_ascii=False), encoding='utf-8')
+    slim = [{k: v for k, v in q.items() if k not in ('text', 'level', 'choiceCount')} for q in questions]
+    (data / 'past-questions.json').write_text(json.dumps(slim, ensure_ascii=False, separators=(',', ':')), encoding='utf-8')
     print(f'\n시험 {len(exams)}개 · 문제 {len(questions)}개')
     for p in problems:
         print('⚠️ ', p)

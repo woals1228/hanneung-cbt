@@ -42,21 +42,25 @@ async function loadPast() {
       return res.json();
     }));
     db.pastExams = exams.filter(e => e.count === 50).sort((a, b) => b.round - a.round);
-    // 박사가 쓴 기출 해설(있는 문항만): { id: { keyPoint, explanation, choiceNotes } }
-    const notes = await fetch('data/past-notes.json').then(r => (r.ok ? r.json() : {})).catch(() => ({}));
     // answer 0 = 이의 심사로 '정답 없음'(전원 정답) 처리된 문항이라 풀이에서 빼요.
     for (const p of questions.filter(x => x.answer > 0)) {
       db.byId.set(p.id, {
         ...p,
         question: p.stem || p.source,
-        choices: Array.from({ length: p.choiceCount }, () => ''),
+        choices: Array.from({ length: p.choiceCount ?? 5 }, () => ''),
         source: `${p.source} (국사편찬위원회)`,
         explanation: `출처: 국사편찬위원회 한국사능력검정시험 ${p.source} 기출문제. 원본은 국사편찬위원회 한국사능력검정시험 누리집에서 무료로 받을 수 있어요.`,
         refs: ['https://www.historyexam.go.kr/pst/list.do?bbs=dat'],
-        ...(notes[p.id] ?? {}),
         past: true,
       });
     }
+    // 박사가 쓴 기출 해설(870KB)은 첫 화면을 늦추지 않게 뒤에서 받아 붙여요: { id: { keyPoint, explanation, choiceNotes } }
+    fetch('data/past-notes.json').then(r => (r.ok ? r.json() : {})).then(notes => {
+      for (const [id, note] of Object.entries(notes)) {
+        const q = db.byId.get(id);
+        if (q) Object.assign(q, note);
+      }
+    }).catch(() => {});
   } catch {
     db.pastExams = [];
   }
