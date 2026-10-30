@@ -46,11 +46,15 @@ export function track(kind) {
   const id = anonId();
   if (!id || sent.has(key)) return;
   sent.add(key);
-  // shortcut: apikey 헤더만 보내요. publishable 키와 예전 anon 키 둘 다 이걸로 되는지 실제 프로젝트에서 한 번 확인해야 해요.
-  fetch(`${SUPABASE_URL}/rest/v1/rpc/log_event`, {
+  // publishable 키는 apikey 헤더만으로 돼요(10/30 실제 프로젝트에서 204 확인).
+  const send = body => fetch(`${SUPABASE_URL}/rest/v1/rpc/log_event`, {
     method: 'POST',
     keepalive: true,
     headers: { 'Content-Type': 'application/json', apikey: SUPABASE_KEY },
-    body: JSON.stringify({ p_anon: id, p_kind: kind, p_platform: platform, p_src: source() }),
-  }).catch(() => {});
+    body: JSON.stringify(body),
+  });
+  const body = { p_anon: id, p_kind: kind, p_platform: platform };
+  const src = source();
+  // 채널 코드를 받는 서버(supabase/source.sql)가 아직 없으면 코드 없이 다시 보내서 기록이 빠지지 않게 해요.
+  (src ? send({ ...body, p_src: src }).then(r => r.ok || send(body)) : send(body)).catch(() => {});
 }
