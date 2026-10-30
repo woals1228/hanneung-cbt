@@ -109,8 +109,29 @@ function pastHTML() {
     <section class="card">
       <button type="button" class="btn btn-primary btn-block" data-act="past">🎲 랜덤 기출 모의고사</button>
       <p class="muted small mt">번호마다 ${exams.length}개 회차 중 한 문제를 골라 50문항을 만들어요.</p>
+      <button type="button" class="btn btn-ghost btn-block mt" data-act="past-download">📥 기출 ${exams.length}회분 폰에 저장(오프라인용)</button>
       <div class="chips is-wrap mt">${exams.map(x => `<button type="button" class="chip" data-act="past" data-exam="${x.id}">${x.round}회</button>`).join('')}</div>
     </section>`;
+}
+
+// 기출 이미지를 모두 받아 두면 서비스 워커가 hcbt-past 캐시에 넣어요(PC가 꺼져도 풀 수 있게).
+async function downloadPast(btn) {
+  const urls = data.pastImageUrls();
+  const cache = await caches.open('hcbt-past');
+  let done = 0;
+  btn.disabled = true;
+  for (let i = 0; i < urls.length; i += 8) {
+    await Promise.all(urls.slice(i, i + 8).map(async url => {
+      if (!(await cache.match(url))) {
+        const res = await fetch(url).catch(() => null);
+        if (res?.ok) await cache.put(url, res);
+      }
+      done += 1;
+    }));
+    btn.textContent = `📥 저장 중 ${done} / ${urls.length}`;
+  }
+  await Promise.all(['data/past-exams.json', 'data/past-questions.json'].map(u => fetch(u).then(r => r.ok && cache.put(u, r)).catch(() => {})));
+  btn.textContent = '✅ 기출을 폰에 모두 저장했어요';
 }
 
 function renderLobby(el) {
@@ -168,6 +189,7 @@ function renderLobby(el) {
   el.addEventListener('click', async e => {
     const act = e.target.closest('[data-act]')?.dataset.act;
     if (act === 'past') startPast(e.target.closest('[data-act]'));
+    if (act === 'past-download') downloadPast(e.target.closest('[data-act]'));
     if (act === 'start') start();
     if (act === 'restart') {
       const ok = await confirmModal({ title: '새로 시작할까요?', message: '풀던 시험은 채점하지 않고 지워져요.', ok: '새로 시작', danger: true });

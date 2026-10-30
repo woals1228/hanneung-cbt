@@ -1,7 +1,7 @@
 // 오프라인에서도 열리도록 앱 파일을 저장해 둬요.
 // 배포할 때마다 CACHE 이름의 숫자를 올려 주세요. 파일을 새로 추가하면 SHELL 목록에도 넣어요.
 // 개인용 기출(data/past/…)은 공개하지 않으니 여기에 넣지 않아요.
-const CACHE = 'hcbt-v6';
+const CACHE = 'hcbt-v7';
 const SHELL = [
   './',
   'index.html',
@@ -33,6 +33,10 @@ const SHELL = [
   'icons/favicon-32.png',
 ];
 
+// 기출 이미지(개인용)는 버전이 바뀌어도 지우지 않는 따로 된 캐시에 둬요. 한 번 받으면 PC가 꺼져 있어도 풀 수 있어요.
+const PAST_CACHE = 'hcbt-past';
+const isPast = url => /\/data\/past[/-]/.test(new URL(url).pathname);
+
 self.addEventListener('install', event => {
   event.waitUntil(caches.open(CACHE).then(cache => cache.addAll(SHELL)).then(() => self.skipWaiting()));
 });
@@ -40,7 +44,7 @@ self.addEventListener('install', event => {
 self.addEventListener('activate', event => {
   event.waitUntil(
     caches.keys()
-      .then(keys => Promise.all(keys.filter(key => key !== CACHE).map(key => caches.delete(key))))
+      .then(keys => Promise.all(keys.filter(key => key !== CACHE && key !== PAST_CACHE).map(key => caches.delete(key))))
       .then(() => self.clients.claim()),
   );
 });
@@ -50,6 +54,14 @@ self.addEventListener('activate', event => {
 self.addEventListener('fetch', event => {
   const { request } = event;
   if (request.method !== 'GET' || new URL(request.url).origin !== self.location.origin) return;
+  // 기출 이미지는 바뀌지 않아요. 저장해 둔 게 있으면 그걸 먼저 써요.
+  if (new URL(request.url).pathname.includes('/data/past/')) {
+    event.respondWith(caches.open(PAST_CACHE).then(async cache => (await cache.match(request)) ?? fetch(request).then(response => {
+      if (response.ok) cache.put(request, response.clone());
+      return response;
+    })));
+    return;
+  }
   // 페이지 이동 요청에는 옵션을 붙일 수 없어서 주소로 다시 요청해요.
   const fresh = request.mode === 'navigate' ? fetch(request.url, { cache: 'no-cache' }) : fetch(request, { cache: 'no-cache' });
   event.respondWith(
@@ -57,7 +69,7 @@ self.addEventListener('fetch', event => {
       .then(response => {
         if (response.ok) {
           const copy = response.clone();
-          caches.open(CACHE).then(cache => cache.put(request, copy));
+          caches.open(isPast(request.url) ? PAST_CACHE : CACHE).then(cache => cache.put(request, copy));
         }
         return response;
       })
