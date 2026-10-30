@@ -101,7 +101,7 @@ function renderLobby(el) {
     finish(draft);
     return;
   }
-  const count = Math.min(data.availableQuestions(todayStr()).length, data.EXAM_SIZE);
+  const count = Math.min(data.examPool(todayStr()).length, data.EXAM_SIZE);
   const history = [...examHistory()].reverse();
 
   el.innerHTML = `

@@ -93,8 +93,11 @@ export function dailyQuestion(today) {
 }
 
 // 실전 모의고사: 최대 50문항을 시대 순서대로 (실제 시험처럼 선사 → 현대)
+// 50문항을 채우려고 앞으로 나올 오늘의 문제도 써요. 전야제 문제만 그날 전까지 빼요.
+export const examPool = today => db.questions.filter(q => !q.eve || db.scheduledOn.get(q.id) <= today);
+
 export function buildExamSet(shuffle, today) {
-  const all = availableQuestions(today);
+  const all = examPool(today);
   const pool = all.length > EXAM_SIZE ? shuffle(all).slice(0, EXAM_SIZE) : all;
   return pool.sort((a, b) => eraIndex(a.era) - eraIndex(b.era)).map(q => q.id);
 }
