@@ -1,0 +1,59 @@
+// 문제 데이터 검사: npm run check
+import { readFile } from 'node:fs/promises';
+
+// js/data.js 의 ERAS 와 같아야 해요.
+const ERAS = ['선사', '고대', '고려', '조선', '근대', '일제 강점기', '현대'];
+
+const read = async name => JSON.parse(await readFile(new URL(`../data/${name}.json`, import.meta.url), 'utf8'));
+const [questions, anniversaries, exams, daily] = await Promise.all(['questions', 'anniversaries', 'exams', 'daily'].map(read));
+
+const errors = [];
+const warnings = [];
+const ids = new Set();
+const topics = new Set();
+const annivDates = new Set(anniversaries.map(a => a.date));
+
+for (const [i, q] of questions.entries()) {
+  const at = q.id ?? `${i + 1}번째 문제`;
+  if (!q.id) errors.push(`${at}: id가 없어요`);
+  else if (ids.has(q.id)) errors.push(`${at}: id가 중복돼요`);
+  ids.add(q.id);
+  if (!ERAS.includes(q.era)) errors.push(`${at}: era "${q.era}"는 ${ERAS.join(', ')} 중 하나여야 해요`);
+  if (!q.topic) errors.push(`${at}: topic이 없어요`);
+  else topics.add(q.topic);
+  if (!q.question) errors.push(`${at}: question이 없어요`);
+  if (!Array.isArray(q.choices) || q.choices.length !== 5) errors.push(`${at}: 보기(choices)는 5개여야 해요`);
+  else if (new Set(q.choices).size !== 5) errors.push(`${at}: 같은 보기가 두 번 있어요`);
+  if (!Number.isInteger(q.answer) || q.answer < 1 || q.answer > 5) errors.push(`${at}: answer는 1~5 사이 숫자여야 해요`);
+  if (![1, 2, 3].includes(q.points)) errors.push(`${at}: points는 1, 2, 3 중 하나여야 해요`);
+  if (!q.explanation) errors.push(`${at}: explanation(해설)이 없어요`);
+  if (q.anniversary && !annivDates.has(q.anniversary)) errors.push(`${at}: anniversary "${q.anniversary}"가 anniversaries.json에 없어요`);
+}
+
+for (const a of anniversaries) {
+  if (!/^\d{2}-\d{2}$/.test(a.date)) errors.push(`기념일 ${a.name}: date는 "MM-DD" 형식이어야 해요`);
+  for (const r of a.related ?? []) if (!annivDates.has(r)) errors.push(`기념일 ${a.name}: related "${r}"가 없어요`);
+}
+
+for (const e of exams) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(e.date)) errors.push(`제${e.round}회: date는 "YYYY-MM-DD" 형식이어야 해요`);
+  for (const t of e.eveTopics ?? []) if (!topics.has(t)) warnings.push(`제${e.round}회 전야제 주제 "${t}"에 해당하는 문제가 없어요`);
+}
+
+const scheduled = new Set();
+for (const [date, id] of Object.entries(daily)) {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(date)) errors.push(`daily.json ${date}: 날짜는 "YYYY-MM-DD" 형식이어야 해요`);
+  if (!ids.has(id)) errors.push(`daily.json ${date}: 문제 "${id}"가 없어요`);
+  if (scheduled.has(id)) errors.push(`daily.json ${date}: 문제 "${id}"가 두 날짜에 들어 있어요`);
+  scheduled.add(id);
+}
+
+const answerCounts =[1, 2, 3, 4, 5].map(n => questions.filter(q => q.answer === n).length);
+console.log(`문제 ${questions.length}개 · 기념일 ${anniversaries.length}개 · 시험 ${exams.length}회 · 날짜별 문제 ${scheduled.size}개 (나머지 ${questions.length - scheduled.size}개는 더 풀기용)`);
+console.log(`정답 번호 분포: ${answerCounts.map((c, i) => `${i + 1}번 ${c}개`).join(', ')}`);
+for (const w of warnings) console.warn(`⚠️  ${w}`);
+if (errors.length) {
+  for (const e of errors) console.error(`❌ ${e}`);
+  process.exit(1);
+}
+console.log('✅ 문제 없어요');

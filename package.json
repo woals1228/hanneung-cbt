@@ -1,0 +1,11 @@
+{
+  "name": "korean-history-cbt",
+  "version": "0.1.0",
+  "private": true,
+  "description": "기념일 문제, 오답노트, 실전 CBT 모의고사로 한국사능력검정시험을 준비하는 웹앱",
+  "type": "module",
+  "scripts": {
+    "start": "node tools/serve.js",
+    "check": "node tools/check-data.js"
+  }
+}

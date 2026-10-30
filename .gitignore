@@ -1,0 +1,11 @@
+# 공개 저장소에 올리면 안 되는 것
+# - 기출 PDF와 거기서 자른 문제(저작권 확인 전, 개인 학습용)
+source-pdf/
+data/past/
+data/past-*.json
+extract.log
+# - 비밀 키 (secret 키·VAPID 개인키는 GitHub Secrets에만)
+.env
+*.key
+*.pem
+node_modules/
