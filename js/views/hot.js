@@ -1,6 +1,6 @@
 // 81회 빈출 예측: 57~80회 심화 24번을 분석한 주제별 출제 횟수(data/frequency.json)
 import * as data from '../data.js';
-import { todayStr } from '../dates.js';
+import { todayStr, addDays, formatShort } from '../dates.js';
 import { esc } from '../ui.js';
 
 const rowHTML = (f, open) => {
@@ -14,6 +14,17 @@ const rowHTML = (f, open) => {
     : `<li><div class="list-row">${inner}</div></li>`;
 };
 
+// 전야제 50문제: 시험 전날부터 열려요. 그 전에는 언제 열리는지 알려 줘요.
+function eveHTML() {
+  const today = todayStr();
+  const exam = data.nextExam(today);
+  if (!exam) return '';
+  const n = data.eveQuestions(exam, today).length;
+  return n
+    ? `<section class="card card-eve"><p class="eyebrow">제${exam.round}회 전야제</p><h2>빈출 주제 ${n}문제가 열렸어요</h2><a class="btn btn-inverse btn-block" href="#/quiz?mode=eve">전야제 풀기</a></section>`
+    : `<section class="card"><p class="small">🌙 <b>제${exam.round}회 전야제</b> — 빈출 주제로 새로 만든 50문제가 시험 전날인 ${formatShort(addDays(exam.date, -1))}에 이 화면에 열려요.</p></section>`;
+}
+
 export function render(el) {
   const open = new Set(data.examPool(todayStr()).map(q => q.id));
   const all = data.frequency();
@@ -24,7 +35,8 @@ export function render(el) {
     <section class="card"><ul class="list">${list.map(f => rowHTML(f, open)).join('')}</ul></section>` : '';
 
   el.innerHTML = `
-    <header class="page-head"><div><a class="back" href="#/">← 홈</a><h1>81회 빈출 예측</h1></div></header>
+    <header class="page-head"><h1>81회 빈출 예측</h1></header>
+    ${eveHTML()}
     <section class="card">
       <p>57~80회 심화 문제지 24개를 분석해서, 주제마다 몇 번 나왔는지 셌어요.</p>
       <a class="btn btn-primary btn-block mt" href="#/quiz?mode=hot">🎯 빈출 예상 10문제 풀기</a>

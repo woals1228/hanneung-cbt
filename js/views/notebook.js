@@ -20,15 +20,16 @@ export function render(el) {
       due: items.filter(i => !i.mastered && i.due <= today),
       all: items.filter(i => !i.mastered),
       done: items.filter(i => i.mastered),
+      fav: store.favoriteIds().filter(id => data.getQuestion(id)).map(id => ({ id, fav: true, ...(store.getState().notebook[id] ?? {}) })),
     };
     tab = chosenTab ?? (groups.due.length ? 'due' : 'all');
     let list = groups[tab];
     if (eraFilter !== '전체') list = list.filter(i => data.getQuestion(i.id).era === eraFilter);
-    list = tab === 'done'
+    list = tab === 'fav' ? list : tab === 'done'
       ? list.sort((a, b) => b.last.localeCompare(a.last))
       : list.sort((a, b) => a.due.localeCompare(b.due));
 
-    const tabs = [['due', `오늘 복습 ${groups.due.length}`], ['all', `전체 ${groups.all.length}`], ['done', `완료 ${groups.done.length}`]];
+    const tabs = [['due', `오늘 복습 ${groups.due.length}`], ['all', `전체 ${groups.all.length}`], ['done', `완료 ${groups.done.length}`], ['fav', `★ ${groups.fav.length}`]];
     el.innerHTML = `
       <header class="page-head"><h1>오답노트</h1></header>
       <section class="card">
@@ -39,6 +40,7 @@ export function render(el) {
             ? `<a class="btn btn-primary grow" href="#/quiz?mode=review">오늘 복습 ${groups.due.length}문제 시작</a>`
             : '<span class="grow muted">오늘 복습할 문제가 없어요 👍</span>'}
           ${groups.all.length ? '<a class="btn btn-ghost" href="#/quiz?mode=wrong">전체 다시 풀기</a>' : ''}
+          ${tab === 'fav' && groups.fav.length ? '<a class="btn btn-ghost" href="#/quiz?mode=fav">★ 즐겨찾기 풀기</a>' : ''}
         </div>
       </section>
       <div class="segmented" role="tablist">
@@ -51,6 +53,7 @@ export function render(el) {
   }
 
   function emptyText(total) {
+    if (tab === 'fav') return '문제를 풀 때 위쪽 ☆을 누르면 여기에 모여요.';
     if (!total) return '아직 틀린 문제가 없어요.<br>문제를 풀다 틀리면 여기에 모여요.';
     if (tab === 'due') return '오늘 복습할 문제가 없어요 👍';
     if (tab === 'done') return '아직 완료한 문제가 없어요.';
@@ -59,6 +62,7 @@ export function render(el) {
 
   function itemHTML(item) {
     const q = data.getQuestion(item.id);
+    if (item.fav && item.due == null) return favHTML(item, q);
     const dots = Array.from({ length: store.REVIEW_STEPS }, (_, i) => `<span class="dot ${i < item.stage ? 'is-on' : ''}"></span>`).join('');
     let when;
     if (item.mastered) when = '<span class="ok-text">완료 ✓</span>';
@@ -81,8 +85,22 @@ export function render(el) {
     </article>`;
   }
 
+  function favHTML(item, q) {
+    const isOpen = open.has(item.id);
+    return `<article class="card note">
+      <div class="tags"><span class="tag">${esc(q.era)}</span>${q.past ? `<span class="tag tag-soft">${esc(q.source)}</span>` : ''}</div>
+      <p class="note-q">${esc(q.question)}</p>
+      ${isOpen ? `<div class="note-detail">${questionHTML(q, { revealed: true, hideHead: true })}</div>` : ''}
+      <div class="note-actions">
+        <a class="btn btn-primary btn-sm" href="#/quiz?mode=one&id=${encodeURIComponent(item.id)}">다시 풀기</a>
+        <button type="button" class="btn btn-ghost btn-sm" data-toggle="${esc(item.id)}" aria-expanded="${isOpen}">${isOpen ? '해설 닫기' : '해설 보기'}</button>
+        <button type="button" class="btn btn-ghost btn-sm" data-unfav="${esc(item.id)}">★ 빼기</button>
+      </div>
+    </article>`;
+  }
+
   el.addEventListener('click', async e => {
-    const target = e.target.closest('[data-tab], [data-era], [data-toggle], [data-remove]');
+    const target = e.target.closest('[data-tab], [data-era], [data-toggle], [data-remove], [data-unfav]');
     if (!target) return;
     const { dataset } = target;
     if (dataset.tab) chosenTab = dataset.tab;
@@ -90,6 +108,9 @@ export function render(el) {
     else if (dataset.toggle) {
       if (open.has(dataset.toggle)) open.delete(dataset.toggle);
       else open.add(dataset.toggle);
+    } else if (dataset.unfav) {
+      store.toggleFavorite(dataset.unfav);
+      toast('즐겨찾기에서 뺐어요');
     } else if (dataset.remove) {
       const ok = await confirmModal({ title: '오답노트에서 뺄까요?', message: '이 문제의 복습 기록이 지워져요.', ok: '빼기', danger: true });
       if (!ok) return;

@@ -7,7 +7,7 @@ const INTERVALS = [1, 3, 7];
 export const REVIEW_STEPS = INTERVALS.length;
 
 // examDraft: 시험 모드(모의고사), studyDraft: 학습 모드(오늘의 문제·기념일·시대별 등) — 풀던 답안이 앱을 꺼도 남아요.
-const empty = () => ({ attempts: [], notebook: {}, days: [], daily: null, exams: [], examDraft: null, studyDraft: null });
+const empty = () => ({ attempts: [], notebook: {}, favorites: {}, days: [], daily: null, exams: [], examDraft: null, studyDraft: null });
 
 let state = load();
 
@@ -57,6 +57,16 @@ export function recordAnswer(qid, ok, mode, viewed = false) {
     }
   }
   save();
+}
+
+// 즐겨찾기: 다시 보고 싶은 문제 { 문제 id: 넣은 시각 }
+export const isFavorite = qid => Boolean(state.favorites[qid]);
+export const favoriteIds = () => Object.entries(state.favorites).sort((a, b) => b[1] - a[1]).map(([id]) => id);
+export function toggleFavorite(qid) {
+  if (state.favorites[qid]) delete state.favorites[qid];
+  else state.favorites[qid] = Date.now();
+  save();
+  return isFavorite(qid);
 }
 
 export function notebookItems() {

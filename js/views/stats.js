@@ -18,7 +18,7 @@ export function render(el) {
 
   if (!valid.length) {
     el.innerHTML = `
-      <header class="page-head"><h1>내 분석</h1></header>
+      <header class="page-head"><h1>마이</h1><a class="btn btn-ghost btn-sm" href="#/settings">⚙ 설정</a></header>
       <div class="card empty"><p>아직 푼 문제가 없어요.<br>오늘의 문제부터 풀어 볼까요?</p><a class="btn btn-primary" href="#/">오늘의 문제 풀기</a></div>`;
     return;
   }
@@ -42,7 +42,7 @@ export function render(el) {
   const weekTotal = counts.reduce((sum, n) => sum + n, 0);
 
   el.innerHTML = `
-    <header class="page-head"><h1>내 분석</h1></header>
+    <header class="page-head"><h1>마이</h1><a class="btn btn-ghost btn-sm" href="#/settings">⚙ 설정</a></header>
     <div class="tiles">
       <div class="card tile"><p class="tile-label">푼 문제</p><p class="tile-value">${valid.length}</p><p class="tile-sub">누적 풀이 수</p></div>
       <div class="card tile"><p class="tile-label">정답률</p><p class="tile-value">${Math.round((correct / valid.length) * 100)}%</p><p class="tile-sub">${correct}개 정답</p></div>

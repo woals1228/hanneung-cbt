@@ -36,7 +36,7 @@ function render() {
   closeModal();
   document.body.classList.remove('focus-mode');
 
-  const activeTab = ['quiz', 'solve'].includes(route.name) ? '' : route.name;
+  const activeTab = { quiz: '', solve: '', settings: 'stats' }[route.name] ?? route.name;
   for (const link of tabbar.querySelectorAll('a')) {
     const active = link.dataset.tab === activeTab;
     link.classList.toggle('is-active', active);

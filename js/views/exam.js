@@ -222,6 +222,7 @@ function renderRun(el, mode) {
           ? `<span class="timer ${left <= LOW_TIME_SEC ? 'is-low' : ''}" id="timer" role="timer" aria-label="남은 시간">⏱ ${clock(left)}</span>`
           : '<button type="button" class="back" data-act="leave">← 나가기</button>'}
         <span class="exam-count">${draft.current + 1}번 / ${total}번 · 푼 문제 ${answered}</span>
+        <button type="button" class="btn btn-ghost btn-sm fav-btn ${store.isFavorite(q.id) ? 'is-on' : ''}" data-act="fav" aria-pressed="${store.isFavorite(q.id)}" aria-label="즐겨찾기">${store.isFavorite(q.id) ? '★' : '☆'}</button>
         <button type="button" class="btn btn-ghost btn-sm" data-act="sheet">답안표</button>
         <button type="button" class="btn btn-primary btn-sm" data-act="submit">${exam ? '제출' : '채점'}</button>
       </div>
@@ -299,6 +300,12 @@ function renderRun(el, mode) {
     if (act === 'prev' && draft.current > 0) go(draft.current - 1);
     else if (act === 'next' && draft.current < total - 1) go(draft.current + 1);
     else if (act === 'sheet') openSheet();
+    else if (act === 'fav') {
+      const on = store.toggleFavorite(draft.ids[draft.current]);
+      if (on) track('fav');
+      toast(on ? '즐겨찾기에 넣었어요 (오답노트 ★ 탭)' : '즐겨찾기에서 뺐어요');
+      draw();
+    }
     else if (act === 'submit') submit();
     else if (act === 'leave') location.hash = '#/';
     else if (act === 'explain') {

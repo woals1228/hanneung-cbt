@@ -33,6 +33,8 @@ function buildSet(mode, params, today) {
       const open = new Set(data.examPool(today).map(q => q.id));
       return { title: f ? `${f.topic} 문제` : '주제 문제', ids: f ? shuffle(f.ids.filter(id => open.has(id))) : [] };
     }
+    case 'fav':
+      return { title: '즐겨찾기 문제', ids: store.favoriteIds().filter(id => data.getQuestion(id)) };
     case 'review':
       return { title: '오답 복습', ids: store.dueIds(today).filter(id => data.getQuestion(id)).slice(0, SET_LIMIT) };
     case 'wrong': {
