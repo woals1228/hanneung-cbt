@@ -2,13 +2,13 @@
 // 고른 시각이 지났고 오늘 아직 안 받은 구독에만 하루 한 번 보내요. 우선순위: 전야제 > 기념일 > 오늘의 문제.
 // 필요한 GitHub Secrets: SUPABASE_URL, SUPABASE_SECRET_KEY, VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY
 import { readFile } from 'node:fs/promises';
-import webpush from 'web-push';
 
 const { SUPABASE_URL, SUPABASE_SECRET_KEY, VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY } = process.env;
 if (!SUPABASE_URL || !SUPABASE_SECRET_KEY || !VAPID_PUBLIC_KEY || !VAPID_PRIVATE_KEY) {
   console.log('Secrets가 아직 없어서 건너뛰어요.');
   process.exit(0);
 }
+const { default: webpush } = await import('web-push');
 webpush.setVapidDetails('mailto:wjswoals1228@naver.com', VAPID_PUBLIC_KEY, VAPID_PRIVATE_KEY);
 
 const read = async name => JSON.parse(await readFile(new URL(`../data/${name}.json`, import.meta.url), 'utf8'));
