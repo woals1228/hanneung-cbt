@@ -434,3 +434,9 @@ input[type="date"] {
 .choice-notes li.is-mine { background: var(--bad-soft); }
 .choice-notes li.is-mine .choice-no { color: var(--bad); }
 .passage-title { font-family: -apple-system, BlinkMacSystemFont, "Apple SD Gothic Neo", "Malgun Gothic", sans-serif; color: var(--primary); }
+
+/* ── 기출(이미지 문제) ── */
+.past-img { display: block; width: 100%; height: auto; margin: 8px 0 12px; border-radius: 8px; background: #fff; }
+.choices.is-numbers { grid-template-columns: repeat(5, 1fr); }
+.choices.is-numbers .choice { justify-content: center; font-size: 20px; }
+.chips.is-wrap { flex-wrap: wrap; overflow: visible; }

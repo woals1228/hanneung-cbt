@@ -95,6 +95,24 @@ function finish(draft) {
 
 const examHistory = () => store.getState().exams.filter(r => r.mode !== 'study');
 
+// 기출(개인용 앱에만 있어요). 공개 앱에서는 공식 자료실 링크를 보여 줘요.
+function pastHTML() {
+  const exams = data.pastExams();
+  if (!exams.length) {
+    return `<section class="card">
+      <h2 class="card-title">기출 문제</h2>
+      <p class="muted small">회차별 기출 문제는 국사편찬위원회 자료실에서 받을 수 있어요.</p>
+      <a class="btn btn-ghost btn-block mt" href="https://www.historyexam.go.kr/pst/list.do?bbs=dat" target="_blank" rel="noopener" data-out>공식 기출 자료실 열기</a>
+    </section>`;
+  }
+  return `<h2 class="section-title">기출 문제 <span class="muted">· ${exams.length}회분</span></h2>
+    <section class="card">
+      <button type="button" class="btn btn-primary btn-block" data-act="past">🎲 랜덤 기출 모의고사</button>
+      <p class="muted small mt">번호마다 ${exams.length}개 회차 중 한 문제를 골라 50문항을 만들어요.</p>
+      <div class="chips is-wrap mt">${exams.map(x => `<button type="button" class="chip" data-act="past" data-exam="${x.id}">${x.round}회</button>`).join('')}</div>
+    </section>`;
+}
+
 function renderLobby(el) {
   const draft = store.getDraft('exam');
   if (draft && remainingSec(draft) === 0) {
@@ -126,6 +144,7 @@ function renderLobby(el) {
       <p class="muted small">시험 모드에서는 제출 전에 정답과 해설을 볼 수 없어요. 제출하면 채점하고, 틀린 문제는 오답노트에 들어가요.</p>
       ${draft ? '' : '<button type="button" class="btn btn-primary btn-block mt" data-act="start">시험 시작</button>'}
     </section>
+    ${pastHTML()}
     <h2 class="section-title">지난 기록</h2>
     <section class="card">
       ${history.length ? `<ul class="list">${history.map(r => `<li>
@@ -139,8 +158,16 @@ function renderLobby(el) {
     </section>`;
 
   const start = () => startSession('exam', { title: '실전 모의고사', ids: data.buildExamSet(shuffle, todayStr()), kind: 'exam' });
+  const startPast = async btn => {
+    if (draft && !(await confirmModal({ title: '새 시험을 시작할까요?', message: '풀던 시험은 채점하지 않고 지워져요.', ok: '새로 시작', danger: true }))) return;
+    const examId = btn.dataset.exam;
+    const ids = examId ? data.pastExamIds(examId) : data.randomPastSet(list => list[Math.floor(Math.random() * list.length)]);
+    const title = examId ? `제${data.pastExams().find(x => x.id === examId).round}회 심화 기출` : '랜덤 기출 모의고사';
+    startSession('exam', { title, ids, kind: 'past' });
+  };
   el.addEventListener('click', async e => {
     const act = e.target.closest('[data-act]')?.dataset.act;
+    if (act === 'past') startPast(e.target.closest('[data-act]'));
     if (act === 'start') start();
     if (act === 'restart') {
       const ok = await confirmModal({ title: '새로 시작할까요?', message: '풀던 시험은 채점하지 않고 지워져요.', ok: '새로 시작', danger: true });

@@ -21,10 +21,51 @@ export async function loadData() {
     daily,
     scheduledOn: new Map(Object.entries(daily).map(([date, id]) => [id, date])),
     byId: new Map(questions.map(q => [q.id, q])),
+    pastExams: [],
   };
+  await loadPast();
   // 전야제 문제(eve: 회차)는 시험 전날부터 나와요.
   const eveOn = new Map(db.exams.map(e => [e.round, addDays(e.date, -1)]));
   for (const q of questions) if (q.eve) db.scheduledOn.set(q.id, eveOn.get(q.eve));
+}
+
+// ── 기출(개인용) ── data/past-*.json은 공개 저장소에 없어요(국사편찬위원회 이용 허락 전, .gitignore).
+// 파일이 있을 때만 회차별 풀기·랜덤 기출 모의고사가 보여요.
+async function loadPast() {
+  try {
+    const [exams, questions] = await Promise.all(['past-exams', 'past-questions'].map(async name => {
+      const res = await fetch(`data/${name}.json`);
+      if (!res.ok) throw new Error(name);
+      return res.json();
+    }));
+    db.pastExams = exams.filter(e => e.count === 50).sort((a, b) => b.round - a.round);
+    for (const p of questions) {
+      db.byId.set(p.id, {
+        ...p,
+        question: p.stem || p.source,
+        choices: Array.from({ length: p.choiceCount }, () => ''),
+        explanation: `${p.source} 기출 문제예요.`,
+        past: true,
+      });
+    }
+  } catch {
+    db.pastExams = [];
+  }
+}
+
+export const pastExams = () => db.pastExams;
+export const pastExamIds = examId => [...db.byId.values()].filter(q => q.past && q.exam === examId).sort((a, b) => a.no - b.no).map(q => q.id);
+
+// 랜덤 기출 모의고사: 번호마다 여러 회차 중 하나를 골라요. 번호가 같으면 시대·난이도 자리가 비슷해서 실제 시험 흐름이 살아요.
+export function randomPastSet(pick) {
+  const exams = new Set(db.pastExams.map(e => e.id));
+  const byNo = new Map();
+  for (const q of db.byId.values()) {
+    if (!q.past || !exams.has(q.exam)) continue;
+    if (!byNo.has(q.no)) byNo.set(q.no, []);
+    byNo.get(q.no).push(q.id);
+  }
+  return [...byNo.keys()].sort((a, b) => a - b).map(no => pick(byNo.get(no)));
 }
 
 // 날짜별 '오늘의 1문제'(data/daily.json)와 전야제 문제는 그날이 오기 전에는 다른 곳에 나오지 않아요.

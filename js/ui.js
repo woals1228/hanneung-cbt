@@ -75,11 +75,12 @@ export function questionHTML(q, { number = null, selected = null, revealed = fal
   const head = hideHead ? '' : `
     <div class="tags">
       <span class="tag">${esc(q.era)}</span>
-      ${revealed || !q.passage ? `<span class="tag tag-soft">${esc(q.topic)}</span>` : ''}
+      ${q.past ? `<span class="tag tag-soft">${esc(q.source)}</span>` : revealed || !q.passage ? `<span class="tag tag-soft">${esc(q.topic)}</span>` : ''}
       ${showPoints ? `<span class="tag tag-soft">${q.points}점</span>` : ''}
     </div>
-    <h3 class="question-text">${number ? `<span class="question-no">${number}.</span> ` : ''}${esc(q.question)}</h3>`;
-  return `<div class="question">${head}${passageHTML(q)}<ol class="choices">${choices}</ol>${revealed ? explanationHTML(q, selected) : ''}</div>`;
+    ${q.image ? '' : `<h3 class="question-text">${number ? `<span class="question-no">${number}.</span> ` : ''}${esc(q.question)}</h3>`}`;
+  const image = q.image ? `<img class="past-img" src="${esc(q.image)}" width="${q.width}" height="${q.height}" alt="${esc(q.source)}" loading="lazy">` : '';
+  return `<div class="question">${head}${image}${passageHTML(q)}<ol class="choices ${q.image ? 'is-numbers' : ''}">${choices}</ol>${revealed ? explanationHTML(q, selected) : ''}</div>`;
 }
 
 // 사료·대화·연표 자료 상자. 정답 주인공은 (가)로 가려져 있어요.
