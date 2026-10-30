@@ -267,6 +267,21 @@ function renderRun(el, mode) {
     }
   });
 
+  // 좌우로 밀어서 이전·다음 문제 (세로 스크롤과 헷갈리지 않게 가로가 확실할 때만)
+  let touch = null;
+  el.addEventListener('touchstart', e => {
+    touch = e.touches.length === 1 && !e.target.closest('.passage') ? { x: e.touches[0].clientX, y: e.touches[0].clientY } : null;
+  }, { passive: true });
+  el.addEventListener('touchend', e => {
+    if (!touch) return;
+    const dx = e.changedTouches[0].clientX - touch.x;
+    const dy = e.changedTouches[0].clientY - touch.y;
+    touch = null;
+    if (Math.abs(dx) < 70 || Math.abs(dx) < Math.abs(dy) * 2) return;
+    if (dx < 0 && draft.current < total - 1) go(draft.current + 1);
+    else if (dx > 0 && draft.current > 0) go(draft.current - 1);
+  });
+
   draw();
   if (!exam) return () => document.body.classList.remove('focus-mode');
 
