@@ -75,11 +75,18 @@ export function questionHTML(q, { number = null, selected = null, revealed = fal
   const head = hideHead ? '' : `
     <div class="tags">
       <span class="tag">${esc(q.era)}</span>
-      <span class="tag tag-soft">${esc(q.topic)}</span>
+      ${revealed || !q.passage ? `<span class="tag tag-soft">${esc(q.topic)}</span>` : ''}
       ${showPoints ? `<span class="tag tag-soft">${q.points}점</span>` : ''}
     </div>
     <h3 class="question-text">${number ? `<span class="question-no">${number}.</span> ` : ''}${esc(q.question)}</h3>`;
-  return `<div class="question">${head}<ol class="choices">${choices}</ol>${revealed ? explanationHTML(q, selected) : ''}</div>`;
+  return `<div class="question">${head}${passageHTML(q)}<ol class="choices">${choices}</ol>${revealed ? explanationHTML(q, selected) : ''}</div>`;
+}
+
+// 사료·대화·연표 자료 상자. 정답 주인공은 (가)로 가려져 있어요.
+export function passageHTML(q) {
+  if (!q.passage) return '';
+  const body = esc(q.passage).replace(/\n/g, '<br>');
+  return `<figure class="passage"><div class="passage-body">${body}</div>${q.cite ? `<figcaption>— ${esc(q.cite)}</figcaption>` : ''}</figure>`;
 }
 
 export function explanationHTML(q, selected) {
@@ -93,7 +100,10 @@ export function explanationHTML(q, selected) {
   }
   const refs = (q.refs ?? []).filter(url => url.startsWith('https://'))
     .map((url, i) => `<a href="${esc(url)}" target="_blank" rel="noopener">근거 ${i + 1}</a>`).join(' · ');
-  return `<div class="explain ${cls}"><strong>${title}</strong><p>${esc(q.explanation)}</p>${refs ? `<p class="refs">${refs}</p>` : ''}</div>`;
+  const key = q.keyPoint ? `<p class="keypoint"><b>핵심</b> ${esc(q.keyPoint)}</p>` : '';
+  const notes = Array.isArray(q.choiceNotes) ? `<ol class="choice-notes">${q.choiceNotes.map((note, i) => `<li class="${i + 1 === q.answer ? 'is-answer' : ''}${i + 1 === selected && selected !== q.answer ? ' is-mine' : ''}">
+      <span class="choice-no">${CIRCLED[i]}</span><span>${esc(note)}</span></li>`).join('')}</ol>` : '';
+  return `<div class="explain ${cls}"><strong>${title}</strong>${key}<p>${esc(q.explanation)}</p>${notes}${refs ? `<p class="refs">${refs}</p>` : ''}</div>`;
 }
 
 // 가로 막대 한 줄 (분석·시험 결과)

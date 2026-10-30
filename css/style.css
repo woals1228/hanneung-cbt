@@ -412,3 +412,24 @@ input[type="date"] {
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; scroll-behavior: auto !important; }
 }
+
+/* ── 사료형 자료 상자와 자세한 해설 ── */
+.passage {
+  margin: 0 0 14px;
+  padding: 14px 16px;
+  border: 1.5px solid var(--ink);
+  border-radius: 6px;
+  background: var(--surface);
+  font-family: "Nanum Myeongjo", "AppleMyungjo", "Batang", "Noto Serif KR", serif;
+  font-size: 15.5px;
+  line-height: 1.8;
+}
+.passage figcaption { margin-top: 6px; text-align: right; font-size: 13px; color: var(--muted); font-family: inherit; }
+.keypoint { margin-top: 10px !important; padding: 10px 12px; border-radius: 10px; background: var(--primary-soft); font-size: 14.5px; }
+.keypoint b { margin-right: 6px; color: var(--primary); }
+.choice-notes { display: grid; gap: 6px; margin: 12px 0 0; padding: 0; list-style: none; font-size: 14px; }
+.choice-notes li { display: flex; gap: 8px; padding: 8px 10px; border-radius: 10px; background: var(--surface); }
+.choice-notes li.is-answer { background: var(--ok-soft); font-weight: 600; }
+.choice-notes li.is-answer .choice-no { color: var(--ok); }
+.choice-notes li.is-mine { background: var(--bad-soft); }
+.choice-notes li.is-mine .choice-no { color: var(--bad); }

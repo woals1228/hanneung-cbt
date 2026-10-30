@@ -173,6 +173,7 @@ function renderRun(el, mode) {
           : '<button type="button" class="back" data-act="leave">← 나가기</button>'}
         <span class="exam-count">${draft.current + 1}번 / ${total}번 · 푼 문제 ${answered}</span>
         <button type="button" class="btn btn-ghost btn-sm" data-act="sheet">답안표</button>
+        <button type="button" class="btn btn-primary btn-sm" data-act="submit">${exam ? '제출' : '채점'}</button>
       </div>
       <div class="progress" aria-hidden="true"><span style="width:${(answered / total) * 100}%"></span></div>
       ${exam ? '' : `<p class="muted small mt">${esc(draft.title)}${viewed ? ' · <span class="due-today">해설 보고 푼 문제</span>' : ''}</p>`}
@@ -180,11 +181,12 @@ function renderRun(el, mode) {
         ${questionHTML(q, { number: draft.current + 1, selected: draft.answers[q.id] ?? null, showPoints: exam })}
         ${showExplain ? explanationHTML(q, null) : ''}
       </section>
-      <button type="button" class="btn btn-primary btn-block" data-act="submit">${exam ? '시험 종료 및 채점하기' : '채점하기'}</button>
       <div class="exam-nav is-fixed">
         <button type="button" class="btn btn-ghost" data-act="prev" ${draft.current === 0 ? 'disabled' : ''}>← 이전</button>
         <button type="button" class="btn btn-ghost ${exam ? 'is-locked' : ''}" data-act="explain" aria-disabled="${exam}">${exam ? '🔒 해설' : showExplain ? '해설 닫기' : '해설'}</button>
-        <button type="button" class="btn btn-ghost" data-act="next" ${last ? 'disabled' : ''}>다음 →</button>
+        ${last
+          ? `<button type="button" class="btn btn-primary" data-act="submit">${exam ? '제출' : '채점하기'}</button>`
+          : '<button type="button" class="btn btn-primary" data-act="next">다음 →</button>'}
       </div>`;
   }
 

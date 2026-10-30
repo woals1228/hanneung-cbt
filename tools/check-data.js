@@ -28,6 +28,10 @@ for (const [i, q] of questions.entries()) {
   if (!q.explanation) errors.push(`${at}: explanation(해설)이 없어요`);
   if (q.anniversary && !annivDates.has(q.anniversary)) errors.push(`${at}: anniversary "${q.anniversary}"가 anniversaries.json에 없어요`);
   if (q.eve != null && !rounds.has(q.eve)) errors.push(`${at}: eve ${q.eve}회가 exams.json에 없어요`);
+  if (q.passage != null && (typeof q.passage !== 'string' || !q.passage.trim())) errors.push(`${at}: passage(자료)는 빈 글이면 안 돼요`);
+  if (q.choiceNotes != null && (!Array.isArray(q.choiceNotes) || q.choiceNotes.length !== 5 || q.choiceNotes.some(n => typeof n !== 'string' || !n.trim()))) errors.push(`${at}: choiceNotes는 보기마다 한 줄씩 5개여야 해요`);
+  if (q.keyPoint != null && typeof q.keyPoint !== 'string') errors.push(`${at}: keyPoint는 글이어야 해요`);
+  if (q.passage && q.topic && q.question.includes(q.topic)) warnings.push(`${at}: 질문에 주제 "${q.topic}"가 그대로 나와요(사료형이면 (가)로 가려요)`);
   if (q.refs != null && (!Array.isArray(q.refs) || q.refs.some(u => typeof u !== 'string' || !u.startsWith('https://')))) errors.push(`${at}: refs는 https:// 주소 배열이어야 해요`);
 }
 
@@ -54,6 +58,7 @@ for (const [date, id] of Object.entries(daily)) {
 const answerCounts =[1, 2, 3, 4, 5].map(n => questions.filter(q => q.answer === n).length);
 const eveTotal = questions.filter(q => q.eve).length;
 console.log(`문제 ${questions.length}개 · 기념일 ${anniversaries.length}개 · 시험 ${exams.length}회 · 날짜별 문제 ${scheduled.size}개 · 전야제 ${eveTotal}개 (나머지 ${questions.length - scheduled.size - eveTotal}개는 더 풀기용)`);
+console.log(`사료형 ${questions.filter(q => q.passage).length}개 / ${questions.length}개`);
 console.log(`정답 번호 분포: ${answerCounts.map((c, i) => `${i + 1}번 ${c}개`).join(', ')}`);
 for (const w of warnings) console.warn(`⚠️  ${w}`);
 if (errors.length) {
