@@ -83,7 +83,7 @@ export const isHot = f => Boolean(f) && (f.all >= 20 || f.trend === 'up');
 export const hotPool = today => examPool(today).filter(q => isHot(q.freq));
 
 export const pastExams = () => db.pastExams;
-export const pastImageUrls = () => [...db.byId.values()].filter(q => q.past).map(q => q.image);
+export const pastImageUrls = () => [...new Set([...db.byId.values()].filter(q => q.past).flatMap(q => [q.image, q.shared].filter(Boolean)))];
 export const pastExamIds = examId => [...db.byId.values()].filter(q => q.past && q.exam === examId).sort((a, b) => a.no - b.no).map(q => q.id);
 
 // 랜덤 기출 모의고사: 번호마다 여러 회차 중 하나를 골라요. 번호가 같으면 시대·난이도 자리가 비슷해서 실제 시험 흐름이 살아요.

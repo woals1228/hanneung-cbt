@@ -295,7 +295,7 @@ def cut_questions(pdf, out_dir, ocr_dir):
     run_ocr(ocr_dir)
     masks = [np.asarray(img.convert('L')) < INK for img in pages]
     layouts = [page_layout(m) for m in masks]
-    cands = []
+    cands, headers = [], []
     for pno, img in enumerate(pages):
         top, bottom, divider, lefts = fix_layout(layouts, pno)
         lines = ocr_lines(ocr_dir, pno)
@@ -310,19 +310,44 @@ def cut_questions(pdf, out_dir, ocr_dir):
             for y in find_markers(masks[pno], top, bottom, left):
                 cands.append({'pno': pno, 'col': col, 'y': y, 'x0': x0, 'x1': x1, 'top': top, 'bottom': bottom,
                               'value': number_at(lines, left, y, img.width)})
+            # '[47~48] 다음 자료를 보고…' 같은 두 문항 공통 자료의 머리글
+            for l in lines:
+                m = re.match(r'^\[\s*(\d{1,2})', l['first'])
+                if m and abs(l['x'] - left) <= img.width * 0.012:
+                    headers.append({'pno': pno, 'col': col, 'y': l['y'], 'first': int(m.group(1))})
     picked = pick_markers(cands)
-    marks = []
+    ends = []
     for i, c in enumerate(picked):
         nxt = picked[i + 1] if i + 1 < len(picked) else None
-        y1 = nxt['y'] - 6 if nxt and (nxt['pno'], nxt['col']) == (c['pno'], c['col']) else c['bottom']
+        ends.append(nxt['y'] - 6 if nxt and (nxt['pno'], nxt['col']) == (c['pno'], c['col']) else c['bottom'])
+    # 공통 자료는 따로 잘라 두 문항에 함께 붙이고, 앞 문항 끝에 붙지 않게 잘라 내요.
+    shared = {}
+    for h in headers:
+        a = h['first']
+        if not 2 <= a <= len(picked) - 1:
+            continue
+        c = picked[a - 1]
+        if (c['pno'], c['col']) != (h['pno'], h['col']) or not h['y'] < c['y']:
+            print(f'⚠️  {pdf.name}: [{a}~{a + 1}] 공통 자료가 문항과 다른 단·쪽에 있어요')
+            continue
+        prev = picked[a - 2]
+        if (prev['pno'], prev['col']) == (h['pno'], h['col']) and ends[a - 2] > h['y']:
+            ends[a - 2] = h['y'] - 6
+        img = pages[h['pno']]
+        crop = trim_vertical(img.crop((c['x0'], max(c['top'], h['y'] - 8), c['x1'], c['y'] - 6)))
+        path = out_dir / f'{a:02d}-{a + 1:02d}.webp'
+        crop.save(path, 'WEBP', quality=WEBP_QUALITY, method=6)
+        shared[a] = shared[a + 1] = (path, crop.size)
+    marks = []
+    for i, c in enumerate(picked):
         lines = ocr_lines(ocr_dir, c['pno'])
-        marks.append((c['pno'], (c['x0'], max(c['top'], c['y'] - 8), c['x1'], y1), pages[c['pno']], lines))
+        marks.append((c['pno'], (c['x0'], max(c['top'], c['y'] - 8), c['x1'], ends[i]), pages[c['pno']], lines))
     items = []
     for no, (pno, box, img, lines) in enumerate(marks, start=1):
         crop = trim_vertical(img.crop(box))
         path = out_dir / f'{no:02d}.webp'
         crop.save(path, 'WEBP', quality=WEBP_QUALITY, method=6)
-        item = {'no': no, 'path': path, 'size': crop.size}
+        item = {'no': no, 'path': path, 'size': crop.size, 'shared': shared.get(no)}
         if lines is None:
             page = doc[pno]
             rect = pymupdf.Rect(*(v / ZOOM for v in box))
@@ -422,6 +447,8 @@ def main():
                 'image': it['path'].relative_to(data.parent).as_posix(),
                 'width': it['size'][0],
                 'height': it['size'][1],
+                **({'shared': it['shared'][0].relative_to(data.parent).as_posix(),
+                    'sharedWidth': it['shared'][1][0], 'sharedHeight': it['shared'][1][1]} if it.get('shared') else {}),
                 'stem': it['stem'][:160],
                 'text': it['text'],
                 'source': f'제{exam["round"]}회 {exam["level"]} {no}번',

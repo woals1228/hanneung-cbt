@@ -79,7 +79,9 @@ export function questionHTML(q, { number = null, selected = null, revealed = fal
       ${showPoints ? `<span class="tag tag-soft">${q.points}점</span>` : ''}
     </div>
     ${q.image ? '' : `<h3 class="question-text">${number ? `<span class="question-no">${number}.</span> ` : ''}${esc(q.question)}</h3>`}`;
-  const image = q.image ? `<img class="past-img" src="${esc(q.image)}" width="${q.width}" height="${q.height}" alt="${esc(q.source)}" loading="lazy">` : '';
+  // [47~48]처럼 두 문항이 함께 쓰는 자료는 문항 이미지 위에 따로 보여 줘요.
+  const sharedImg = q.shared ? `<img class="past-img" src="${esc(q.shared)}" width="${q.sharedWidth}" height="${q.sharedHeight}" alt="공통 자료" loading="lazy">` : '';
+  const image = q.image ? sharedImg + `<img class="past-img" src="${esc(q.image)}" width="${q.width}" height="${q.height}" alt="${esc(q.source)}" loading="lazy">` : '';
   return `<div class="question">${head}${image}${passageHTML(q)}<ol class="choices ${q.image ? 'is-numbers' : ''}">${choices}</ol>${revealed ? explanationHTML(q, selected) : ''}</div>`;
 }
 
