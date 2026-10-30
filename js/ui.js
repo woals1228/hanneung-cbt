@@ -91,7 +91,9 @@ export function explanationHTML(q, selected) {
     title = ok ? '정답이에요! 🎉' : `아쉬워요. 정답은 ${answer}`;
     cls = ok ? 'is-ok' : 'is-bad';
   }
-  return `<div class="explain ${cls}"><strong>${title}</strong><p>${esc(q.explanation)}</p></div>`;
+  const refs = (q.refs ?? []).filter(url => url.startsWith('https://'))
+    .map((url, i) => `<a href="${esc(url)}" target="_blank" rel="noopener">근거 ${i + 1}</a>`).join(' · ');
+  return `<div class="explain ${cls}"><strong>${title}</strong><p>${esc(q.explanation)}</p>${refs ? `<p class="refs">${refs}</p>` : ''}</div>`;
 }
 
 // 가로 막대 한 줄 (분석·시험 결과)

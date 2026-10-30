@@ -1,5 +1,5 @@
 // 문제·기념일·시험 일정 데이터 (data/*.json)
-import { daysBetween } from './dates.js';
+import { addDays, daysBetween } from './dates.js';
 
 export const ERAS = ['선사', '고대', '고려', '조선', '근대', '일제 강점기', '현대'];
 export const EXAM_SIZE = 50;
@@ -22,9 +22,12 @@ export async function loadData() {
     scheduledOn: new Map(Object.entries(daily).map(([date, id]) => [id, date])),
     byId: new Map(questions.map(q => [q.id, q])),
   };
+  // 전야제 문제(eve: 회차)는 시험 전날부터 나와요.
+  const eveOn = new Map(db.exams.map(e => [e.round, addDays(e.date, -1)]));
+  for (const q of questions) if (q.eve) db.scheduledOn.set(q.id, eveOn.get(q.eve));
 }
 
-// 날짜별 '오늘의 1문제'(data/daily.json)는 그날이 오기 전에는 다른 곳에 나오지 않아요.
+// 날짜별 '오늘의 1문제'(data/daily.json)와 전야제 문제는 그날이 오기 전에는 다른 곳에 나오지 않아요.
 export function availableQuestions(today, { includeToday = true } = {}) {
   return db.questions.filter(q => {
     const on = db.scheduledOn.get(q.id);
@@ -72,9 +75,11 @@ export function nextExam(today) {
   return db.exams.find(e => e.date >= today) ?? null;
 }
 
+// 전야제: 그 회차를 위해 새로 쓴 문제(eve: 회차)만, 시대 순서대로
 export function eveQuestions(exam, today) {
-  const topics = exam?.eveTopics ?? [];
-  return availableQuestions(today).filter(q => topics.includes(q.topic));
+  return availableQuestions(today)
+    .filter(q => q.eve === exam?.round)
+    .sort((a, b) => eraIndex(a.era) - eraIndex(b.era));
 }
 
 // 오늘의 문제: daily.json에 정해진 날은 모두에게 같은 문제, 그 밖의 날은 날짜로 정해지는 문제

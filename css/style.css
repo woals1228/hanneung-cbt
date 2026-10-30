@@ -220,6 +220,8 @@ body.focus-mode .tabbar { display: none; }
 .explain.is-ok strong { color: var(--ok); }
 .explain.is-bad strong { color: var(--bad); }
 .explain p { margin-top: 6px; font-size: 14.5px; }
+.explain .refs { font-size: 13px; color: var(--muted); }
+.explain .refs a { text-decoration: underline; }
 
 .progress { height: 6px; border-radius: 99px; background: var(--surface-2); overflow: hidden; }
 .progress > span { display: block; height: 100%; border-radius: inherit; background: var(--primary); transition: width 0.3s; }
