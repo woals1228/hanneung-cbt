@@ -4,6 +4,7 @@ import { dateOverride, todayStr } from './dates.js';
 import { SUPABASE_URL, SUPABASE_KEY } from './config.js';
 
 const ID_KEY = 'hcbt.anon';
+const PUBLIC_HOST = 'woals1228.github.io';
 const sent = new Set();
 const ua = navigator.userAgent;
 
@@ -29,8 +30,8 @@ function anonId() {
 }
 
 export function track(kind) {
-  // 테스트용 날짜를 쓰는 중이거나 내 컴퓨터(localhost)에서 열면 측정을 더럽히지 않게 보내지 않아요.
-  if (!SUPABASE_URL || !SUPABASE_KEY || dateOverride() || ['localhost', '127.0.0.1'].includes(location.hostname)) return;
+  // 공개 주소에서만 보내요. 테스트용 날짜, 내 컴퓨터, 개인용(기출) 앱의 기록이 측정에 섞이지 않게 해요.
+  if (!SUPABASE_URL || !SUPABASE_KEY || dateOverride() || location.hostname !== PUBLIC_HOST) return;
   const key = `${todayStr()}:${kind}`;
   const id = anonId();
   if (!id || sent.has(key)) return;

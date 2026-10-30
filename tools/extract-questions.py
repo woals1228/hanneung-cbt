@@ -10,6 +10,7 @@ import sys
 from collections import Counter
 from pathlib import Path
 
+import numpy as np
 import pymupdf
 from PIL import Image, ImageOps
 
@@ -152,43 +153,171 @@ def read_answers(pdf):
 
 
 # ── 문제지 자르기 ──────────────────────────────────────────────
-def find_markers(doc):
-    cands = []
+# 문항 번호는 단 왼쪽 끝 좁은 띠에만 찍혀 있어요. 그 띠의 잉크 덩어리로 번호 위치를 찾아요.
+# 글자가 없는 스캔본도 같은 방법으로 자르고, 글자는 Windows OCR(tools/ocr.ps1)로 읽어요.
+INK = 140
+
+
+def render(page):
+    pix = page.get_pixmap(matrix=pymupdf.Matrix(ZOOM, ZOOM), alpha=False)
+    return Image.frombytes('RGB', (pix.width, pix.height), pix.samples)
+
+
+def rules(mask, frac=0.85):
+    """가로로 길게 그은 줄(머리·꼬리 구분선)이 있는 y 목록"""
+    return np.nonzero(mask.sum(1) > mask.shape[1] * frac)[0]
+
+
+def page_layout(mask):
+    h, w = mask.shape
+    lines = rules(mask)
+    top = max([y for y in lines if y < h * 0.2], default=int(h * 0.06)) + 4
+    bottom = min([y for y in lines if y > h * 0.85], default=int(h * 0.94)) - 4
+    body = mask[top:bottom]
+    counts = body.sum(0)
+    tall = counts > (bottom - top) * 0.5          # 세로 구분선은 빼요
+    lefts, divider = [], w // 2
+    if tall[int(w * 0.4):int(w * 0.6)].any():
+        divider = int(w * 0.4) + int(np.nonzero(tall[int(w * 0.4):int(w * 0.6)])[0].mean())
+    for lo, hi in ((int(w * 0.02), divider - 4), (divider + 4, int(w * 0.98))):
+        xs = [x for x in range(lo, hi) if counts[x] >= 12 and not tall[x]]
+        lefts.append(xs[0] if xs else None)
+    return top, bottom, divider, lefts
+
+
+def find_markers(mask, top, bottom, left):
+    h, w = mask.shape
+    strip = mask[top:bottom, max(0, left - 3):left + int(w * 0.011)].any(1)
+    runs, y = [], 0
+    while y < len(strip):
+        if strip[y]:
+            s = y
+            while y < len(strip) and (strip[y] or strip[min(y + 1, len(strip) - 1)] or strip[min(y + 2, len(strip) - 1)]):
+                y += 1
+            runs.append((top + s, y - s))
+        y += 1
+    return [s for s, n in runs if h * 0.006 <= n <= h * 0.02]
+
+
+def page_has_text(page):
+    return len(page.get_text().strip()) > 200
+
+
+def run_ocr(ocr_dir):
+    if any(ocr_dir.glob('*.png')):
+        subprocess.run(['powershell', '-NoProfile', '-ExecutionPolicy', 'Bypass', '-File',
+                        str(Path(__file__).with_name('ocr.ps1')), str(ocr_dir)], check=True)
+
+
+def ocr_lines(ocr_dir, pno):
+    f = ocr_dir / f'p{pno:02d}.json'
+    if not f.exists():
+        return None
+    out = []
+    for line in json.loads(f.read_text(encoding='utf-8-sig'))['lines']:
+        w = line['words'][0]
+        out.append({'x': w['x'], 'y': w['y'], 'first': w['t'], 'text': clean(line['text'])})
+    return out
+
+
+def number_at(lines, left, y, w):
+    """번호 자리에서 읽힌 글자: 번호면 그 숫자, 다른 글자면 'bad', 아무것도 없으면 None"""
+    near = [l for l in lines if abs(l['y'] - y) <= 14 and abs(l['x'] - left) <= w * 0.012]
+    for l in near:
+        m = re.match(r'^([1-9]\d?)\s*[.,]', l['first'] + ' ')
+        if m and int(m.group(1)) <= 50:
+            return int(m.group(1))
+    # 숫자로 시작하지만 번호 모양이 아니면(예: '12.'를 '2'로 읽음) 못 읽은 것으로 봐요.
+    return 'bad' if near and not any(re.match(r'^\d', l['first']) for l in near) else None
+
+
+def pick_markers(cands, total=50):
+    """OCR로 읽힌 번호를 기준점으로, 기준점 사이에 빠진 개수만큼만 못 읽은 후보를 받아요."""
+    cands = [c for c in cands if c['value'] != 'bad']
+    anchors, last = [], 0
+    for i, c in enumerate(cands):
+        if isinstance(c['value'], int) and c['value'] > last:
+            anchors.append(i)
+            last = c['value']
+        elif isinstance(c['value'], int):
+            c['value'] = None
+    picked, prev_i, prev_v = [], -1, 0
+    for i in anchors + [len(cands)]:
+        v = cands[i]['value'] if i < len(cands) else total + 1
+        unknown = [c for c in cands[prev_i + 1:i] if c['value'] is None]
+        picked += unknown[:v - prev_v - 1]
+        if i < len(cands):
+            picked.append(cands[i])
+        prev_i, prev_v = i, v
+    return picked
+
+
+def fix_layout(layouts, pno):
+    """그림 때문에 단 위치를 잘못 잡은 쪽은, 같은 홀짝 쪽들의 가운데값으로 바로잡아요(홀짝 쪽은 여백이 달라요)."""
+    top, bottom, divider, lefts = layouts[pno]
+    same = [l for i, l in enumerate(layouts) if i % 2 == pno % 2 and i > 0] or layouts
+    med = lambda vals: int(np.median([v for v in vals if v is not None]))
+    fixed = lambda v, m: m if v is None or abs(v - m) > 15 else v
+    divider = fixed(divider, med([l[2] for l in same]))
+    lefts = [fixed(lefts[c], med([l[3][c] for l in same])) for c in (0, 1)]
+    return top, bottom, divider, lefts
+
+
+def cut_questions(pdf, out_dir, ocr_dir):
+    doc = pymupdf.open(pdf)
+    pages = []
     for pno, page in enumerate(doc):
-        for w in page.get_text('words'):
-            m = re.match(r'^(\d{1,2})\.', w[4])
-            if m:
-                cands.append((pno, w[0], w[1], int(m.group(1))))
-    xs = Counter(round(c[1]) for c in cands)
-    width = doc[0].rect.width
-    cols = []
-    for x, _ in xs.most_common():
-        if all(abs(x - c) > width * 0.3 for c in cols):
-            cols.append(x)
-        if len(cols) == 2:
-            break
-    cols.sort()
-    picked = sorted(
-        ((pno, ci, y, no) for pno, x, y, no in cands for ci, cx in enumerate(cols) if abs(x - cx) <= 3),
-        key=lambda c: (c[0], c[1], c[2]),
-    )
-    markers, expected = [], 1
-    for pno, ci, y, no in picked:
-        if no == expected:
-            markers.append({'no': no, 'page': pno, 'col': ci, 'y': y})
-            expected += 1
-    return markers, cols
+        img = render(page)
+        if not page_has_text(page):
+            png = ocr_dir / f'p{pno:02d}.png'
+            if not png.with_suffix('.json').exists():
+                img.save(png)
+        pages.append(img)
+    run_ocr(ocr_dir)
+    masks = [np.asarray(img.convert('L')) < INK for img in pages]
+    layouts = [page_layout(m) for m in masks]
+    cands = []
+    for pno, img in enumerate(pages):
+        top, bottom, divider, lefts = fix_layout(layouts, pno)
+        lines = ocr_lines(ocr_dir, pno)
+        if lines is None:  # 글자가 있는 PDF는 PDF 글자로 번호를 확인해요.
+            lines = [{'x': w[0] * ZOOM, 'y': w[1] * ZOOM, 'first': w[4], 'text': w[4]} for w in doc[pno].get_text('words')]
+        for col, left in enumerate(lefts):
+            if left is None:
+                continue
+            x0 = max(0, left - 8)
+            col_w = divider - 3 - max(0, (lefts[0] or 0) - 8)  # 오른쪽 단도 왼쪽 단과 폭이 같아요
+            x1 = (divider - 3) if col == 0 else min(img.width, x0 + col_w)
+            for y in find_markers(masks[pno], top, bottom, left):
+                cands.append({'pno': pno, 'col': col, 'y': y, 'x0': x0, 'x1': x1, 'top': top, 'bottom': bottom,
+                              'value': number_at(lines, left, y, img.width)})
+    picked = pick_markers(cands)
+    marks = []
+    for i, c in enumerate(picked):
+        nxt = picked[i + 1] if i + 1 < len(picked) else None
+        y1 = nxt['y'] - 6 if nxt and (nxt['pno'], nxt['col']) == (c['pno'], c['col']) else c['bottom']
+        lines = ocr_lines(ocr_dir, c['pno'])
+        marks.append((c['pno'], (c['x0'], max(c['top'], c['y'] - 8), c['x1'], y1), pages[c['pno']], lines))
+    items = []
+    for no, (pno, box, img, lines) in enumerate(marks, start=1):
+        crop = trim_vertical(img.crop(box))
+        path = out_dir / f'{no:02d}.webp'
+        crop.save(path, 'WEBP', quality=WEBP_QUALITY, method=6)
+        item = {'no': no, 'path': path, 'size': crop.size}
+        if lines is None:
+            page = doc[pno]
+            rect = pymupdf.Rect(*(v / ZOOM for v in box))
+            item['main'], item['choices'] = split_text(page, rect)
+            item['stem'] = stem_of(page, rect)
+            item['text'] = clean(page.get_text('text', clip=rect))
+        else:
+            inside = [l['text'] for l in lines if box[0] - 4 <= l['x'] <= box[2] and box[1] - 4 <= l['y'] < box[3]]
+            text = ' '.join(inside)
+            stem = re.sub(r'^\d{1,2}\s*[.,]\s*', '', ' '.join(inside[:2]))
+            item.update(text=text, main=text, choices='', stem=re.sub(r'\s*\[[^\]]*\].*$', '', stem).strip())
+        items.append(item)
+    return items
 
-
-def column_geometry(page, cols):
-    w, h = page.rect.width, page.rect.height
-    lines = [d['rect'] for d in page.get_drawings()
-             if d['rect'].width < 3 and d['rect'].height > h * 0.4 and w * 0.4 < d['rect'].x0 < w * 0.6]
-    divider = sum(r.x0 for r in lines) / len(lines) if lines else (cols[0] + cols[1]) / 2 - 6
-    bottom = max(r.y1 for r in lines) + 6 if lines else h - 70
-    margin = cols[0] - 8
-    bounds = [(margin, divider - 2), (divider + 3, min(w - 8, cols[1] + (divider - cols[0]) + 6))]
-    return bounds, bottom
 
 
 def stem_of(page, rect):
@@ -228,46 +357,27 @@ def trim_vertical(img, pad=14):
     return img.crop((0, max(0, ink[1] - pad), img.width, min(img.height, ink[3] + pad)))
 
 
-def cut_questions(pdf, out_dir):
-    doc = pymupdf.open(pdf)
-    markers, cols = find_markers(doc)
-    geo = {}
-    items = []
-    for i, m in enumerate(markers):
-        page = doc[m['page']]
-        if m['page'] not in geo:
-            geo[m['page']] = column_geometry(page, cols)
-        bounds, bottom = geo[m['page']]
-        nxt = next((n for n in markers[i + 1:] if n['page'] == m['page'] and n['col'] == m['col']), None)
-        x0, x1 = bounds[m['col']]
-        rect = pymupdf.Rect(x0, max(0, m['y'] - 6), x1, (nxt['y'] - 6) if nxt else bottom)
-        pix = page.get_pixmap(matrix=pymupdf.Matrix(ZOOM, ZOOM), clip=rect, alpha=False)
-        img = trim_vertical(Image.frombytes('RGB', (pix.width, pix.height), pix.samples))
-        path = out_dir / f'{m["no"]:02d}.webp'
-        img.save(path, 'WEBP', quality=WEBP_QUALITY, method=6)
-        main, choices = split_text(page, rect)
-        items.append({
-            'no': m['no'], 'stem': stem_of(page, rect), 'main': main, 'choices': choices,
-            'text': clean(page.get_text('text', clip=rect)), 'path': path, 'size': img.size,
-        })
-    return items
-
 
 def main():
     src = Path(sys.argv[1] if len(sys.argv) > 1 else 'source-pdf')
     data = Path(sys.argv[2] if len(sys.argv) > 2 else 'data')
     index = json.loads((src / 'index.json').read_text(encoding='utf-8'))
     exams, questions, problems = [], [], []
+    only = sys.argv[3].split(',') if len(sys.argv) > 3 else None  # 예: 60s,80s 만 다시 만들기
     for exam in sorted(index, key=lambda e: (-e['round'], e['level'] != '심화')):
         level = LEVELS[exam['level']]
         exam_id = f'{exam["round"]}{level["code"]}'
+        if only and exam_id not in only:
+            continue
         if 'questions' not in exam['files'] or 'answers' not in exam['files']:
             problems.append(f'{exam_id}: 파일이 모자라요')
             continue
         out_dir = data / 'past' / exam_id
         out_dir.mkdir(parents=True, exist_ok=True)
         answers = read_answers(src / exam['files']['answers'])
-        items = cut_questions(src / exam['files']['questions'], out_dir)
+        ocr_dir = data / 'past-ocr' / exam_id
+        ocr_dir.mkdir(parents=True, exist_ok=True)
+        items = cut_questions(src / exam['files']['questions'], out_dir, ocr_dir)
         eras, topics = assign_eras(items)
         total_points = 0
         for it, era, topic in zip(items, eras, topics):
