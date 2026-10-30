@@ -169,7 +169,7 @@ function shortcutsHTML() {
     <h2 class="section-title">바로 풀기</h2>
     <div class="shortcuts">
       <a class="shortcut" href="#/quiz?mode=more"><span class="shortcut-icon">⚡</span><b>문제 더 풀기</b><span>안 푼 문제 3개</span></a>
-      <a class="shortcut" href="#/exam"><span class="shortcut-icon">📝</span><b>실전 모의고사</b><span>50문항 · 80분 CBT</span></a>
+      <a class="shortcut" href="#/exam"><span class="shortcut-icon">📝</span><b>기출·모의고사</b><span>${data.pastExams().length ? `기출 ${data.pastExams().length}회분 · 50문항 CBT` : '50문항 · 80분 CBT'}</span></a>
       <a class="shortcut shortcut-wide" href="#/hot"><span class="shortcut-icon">🎯</span><b>81회 빈출 예측</b><span>57~80회 24번 분석 · 최근 늘어난 주제</span></a>
     </div>
     <h2 class="section-title">시대별로 풀기</h2>
