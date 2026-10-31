@@ -3,8 +3,8 @@ import * as data from '../data.js';
 import { todayStr, addDays, formatShort } from '../dates.js';
 import { esc } from '../ui.js';
 
-const rowHTML = (f, open) => {
-  const n = f.ids.filter(id => open.has(id)).length;
+const rowHTML = (f, today) => {
+  const n = data.topicQuestions(f, today).length;
   const trend = f.trend === 'up' ? '<span class="trend up">⬆</span> ' : f.trend === 'down' ? '<span class="trend down">⬇</span> ' : '';
   const inner = `<div class="grow"><b>${trend}${esc(f.topic)}</b>
       <p class="muted small">${esc(f.era)} · 24회 중 ${f.all}회 · 최근 8회 중 ${f.recent}회</p></div>
@@ -26,13 +26,13 @@ function eveHTML() {
 }
 
 export function render(el) {
-  const open = new Set(data.examPool(todayStr()).map(q => q.id));
+  const today = todayStr();
   const all = data.frequency();
   const up = all.filter(f => f.trend === 'up');
   const down = all.filter(f => f.trend === 'down');
   const staple = all.filter(f => f.all >= 20 && f.trend !== 'up').sort((a, b) => b.all - a.all || b.recent - a.recent);
   const section = (title, sub, list) => list.length ? `<h2 class="section-title">${title} <span class="muted">· ${sub}</span></h2>
-    <section class="card"><ul class="list">${list.map(f => rowHTML(f, open)).join('')}</ul></section>` : '';
+    <section class="card"><ul class="list">${list.map(f => rowHTML(f, today)).join('')}</ul></section>` : '';
 
   el.innerHTML = `
     <header class="page-head"><h1>81회 빈출 예측</h1></header>

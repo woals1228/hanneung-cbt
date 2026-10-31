@@ -75,9 +75,9 @@ async function loadFrequency() {
   } catch {
     db.frequency = [];
   }
-  // 문제마다 가장 많이 나온 주제를 붙여요(해설에 '기출 빈도'로 보여 줘요).
+  // 문제마다 가장 많이 나온 주제를 붙여요(해설에 '기출 빈도'로 보여 줘요). pastIds: 그 주제가 정답 대상인 기출(박사 10/31)
   for (const f of db.frequency) {
-    for (const id of f.ids) {
+    for (const id of [...f.ids, ...(f.pastIds ?? [])]) {
       const q = db.byId.get(id);
       if (q && (!q.freq || q.freq.all < f.all)) q.freq = f;
     }
@@ -87,7 +87,12 @@ async function loadFrequency() {
 export const frequency = () => db.frequency;
 // 빈출 예상: 24번 중 20번 넘게 나왔거나 최근 늘어난 주제의 문제(전야제 문제는 그날 전까지 빼요)
 export const isHot = f => Boolean(f) && (f.all >= 20 || f.trend === 'up');
-export const hotPool = today => examPool(today).filter(q => isHot(q.freq));
+export const hotPool = today => practicePool(today).filter(q => isHot(q.freq));
+// 주제 하나의 문제: 사료형(열린 것) + 기출
+export function topicQuestions(f, today) {
+  const open = new Set(examPool(today).map(q => q.id));
+  return [...f.ids.filter(id => open.has(id)), ...(f.pastIds ?? []).filter(id => db.byId.has(id))].map(id => db.byId.get(id));
+}
 
 // ── 분야(약점 분석용) ── 주제 이름의 낱말로 나눠요. 앞의 규칙이 먼저예요(예: '간도 참변'은 민족 운동).
 export const FIELDS = ['정치·제도', '경제', '사회', '문화', '대외·전쟁', '민족 운동'];

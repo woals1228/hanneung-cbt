@@ -29,9 +29,12 @@ function buildSet(mode, params, today) {
       return { title: '81회 빈출 예상 문제', ids: ids(pool.slice(0, SET_LIMIT)) };
     }
     case 'topic': {
+      // 안 푼 문제부터 10개(사료형과 기출을 섞어요)
       const f = data.frequency().find(x => x.topic === params.get('t'));
-      const open = new Set(data.examPool(today).map(q => q.id));
-      return { title: f ? `${f.topic} 문제` : '주제 문제', ids: f ? shuffle(f.ids.filter(id => open.has(id))) : [] };
+      const tried = new Set(store.getState().attempts.map(a => a.q));
+      const pool = f ? shuffle(data.topicQuestions(f, today)) : [];
+      pool.sort((a, b) => tried.has(a.id) - tried.has(b.id));
+      return { title: f ? `${f.topic} 문제` : '주제 문제', ids: ids(pool.slice(0, SET_LIMIT)) };
     }
     case 'fav':
       return { title: '즐겨찾기 문제', ids: store.favoriteIds().filter(id => data.getQuestion(id)) };
