@@ -56,7 +56,7 @@ async function loadPast() {
       });
     }
     // 박사가 쓴 기출 해설(870KB)은 첫 화면을 늦추지 않게 뒤에서 받아 붙여요: { id: { keyPoint, explanation, choiceNotes } }
-    fetch('data/past-notes.json').then(r => (r.ok ? r.json() : {})).then(notes => {
+    db.notesReady = fetch('data/past-notes.json').then(r => (r.ok ? r.json() : {})).then(notes => {
       for (const [id, note] of Object.entries(notes)) {
         const q = db.byId.get(id);
         if (q) Object.assign(q, note);
@@ -109,6 +109,8 @@ export function fieldOf(topic = '') {
 export const practicePool = today => [...examPool(today), ...[...db.byId.values()].filter(q => q.past)];
 
 export const pastExams = () => db.pastExams;
+// 기출 해설을 다 받았을 때 끝나는 약속(2단계 연습이 keyPoint를 써요)
+export const pastNotesReady = () => db.notesReady ?? Promise.resolve();
 export const pastImageUrls = () => [...new Set([...db.byId.values()].filter(q => q.past).flatMap(q => [q.image, q.shared].filter(Boolean)))];
 export const pastExamIds = examId => [...db.byId.values()].filter(q => q.past && q.exam === examId).sort((a, b) => a.no - b.no).map(q => q.id);
 
