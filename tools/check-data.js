@@ -9,6 +9,7 @@ const [questions, anniversaries, exams, daily] = await Promise.all(['questions',
 
 const errors = [];
 const warnings = [];
+const GENERIC_WORDS = ['봉기', '운동', '전쟁', '정부', '시대', '문화', '경제', '사회', '정책', '단체', '사건'];
 const ids = new Set();
 const annivDates = new Set(anniversaries.map(a => a.date));
 const rounds = new Set(exams.map(e => e.round));
@@ -33,7 +34,8 @@ for (const [i, q] of questions.entries()) {
   if (q.keyPoint != null && typeof q.keyPoint !== 'string') errors.push(`${at}: keyPoint는 글이어야 해요`);
   if (q.passage && q.topic && q.question.includes(q.topic)) warnings.push(`${at}: 질문에 주제 "${q.topic}"가 그대로 나와요(사료형이면 (가)로 가려요)`);
   // 난이도(10/31 사용자 피드백): 실제 심화처럼 자료는 간접 단서로, 보기는 '그 시기의 사실'로 써요.
-  const topicWords = (q.topic ?? '').split(/[·\s()]/).filter(w => w.length >= 2);
+  // '봉기·운동'처럼 질문에 흔히 쓰는 말은 빼고 봐요.
+  const topicWords = (q.topic ?? '').split(/[·\s()]/).filter(w => w.length >= 2 && !GENERIC_WORDS.includes(w));
   if (q.passage && topicWords.some(w => q.passage.includes(w) || q.question.includes(w))) warnings.push(`${at}: 자료나 질문에 주제 "${q.topic}"가 그대로 나와서 답이 쉽게 보여요`);
   if (q.passage && Array.isArray(q.choices) && q.choices.every(c => c.length <= 8)) warnings.push(`${at}: 보기가 이름뿐인 1단계 문제예요('그 시기에 있었던 사실'로 바꿔요)`);
   if (q.refs != null && (!Array.isArray(q.refs) || q.refs.some(u => typeof u !== 'string' || !u.startsWith('https://')))) errors.push(`${at}: refs는 https:// 주소 배열이어야 해요`);
