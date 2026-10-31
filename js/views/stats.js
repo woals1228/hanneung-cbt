@@ -6,6 +6,8 @@ import { esc, barRowHTML } from '../ui.js';
 
 // 이만큼은 풀어야 약점으로 판단해요.
 const MIN_ATTEMPTS = 3;
+// 이 정답률보다 낮으면 약점으로 보여 줘요.
+const WEAK_RATE = 0.7;
 // 최근 7일 막대의 최대 높이(px)
 const WEEK_BAR_MAX = 110;
 
@@ -36,6 +38,21 @@ export function render(el) {
   const ranked = byEra.filter(x => x.n >= MIN_ATTEMPTS).sort((a, b) => a.rate - b.rate || b.n - a.n);
   const weakest = ranked.length >= 2 && ranked[0].rate < 1 ? ranked[0] : null;
 
+  // 분야별 정답률과 '시대 × 분야' 약점(예: 조선 · 경제)
+  const rateOf = list => ({ n: list.length, ok: list.filter(a => a.ok).length, rate: list.length ? list.filter(a => a.ok).length / list.length : 0 });
+  const byField = data.FIELDS.map(field => ({ field, ...rateOf(valid.filter(a => data.getQuestion(a.q).field === field)) }));
+  const combos = new Map();
+  for (const a of valid) {
+    const q = data.getQuestion(a.q);
+    const k = `${q.era}|${q.field}`;
+    combos.set(k, [...(combos.get(k) ?? []), a]);
+  }
+  const weakSpots = [...combos].map(([k, list]) => {
+    const [era, field] = k.split('|');
+    return { era, field, ...rateOf(list) };
+  }).filter(x => x.n >= MIN_ATTEMPTS && x.rate < WEAK_RATE).sort((a, b) => a.rate - b.rate || b.n - a.n).slice(0, 3);
+  const weakLink = x => `#/quiz?mode=weak&era=${encodeURIComponent(x.era)}&field=${encodeURIComponent(x.field)}`;
+
   const days = Array.from({ length: 7 }, (_, i) => addDays(today, i - 6));
   const counts = days.map(d => valid.filter(a => a.day === d).length);
   const maxCount = Math.max(1, ...counts);
@@ -50,7 +67,14 @@ export function render(el) {
       <div class="card tile"><p class="tile-label">모의고사 최고</p><p class="tile-value">${best ?? '—'}${best != null ? '<span class="score-of">점</span>' : ''}</p><p class="tile-sub">${exams.length}회 응시</p></div>
     </div>
 
-    ${weakest ? `<section class="card card-anniv">
+    ${weakSpots.length ? `<section class="card card-anniv">
+      <p class="eyebrow">내 약점</p>
+      <h2>${esc(weakSpots[0].era)} · ${esc(weakSpots[0].field)}에서 자주 틀려요 (${Math.round(weakSpots[0].rate * 100)}%)</h2>
+      <ul class="list">${weakSpots.map(x => `<li><a class="list-row link-row" href="${weakLink(x)}">
+        <div class="grow"><b>${esc(x.era)} · ${esc(x.field)}</b> <span class="muted small">${x.n}번 중 ${x.ok}번 정답</span></div>
+        <span class="bad-text">${Math.round(x.rate * 100)}% 풀기 →</span></a></li>`).join('')}</ul>
+      <a class="btn btn-primary btn-block mt" href="${weakLink(weakSpots[0])}">약점 문제 10개 풀기</a>
+    </section>` : weakest ? `<section class="card card-anniv">
       <p class="eyebrow">약점 시대</p>
       <h2>${esc(weakest.era)} 정답률이 가장 낮아요 (${Math.round(weakest.rate * 100)}%)</h2>
       <p>${esc(weakest.era)} 문제를 집중해서 풀어 보세요.</p>
@@ -64,6 +88,15 @@ export function render(el) {
         tip: x.n ? `${x.era}: ${x.n}번 풀어서 ${x.ok}번 정답` : `${x.era}: 아직 안 풀었어요`,
       })).join('')}
       <p class="muted small mt">${MIN_ATTEMPTS}번 이상 푼 시대끼리 비교해서 약점을 찾아요.</p>
+    </section>
+
+    <h2 class="section-title">분야별 정답률</h2>
+    <section class="card">
+      ${byField.map(x => barRowHTML(x.field, x.rate, x.n ? `${Math.round(x.rate * 100)}% · ${x.n}회` : '기록 없음', {
+        weak: x.n >= MIN_ATTEMPTS && x.rate < WEAK_RATE,
+        tip: x.n ? `${x.field}: ${x.n}번 풀어서 ${x.ok}번 정답` : `${x.field}: 아직 안 풀었어요`,
+      })).join('')}
+      <p class="muted small mt">기출과 연습 문제를 주제에 따라 6개 분야로 나눴어요.</p>
     </section>
 
     <h2 class="section-title">최근 7일 <span class="muted">· ${weekTotal}문제</span></h2>

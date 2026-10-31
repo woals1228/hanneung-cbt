@@ -3,7 +3,7 @@ import * as data from '../data.js';
 import * as store from '../store.js';
 import { todayStr, dateOverride, daysBetween, formatLong, formatShort, dday } from '../dates.js';
 import { esc, questionHTML, explanationHTML, installInfo, promptInstall, toast } from '../ui.js';
-import { track } from '../track.js';
+import { track, logAnswers } from '../track.js';
 
 const INSTALL_DISMISSED = 'hcbt.installDismissed';
 
@@ -41,7 +41,8 @@ export function render(el) {
       el.querySelector('#daily .explain')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     } else if (act === 'daily-grade' && state?.choice && !state.graded) {
       store.setDaily(today, q.id, { graded: true });
-      store.recordAnswer(q.id, state.choice === q.answer, 'daily', Boolean(state.viewed));
+      store.recordAnswer(q.id, state.choice === q.answer, 'daily', Boolean(state.viewed), state.choice);
+      logAnswers('daily', [{ q, pick: state.choice, ok: state.choice === q.answer, viewed: Boolean(state.viewed) }]);
       track('answer');
       draw();
       el.querySelector('#daily .explain')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });

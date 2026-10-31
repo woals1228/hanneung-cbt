@@ -1,7 +1,7 @@
 // 앱 시작점: 데이터를 불러오고 주소(#/...)에 맞는 화면을 그려요.
-import { loadData } from './data.js';
-import { closeModal } from './ui.js';
-import { track, platform, isAndroid, isKakao } from './track.js';
+import { loadData, getQuestion } from './data.js';
+import { closeModal, CIRCLED } from './ui.js';
+import { track, platform, isAndroid, isKakao, questionStats } from './track.js';
 import * as home from './views/home.js';
 import * as quiz from './views/quiz.js';
 import * as notebook from './views/notebook.js';
@@ -60,6 +60,7 @@ async function start() {
     return;
   }
   window.addEventListener('hashchange', render);
+  new MutationObserver(fillCrowdStats).observe(root, { childList: true, subtree: true });
   render();
   track('visit');
   if (matchMedia('(display-mode: standalone)').matches || navigator.standalone === true) track('standalone');
@@ -73,6 +74,20 @@ async function start() {
       if (parseRoute().parts[0] !== 'run') location.reload();
     });
     navigator.serviceWorker.register('sw.js').catch(err => console.warn('오프라인 기능을 켜지 못했어요', err));
+  }
+}
+
+// 해설이 열리면 '다른 사람들은 몇 % 맞혔나'를 서버에서 받아 채워요(supabase/answers.sql).
+function fillCrowdStats() {
+  for (const p of root.querySelectorAll('[data-qstats]:not([data-done])')) {
+    p.dataset.done = '1';
+    questionStats(p.dataset.qstats).then(s => {
+      if (!s?.n) return;
+      const wrong = (s.picks ?? []).map((n, i) => ({ n, i })).filter(x => x.i + 1 !== getQuestion(p.dataset.qstats)?.answer).sort((x, y) => y.n - x.n)[0];
+      const top = wrong?.n ? ` · 가장 많이 고른 오답 ${CIRCLED[wrong.i]} ${Math.round((wrong.n / s.n) * 100)}%` : '';
+      p.textContent = `👥 전체 정답률 ${Math.round((s.ok / s.n) * 100)}% (풀이 ${s.n}번)${top}`;
+      p.hidden = false;
+    });
   }
 }
 

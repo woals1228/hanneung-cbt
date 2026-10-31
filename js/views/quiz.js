@@ -41,6 +41,16 @@ function buildSet(mode, params, today) {
       const items = store.notebookItems().filter(i => !i.mastered && data.getQuestion(i.id));
       return { title: '오답 다시 풀기', ids: shuffle(items).map(i => i.id) };
     }
+    case 'weak': {
+      // 약점(시대·분야): 틀렸던 문제 → 안 푼 문제 → 맞힌 문제 순으로
+      const era = params.get('era') ?? '';
+      const field = params.get('field') ?? '';
+      const last = new Map(store.getState().attempts.map(a => [a.q, a.ok]));
+      const order = q => (last.get(q.id) === false ? 0 : last.has(q.id) ? 2 : 1);
+      const pool = shuffle(data.practicePool(today).filter(q => q.era === era && (!field || q.field === field)));
+      pool.sort((a, b) => order(a) - order(b));
+      return { title: `약점: ${era}${field ? ` · ${field}` : ''}`, ids: ids(pool.slice(0, SET_LIMIT)) };
+    }
     case 'era': {
       const era = params.get('era') ?? '';
       const pool = data.availableQuestions(today).filter(q => q.era === era);
@@ -63,12 +73,12 @@ function buildSet(mode, params, today) {
   }
 }
 
-const EVENT_OF = { more: 'more', hot: 'more', anniv: 'anniv', eve: 'eve_start' };
+const EVENT_OF = { more: 'more', hot: 'more', weak: 'more', anniv: 'anniv', eve: 'eve_start' };
 
 export function render(el, route) {
   const today = todayStr();
   const mode = route.params.get('mode') ?? 'more';
-  const key = [mode, route.params.get('era'), route.params.get('date'), route.params.get('id'), route.params.get('t')].filter(Boolean).join(':');
+  const key = [mode, route.params.get('era'), route.params.get('date'), route.params.get('id'), route.params.get('t'), route.params.get('field')].filter(Boolean).join(':');
 
   // 같은 묶음을 풀던 중이면 이어서 풀어요.
   if (store.getDraft('study')?.key === key) {

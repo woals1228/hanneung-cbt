@@ -31,9 +31,10 @@ function save() {
 export const getState = () => state;
 
 // viewed: 해설을 보고 푼 문제 — 기록은 남기지만 정답률과 복습 단계에는 넣지 않아요.
-export function recordAnswer(qid, ok, mode, viewed = false) {
+// pick: 고른 보기 번호(안 풀면 null) — 자주 고르는 오답을 볼 때 써요.
+export function recordAnswer(qid, ok, mode, viewed = false, pick = null) {
   const today = todayStr();
-  state.attempts.push({ q: qid, ok, mode, day: today, at: Date.now(), ...(viewed && { viewed: true }) });
+  state.attempts.push({ q: qid, ok, mode, day: today, at: Date.now(), ...(pick != null && { pick }), ...(viewed && { viewed: true }) });
   if (!state.days.includes(today)) state.days.push(today);
 
   const item = state.notebook[qid];

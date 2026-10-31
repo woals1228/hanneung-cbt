@@ -6,7 +6,7 @@ import * as data from '../data.js';
 import * as store from '../store.js';
 import { formatShort, toDateStr, todayStr } from '../dates.js';
 import { esc, questionHTML, explanationHTML, shuffle, confirmModal, closeModal, barRowHTML, toast, CIRCLED } from '../ui.js';
-import { track } from '../track.js';
+import { track, logAnswers } from '../track.js';
 
 const GRADES = [[80, '1급'], [70, '2급'], [60, '3급']];
 const gradeOf = score => GRADES.find(([min]) => score >= min)?.[1] ?? '불합격';
@@ -48,6 +48,7 @@ function finish(draft) {
   let correct = 0;
   let wrong = 0;
   let blank = 0;
+  const logged = [];
   let viewedCount = 0;
   for (const q of questions) {
     const pick = draft.answers[q.id] ?? null;
@@ -62,7 +63,10 @@ function finish(draft) {
       if (ok) earned += q.points;
     }
     // 학습 모드에서 안 푼 문제는 기록하지 않아요. 시험 모드에서는 틀린 것으로 봐요.
-    if (pick != null || draft.mode === 'exam') store.recordAnswer(q.id, ok, draft.kind ?? draft.mode, viewed);
+    if (pick != null || draft.mode === 'exam') {
+      store.recordAnswer(q.id, ok, draft.kind ?? draft.mode, viewed, pick);
+      logged.push({ q, pick, ok, viewed });
+    }
   }
   const scoredCorrect = questions.filter(q => !draft.viewed?.[q.id] && draft.answers[q.id] === q.answer).length;
   const scored = questions.length - viewedCount;
@@ -89,6 +93,7 @@ function finish(draft) {
   if (draft.limit) result.sec = Math.min(draft.limit, result.sec);
   store.addResult(result);
   if (correct + wrong > 0) track('answer');
+  logAnswers(draft.kind ?? draft.mode, logged);
   if (draft.kind === 'eve') track('eve_submit');
   location.replace(`${BASE[draft.mode]}/result/${result.id}`);
 }
@@ -291,9 +296,14 @@ function renderRun(el, mode) {
   el.addEventListener('click', e => {
     const choice = e.target.closest('[data-choice]');
     if (choice) {
-      draft.answers[draft.ids[draft.current]] = Number(choice.dataset.choice);
+      const n = Number(choice.dataset.choice);
+      draft.answers[draft.ids[draft.current]] = n;
       store.saveDraft(mode, draft);
-      draw();
+      // 전체를 다시 그리지 않고 표시만 바꿔요(이미지가 다시 그려지며 화면이 흔들리지 않게).
+      el.querySelectorAll('[data-choice]').forEach(b => b.classList.toggle('is-selected', Number(b.dataset.choice) === n));
+      const answered = Object.keys(draft.answers).length;
+      el.querySelector('.exam-count').textContent = `${draft.current + 1}번 / ${total}번 · 푼 문제 ${answered}`;
+      el.querySelector('.progress span').style.width = `${(answered / total) * 100}%`;
       return;
     }
     const act = e.target.closest('[data-act]')?.dataset.act;

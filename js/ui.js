@@ -111,7 +111,9 @@ export function explanationHTML(q, selected) {
   const freq = q.freq ? `<p class="freq-line">📊 <b>${esc(q.freq.topic)}</b> · 최근 24회 중 ${q.freq.all}회 출제${q.freq.trend === 'up' ? ' <span class="trend up">⬆ 최근 늘어남</span>' : q.freq.trend === 'down' ? ' <span class="trend down">⬇ 최근 줄어듦</span>' : ''}</p>` : '';
   const notes = Array.isArray(q.choiceNotes) ? `<ol class="choice-notes">${q.choiceNotes.map((note, i) => `<li class="${i + 1 === q.answer ? 'is-answer' : ''}${i + 1 === selected && selected !== q.answer ? ' is-mine' : ''}">
       <span class="choice-no">${CIRCLED[i]}</span><span>${esc(note)}</span></li>`).join('')}</ol>` : '';
-  return `<div class="explain ${cls}"><strong>${title}</strong>${key}${freq}<p>${esc(q.explanation)}</p>${notes}${refs ? `<p class="refs">${refs}</p>` : ''}</div>`;
+  // 전체 정답률은 서버에서 받아 app.js가 채워요(data-qstats).
+  const crowd = `<p class="freq-line" data-qstats="${esc(q.id)}" hidden></p>`;
+  return `<div class="explain ${cls}"><strong>${title}</strong>${key}${freq}${crowd}<p>${esc(q.explanation)}</p>${notes}${refs ? `<p class="refs">${refs}</p>` : ''}</div>`;
 }
 
 // 가로 막대 한 줄 (분석·시험 결과)

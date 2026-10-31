@@ -58,3 +58,35 @@ export function track(kind) {
   // 채널 코드를 받는 서버(supabase/source.sql)가 아직 없으면 코드 없이 다시 보내서 기록이 빠지지 않게 해요.
   (src ? send({ ...body, p_src: src }).then(r => r.ok || send(body)) : send(body)).catch(() => {});
 }
+
+// ── 풀이 기록(supabase/answers.sql) ── 채점한 문제마다 익명 ID·문항·고른 보기·맞음·시대·분야를 보내요.
+// 한 번에 묶어 보내고, 실패해도 앱은 그대로예요.
+const ANSWER_BATCH = 60;
+export function logAnswers(mode, rows) {
+  if (!SUPABASE_URL || !SUPABASE_KEY || dateOverride() || location.hostname !== PUBLIC_HOST || !rows.length) return;
+  const id = anonId();
+  if (!id) return;
+  const list = rows.map(({ q, pick, ok, viewed }) => ({ qid: q.id, pick: pick ?? 0, ok, viewed, era: q.era, field: q.field }));
+  for (let i = 0; i < list.length; i += ANSWER_BATCH) {
+    fetch(`${SUPABASE_URL}/rest/v1/rpc/log_answers`, {
+      method: 'POST',
+      keepalive: true,
+      headers: { 'Content-Type': 'application/json', apikey: SUPABASE_KEY },
+      body: JSON.stringify({ p_anon: id, p_mode: mode, p_rows: list.slice(i, i + ANSWER_BATCH) }),
+    }).catch(() => {});
+  }
+}
+
+// 문항별 전체 정답률: { n, ok, picks: [①~⑤ 고른 수] } — 응시가 적으면 null
+const statsCache = new Map();
+export function questionStats(qid) {
+  if (!SUPABASE_URL || !SUPABASE_KEY) return Promise.resolve(null);
+  if (!statsCache.has(qid)) {
+    statsCache.set(qid, fetch(`${SUPABASE_URL}/rest/v1/rpc/question_stats`, {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json', apikey: SUPABASE_KEY },
+      body: JSON.stringify({ p_qid: qid }),
+    }).then(r => (r.ok ? r.json() : null)).catch(() => null));
+  }
+  return statsCache.get(qid);
+}
