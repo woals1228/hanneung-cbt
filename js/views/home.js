@@ -169,7 +169,7 @@ function shortcutsHTML() {
   return `
     <h2 class="section-title">바로 풀기</h2>
     <div class="shortcuts">
-      <a class="shortcut" href="#/quiz?mode=more"><span class="shortcut-icon">⚡</span><b>문제 더 풀기</b><span>안 푼 문제 3개</span></a>
+      <a class="shortcut" href="#/quiz?mode=more"><span class="shortcut-icon">⚡</span><b>문제 더 풀기</b><span>안 푼 문제부터 3문제씩</span></a>
       <a class="shortcut" href="#/exam"><span class="shortcut-icon">📝</span><b>기출·모의고사</b><span>${data.pastExams().length ? `기출 ${data.pastExams().length}회분 · 50문항 CBT` : '50문항 · 80분 CBT'}</span></a>
       <a class="shortcut shortcut-wide" href="#/hot"><span class="shortcut-icon">🎯</span><b>81회 빈출 예측</b><span>57~80회 24번 분석 · 최근 늘어난 주제</span></a>
     </div>
@@ -196,7 +196,7 @@ function installHTML() {
   try { dismissed = localStorage.getItem(INSTALL_DISMISSED) === '1'; } catch { /* 무시 */ }
   if (info.standalone || dismissed || !(info.canPrompt || info.ios)) return '';
   const text = info.ios
-    ? 'Safari 아래쪽 공유 버튼 → "홈 화면에 추가"를 누르면 앱처럼 쓸 수 있어요.'
+    ? 'Safari 공유 버튼(□↑, 안 보이면 ⋯ 안) → "홈 화면에 추가"를 누르면 앱처럼 쓸 수 있어요.'
     : '설치하면 아이콘을 눌러 바로 열 수 있고, 인터넷이 없어도 풀 수 있어요.';
   return `<section class="card install">
     <div class="grow"><b>홈 화면에 추가하기</b><p class="muted small">${text}</p></div>

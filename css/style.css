@@ -315,9 +315,9 @@ button { touch-action: manipulation; }
   padding: max(10px, env(safe-area-inset-top)) 0 10px;
   background: var(--bg);
 }
-.timer { font-size: 18px; font-weight: 800; font-variant-numeric: tabular-nums; }
+.timer { white-space: nowrap; font-size: 18px; font-weight: 800; font-variant-numeric: tabular-nums; }
 .timer.is-low { color: var(--bad); }
-.exam-count { margin-right: auto; font-size: 14px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.exam-count { margin-right: auto; min-width: 0; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
 .exam-nav { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; margin-top: 12px; }
 .exam-nav.is-fixed { position: sticky; bottom: 0; z-index: 5; margin-top: 10px; padding: 10px 0 calc(10px + env(safe-area-inset-bottom)); background: var(--bg); }
 .btn.is-locked { opacity: 0.55; }

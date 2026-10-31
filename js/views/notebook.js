@@ -71,7 +71,7 @@ export function render(el) {
     const isOpen = open.has(item.id);
     return `<article class="card note">
       <div class="note-top">
-        <div class="tags"><span class="tag">${esc(q.era)}</span><span class="tag tag-soft">${esc(q.topic)}</span></div>
+        <div class="tags"><span class="tag">${esc(q.era)}</span>${q.passage || q.past ? '' : `<span class="tag tag-soft">${esc(q.topic)}</span>`}</div>
         <span class="muted small">틀린 횟수 ${item.wrong}회</span>
       </div>
       <p class="note-q">${esc(q.question)}</p>

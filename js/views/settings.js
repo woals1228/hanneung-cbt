@@ -40,6 +40,8 @@ async function drawPush(box) {
 export function render(el) {
   const today = todayStr();
   const override = dateOverride();
+  // 테스트용 날짜는 내 컴퓨터, ?debug, 이미 테스트 중일 때만 보여요(아무나 전야제를 미리 열지 않게).
+  const DEV = Boolean(override) || location.hostname !== 'woals1228.github.io' || new URLSearchParams(location.search).has('debug');
 
   // 미리보기 버튼은 실제 오늘 날짜를 기준으로 만들어요.
   const realToday = toDateStr(new Date());
@@ -62,7 +64,7 @@ export function render(el) {
     <h2 class="section-title">알림</h2>
     <section class="card" id="push">${pushIntroHTML()}</section>
 
-    <h2 class="section-title">테스트용 날짜</h2>
+    ${DEV ? `<h2 class="section-title">테스트용 날짜</h2>
     <section class="card">
       <p>앱이 쓰는 날짜: <b>${formatLong(today)}</b> ${override ? '<span class="test-badge">테스트 중</span>' : '<span class="muted">(오늘)</span>'}</p>
       <p class="muted small">날짜를 바꾸면 기념일·전야제 화면을 미리 볼 수 있어요. 앱을 닫으면 원래 날짜로 돌아가요.</p>
@@ -72,13 +74,12 @@ export function render(el) {
         <button type="button" class="btn btn-primary" data-act="apply-date">적용</button>
         ${override ? '<button type="button" class="btn btn-ghost" data-act="clear-date">원래대로</button>' : ''}
       </div>
-    </section>
+    </section>` : ''}
 
     <h2 class="section-title">문제 데이터</h2>
     <section class="card">
       <p>문제 <b>${data.allQuestions().length}개</b> · 기념일 ${data.allAnniversaries().length}개</p>
       <div class="tags mt">${data.ERAS.map(era => `<span class="tag tag-soft">${esc(era)} ${data.questionsByEra(era).length}</span>`).join('')}</div>
-      <p class="muted small mt">지금 문제는 직접 만든 샘플이에요. 배포 전에 내용을 꼭 검수해 주세요.</p>
     </section>
 
     <h2 class="section-title">학습 기록</h2>
@@ -162,7 +163,7 @@ function installSectionHTML() {
   }
   if (info.ios) {
     return `<b>아이폰·아이패드에 설치하기</b>
-      <ol class="steps"><li>Safari로 이 페이지를 열어요.</li><li>아래쪽 공유 버튼(□↑)을 눌러요.</li><li>"홈 화면에 추가"를 눌러요.</li></ol>`;
+      <ol class="steps"><li>Safari로 이 페이지를 열어요.</li><li>공유 버튼(□↑)을 눌러요. 안 보이면 주소창 옆 ⋯를 먼저 눌러요.</li><li>"홈 화면에 추가"를 눌러요.</li></ol>`;
   }
   return '<p class="muted small">브라우저 메뉴(⋮)에서 "앱 설치" 또는 "홈 화면에 추가"를 눌러 주세요. 배포한 주소(https)에서 설치할 수 있어요.</p>';
 }

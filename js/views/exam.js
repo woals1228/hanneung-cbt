@@ -110,11 +110,11 @@ function pastHTML() {
       <a class="btn btn-ghost btn-block mt" href="https://www.historyexam.go.kr/pst/list.do?bbs=dat" target="_blank" rel="noopener" data-out>공식 기출 자료실 열기</a>
     </section>`;
   }
-  return `<h2 class="section-title">기출 문제 <span class="muted">· ${exams.length}회분</span></h2>
+  return `<h2 class="section-title">실전 모의고사 <span class="muted">· 기출 ${exams.length}회분</span></h2>
     <section class="card">
-      <button type="button" class="btn btn-primary btn-block" data-act="past">🎲 랜덤 기출 모의고사</button>
+      <button type="button" class="btn btn-primary btn-block" data-act="past">🎲 실전 모의고사 (랜덤 기출 50문항)</button>
       <p class="muted small mt">번호마다 ${exams.length}개 회차 중 한 문제를 골라 50문항을 만들어요.</p>
-      <button type="button" class="btn btn-ghost btn-block mt" data-act="past-download">📥 기출 ${exams.length}회분 폰에 저장(오프라인용)</button>
+      <button type="button" class="btn btn-ghost btn-block mt" data-act="past-download">📥 기출 ${exams.length}회분 폰에 저장 (약 64MB · 와이파이에서)</button>
       <div class="chips is-wrap mt">${exams.map(x => `<button type="button" class="chip" data-act="past" data-exam="${x.id}">${x.round}회</button>`).join('')}</div>
       <p class="muted small mt">이 기출문제는 국사편찬위원회가 작성한 '한국사능력검정시험 심화 기출문제'(제${exams.at(-1).round}~${exams[0].round}회)를 이용했으며, <a href="https://www.historyexam.go.kr/pst/list.do?bbs=dat" target="_blank" rel="noopener">국사편찬위원회 한국사능력검정시험 누리집</a>에서 무료로 받을 수 있어요. 저작권은 국사편찬위원회와 원저작자에게 있으며, 요청하시면 바로 내릴게요(wjswoals1228@naver.com).</p>
     </section>`;
@@ -150,7 +150,7 @@ function renderLobby(el) {
   const history = [...examHistory()].reverse();
 
   el.innerHTML = `
-    <header class="page-head"><h1>실전 모의고사</h1></header>
+    <header class="page-head"><h1>기출·모의고사</h1></header>
     ${draft ? `<section class="card card-eve">
       <p class="eyebrow">풀던 시험이 있어요</p>
       <h2>${Object.keys(draft.answers).length} / ${draft.ids.length}문항 풀었어요</h2>
@@ -160,6 +160,8 @@ function renderLobby(el) {
         <button type="button" class="btn btn-ghost-inverse" data-act="restart">새로 시작</button>
       </div>
     </section>` : ''}
+    ${pastHTML()}
+    <h2 class="section-title">연습 모의고사 <span class="muted">· 사료형 새 문제</span></h2>
     <section class="card">
       <h2 class="card-title">시험 안내</h2>
       <dl class="facts">
@@ -169,9 +171,9 @@ function renderLobby(el) {
         <div><dt>급수</dt><dd>80점 이상 1급 · 70점 이상 2급 · 60점 이상 3급</dd></div>
       </dl>
       <p class="muted small">시험 모드에서는 제출 전에 정답과 해설을 볼 수 없어요. 제출하면 채점하고, 틀린 문제는 오답노트에 들어가요.</p>
-      ${draft ? '' : '<button type="button" class="btn btn-primary btn-block mt" data-act="start">시험 시작</button>'}
+      ${draft ? '' : `<button type="button" class="btn ${data.pastExams().length ? 'btn-ghost' : 'btn-primary'} btn-block mt" data-act="start">연습 모의고사 시작</button>`}
+      <p class="muted small mt">시대 배분은 실제 57~80회 평균에 맞춰요. 실제 난이도는 위의 기출 모의고사로 확인하세요.</p>
     </section>
-    ${pastHTML()}
     <h2 class="section-title">지난 기록</h2>
     <section class="card">
       ${history.length ? `<ul class="list">${history.map(r => `<li>
@@ -195,7 +197,7 @@ function renderLobby(el) {
   el.addEventListener('click', async e => {
     const act = e.target.closest('[data-act]')?.dataset.act;
     if (act === 'past') startPast(e.target.closest('[data-act]'));
-    if (act === 'past-download') downloadPast(e.target.closest('[data-act]'));
+    if (act === 'past-download' && (await confirmModal({ title: '기출을 폰에 저장할까요?', message: '문항 이미지 약 64MB를 받아요. 와이파이에서 받는 걸 권해요.', ok: '저장' }))) downloadPast(e.target.closest('[data-act]'));
     if (act === 'start') start();
     if (act === 'restart') {
       const ok = await confirmModal({ title: '새로 시작할까요?', message: '풀던 시험은 채점하지 않고 지워져요.', ok: '새로 시작', danger: true });

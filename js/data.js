@@ -193,8 +193,27 @@ export function dailyQuestion(today) {
 // 50문항을 채우려고 앞으로 나올 오늘의 문제도 써요. 전야제 문제만 그날 전까지 빼요.
 export const examPool = today => db.questions.filter(q => !q.eve || db.scheduledOn.get(q.id) <= today);
 
+// 실제 57~80회 심화 평균 시대 배분(탈모 분석 10/31, 통합은 현대에 더함) — 합 50
+const ERA_QUOTA = { 선사: 1, 고대: 9, 고려: 8, 조선: 10, 근대: 7, '일제 강점기': 8, 현대: 7 };
+const DRAWS = 40;
+
 export function buildExamSet(shuffle, today) {
   const all = examPool(today);
-  const pool = all.length > EXAM_SIZE ? shuffle(all).slice(0, EXAM_SIZE) : all;
-  return pool.sort((a, b) => eraIndex(a.era) - eraIndex(b.era)).map(q => q.id);
+  if (all.length <= EXAM_SIZE) return all.sort((a, b) => eraIndex(a.era) - eraIndex(b.era)).map(q => q.id);
+  // 시대마다 정해진 수만큼 뽑고, 모자라면 남은 문제로 채워요. 여러 번 뽑아 정답 번호가 가장 고른 묶음을 써요.
+  const draw = () => {
+    const picked = ERAS.flatMap(era => shuffle(all.filter(q => q.era === era)).slice(0, ERA_QUOTA[era] ?? 0));
+    const ids = new Set(picked.map(q => q.id));
+    return [...picked, ...shuffle(all.filter(q => !ids.has(q.id))).slice(0, EXAM_SIZE - picked.length)];
+  };
+  const spread = set => {
+    const counts = [1, 2, 3, 4, 5].map(n => set.filter(q => q.answer === n).length);
+    return Math.max(...counts) - Math.min(...counts);
+  };
+  let best = draw();
+  for (let i = 1; i < DRAWS && spread(best) > 2; i++) {
+    const next = draw();
+    if (spread(next) < spread(best)) best = next;
+  }
+  return best.sort((a, b) => eraIndex(a.era) - eraIndex(b.era)).map(q => q.id);
 }
