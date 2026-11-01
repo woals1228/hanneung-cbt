@@ -316,6 +316,19 @@ button { touch-action: manipulation; }
 .plan-date { flex: none; width: 76px; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
 .plan-mark { flex: none; width: 18px; color: var(--ok); font-weight: 800; }
 
+/* 가채점 답안지: 한 줄에 번호 + 보기 5개 */
+.sheet { display: grid; grid-template-columns: 1fr 1fr; gap: 2px 14px; margin: 0; padding: 0; list-style: none; }
+.sheet-row { display: flex; align-items: center; gap: 2px; padding: 3px 0; border-bottom: 1px solid var(--line); }
+.sheet-no { width: 22px; flex: none; font-size: 12px; font-weight: 700; color: var(--muted); font-variant-numeric: tabular-nums; }
+.sheet-row button { flex: 1; min-width: 0; min-height: 34px; padding: 0; border: 0; border-radius: 6px; background: none; color: var(--muted); font: inherit; font-size: 16px; cursor: pointer; }
+.sheet-row button.is-on { background: var(--ink); color: var(--bg); font-weight: 700; }
+.sheet-row button.is-right { box-shadow: inset 0 0 0 2px var(--ok); color: var(--ok); }
+.sheet-row button.is-on.is-right { background: var(--ok); color: #fff; }
+.sheet-row button.is-wrong { background: var(--bad); color: #fff; }
+.grade-wait p + p { margin-top: 6px; }
+.mb { margin-bottom: 10px; }
+#paste { min-width: 0; font-size: 15px; }
+
 /* 업데이트 노트 */
 .updates ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; font-size: 13.5px; }
 .updates span { display: inline-block; min-width: 44px; margin-right: 6px; color: var(--muted); font-variant-numeric: tabular-nums; }
@@ -442,7 +455,7 @@ button { touch-action: manipulation; }
 .setting-row { display: flex; align-items: center; gap: 12px; }
 .switch { position: relative; flex: none; width: 44px; height: 26px; border-radius: 99px; background: var(--line); opacity: 0.7; }
 .switch::after { content: ""; position: absolute; top: 3px; left: 3px; width: 20px; height: 20px; border-radius: 50%; background: var(--surface); }
-input[type="date"] {
+input[type="date"], input[type="text"] {
   min-height: 46px;
   padding: 0 12px;
   border: 1px solid var(--line);

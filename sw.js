@@ -1,11 +1,12 @@
 // 오프라인에서도 열리도록 앱 파일을 저장해 둬요.
 // 배포할 때마다 CACHE 이름의 숫자를 올려 주세요. 파일을 새로 추가하면 SHELL 목록에도 넣어요.
 // 개인용 기출(data/past/…)은 공개하지 않으니 여기에 넣지 않아요.
-const CACHE = 'hcbt-v44';
+const CACHE = 'hcbt-v45';
 const SHELL = [
   './',
   'index.html',
   'privacy.html',
+  '81.html',
   'manifest.webmanifest',
   'css/style.css',
   'js/app.js',
@@ -28,11 +29,13 @@ const SHELL = [
   'js/views/hot.js',
   'js/views/twostep.js',
   'js/views/plan.js',
+  'js/views/grade.js',
   'data/questions.json',
   'data/anniversaries.json',
   'data/exams.json',
   'data/daily.json',
   'data/frequency.json',
+  'data/answers-81.json',
   'icons/icon-192.png',
   'icons/icon-512.png',
   'icons/apple-touch-icon.png',

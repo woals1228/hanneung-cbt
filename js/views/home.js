@@ -7,10 +7,12 @@ import { esc, questionHTML, explanationHTML, installInfo, promptInstall, toast }
 import { track, logAnswers } from '../track.js';
 import { CUTS, getGoal, setGoal } from '../report.js';
 import { getPlan, buildPlan, planDay, dayLinks } from '../plan.js';
+import { GRADE } from './grade.js';
 
 const INSTALL_DISMISSED = 'hcbt.installDismissed';
 // 홈 맨 아래 업데이트 노트 (새 기능을 넣으면 맨 위에 한 줄 추가)
 const UPDATES = [
+  ['11.1', `제${GRADE.round}회 가채점: 내 답을 미리 넣어 두면 정답 발표 즉시 점수`],
   ['11.1', '합격 플랜, 나의 한국사 명식표(마이), 목표 급수와 합격선'],
   ['11.1', '과거 시험 10문항과 홍패, 친구 도전장'],
   ['10.30', '심화 기출 57~80회 24회분, 81회 빈출 예측'],
@@ -101,6 +103,14 @@ function specialCardsHTML(today) {
         ${count ? `<a class="btn btn-inverse btn-block" href="#/quiz?mode=eve">전야제 문제 ${count}개 풀기</a>` : ''}
       </section>`);
     }
+  }
+  if (today >= GRADE.from && today <= GRADE.until) {
+    cards.push(`<section class="card card-eve">
+      <p class="eyebrow">📝 제${GRADE.round}회 가채점</p>
+      <h2>시험 잘 보셨어요?</h2>
+      <p>기억나는 답을 넣으면 공식 정답 발표에 맞춰 점수와 예상 급수를 보여 드려요.</p>
+      <a class="btn btn-inverse btn-block" href="#/grade">가채점 하기</a>
+    </section>`);
   }
 
   const anniv = data.anniversaryOn(today);

@@ -86,10 +86,11 @@ function hongpaeBlob(r, rate) {
 }
 
 // 공유 시트가 있으면 이미지를 바로 보내고, 없으면 파일로 저장해요.
-export async function shareHongpae(r, rate) {
+// text: 공유 문구를 바꿀 때(가채점 등)
+export async function shareHongpae(r, rate, { text: customText } = {}) {
   const blob = await hongpaeBlob(r, rate);
   const file = new File([blob], 'hongpae.png', { type: 'image/png' });
-  const text = `${tierOf(rate).name}! 한능검 과거 시험 ${r.correct}/${r.scored ?? r.total}. 같은 문제로 겨뤄 볼래? ${challengeUrl(r.ids, r.correct)}`;
+  const text = customText ?? `${tierOf(rate).name}! 한능검 과거 시험 ${r.correct}/${r.scored ?? r.total}. 같은 문제로 겨뤄 볼래? ${challengeUrl(r.ids, r.correct)}`;
   if (navigator.canShare?.({ files: [file] })) {
     try {
       await navigator.share({ files: [file], text });
