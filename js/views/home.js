@@ -1,12 +1,19 @@
-// 홈: 전야제·기념일 카드, D-day, 연속 학습, 오늘의 문제, 복습, 바로 풀기
+// 홈: 수험생(20~30대 공시생·취준생 중심)이 바로 쓰는 순서
+//  목표 급수와 내 실력 → 오늘의 공부 3가지 → 도구 → 오늘의 문제 → 시대별·기념일
 import * as data from '../data.js';
 import * as store from '../store.js';
 import { todayStr, dateOverride, daysBetween, formatLong, formatShort, dday } from '../dates.js';
 import { esc, questionHTML, explanationHTML, installInfo, promptInstall, toast } from '../ui.js';
 import { track, logAnswers } from '../track.js';
-import { shareChallenge, challengeUrl } from '../gwageo.js';
 
 const INSTALL_DISMISSED = 'hcbt.installDismissed';
+const GOAL_KEY = 'hcbt.goal';
+// 심화 합격선: 1급 80점, 2급 70점, 3급 60점
+const CUTS = { 1: 80, 2: 70, 3: 60 };
+
+function getGoal() {
+  try { return Number(localStorage.getItem(GOAL_KEY)) || null; } catch { return null; }
+}
 
 export function render(el) {
   const today = todayStr();
@@ -15,10 +22,10 @@ export function render(el) {
     el.innerHTML = `
       ${headerHTML(today)}
       ${specialCardsHTML(today)}
-      ${lobbyHTML()}
-      ${tilesHTML(today)}
+      ${goalHTML(today)}
+      ${todayHTML(today)}
+      ${toolsHTML()}
       <section class="card" id="daily">${dailyHTML(today)}</section>
-      ${reviewHTML(today)}
       ${erasHTML()}
       ${upcomingHTML(today)}
       <div id="install-slot">${installHTML()}</div>`;
@@ -50,9 +57,9 @@ export function render(el) {
       el.querySelector('#daily .explain')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
     } else if (act === 'go-daily') {
       el.querySelector('#daily').scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } else if (act === 'challenge') {
-      const how = await shareChallenge('한능검 과거 시험 10문항, 나랑 같이 응시해 볼래? 끝나면 급제 칭호가 나와.', challengeUrl());
-      if (how === 'copied') toast('도전장 링크를 복사했어요. 단톡방에 붙여 넣어 주세요');
+    } else if (e.target.closest('[data-goal]')) {
+      try { localStorage.setItem(GOAL_KEY, e.target.closest('[data-goal]').dataset.goal); } catch { /* 이번만 적용돼요 */ }
+      draw();
     } else if (act === 'install') {
       if (await promptInstall()) toast('홈 화면에 설치했어요!');
       el.querySelector('#install-slot').innerHTML = installHTML();
@@ -71,7 +78,7 @@ function headerHTML(today) {
   const exam = data.nextExam(today);
   return `<header class="home-head">
     <div><p class="date">${formatLong(today)}</p><h1>한국사 CBT</h1>
-      <p class="home-tag">${exam ? `제${exam.round}회 ` : ''}한능검 과거 시험장 · 응시생 상시 모집</p></div>
+      <p class="home-tag">${exam ? `제${exam.round}회 ` : ''}한능검 심화 준비</p></div>
     ${dateOverride() ? '<a class="test-badge" href="#/settings">🧪 테스트 날짜</a>' : ''}
   </header>`;
 }
@@ -116,30 +123,79 @@ function annivCardHTML(anniv, today, eyebrow, title, cta) {
   </section>`;
 }
 
-function tilesHTML(today) {
+// 가장 최근 실력: 모의고사 점수 또는 과거 시험 10문항 정답률
+function latestScore() {
+  const r = [...store.getState().exams].reverse().find(x => x.mode === 'exam' || x.kind === 'test');
+  if (!r) return null;
+  return r.mode === 'exam'
+    ? { score: r.score, label: '모의고사' }
+    : { score: Math.round((r.correct / (r.scored || 1)) * 100), label: '10문항 진단' };
+}
+
+// 목표 카드: D-day, 목표 급수, 합격선 위에 내 실력
+function goalHTML(today) {
   const exam = data.nextExam(today);
-  const examTile = exam
-    ? `<div class="card tile">
-        <p class="tile-label">제${exam.round}회 한능검 (${esc(exam.level)})</p>
-        <p class="tile-value">${dday(daysBetween(today, exam.date))}</p>
-        <p class="tile-sub">${formatShort(exam.date)} 시험${exam.apply ? `<br>접수 ${esc(exam.apply)}` : ''}</p>
-      </div>`
-    : `<div class="card tile">
-        <p class="tile-label">다음 시험</p>
-        <p class="tile-value">—</p>
-        <p class="tile-sub">일정이 아직 없어요</p>
-      </div>`;
-  const s = store.streak(today);
-  let sub = '오늘 첫 문제를 풀어 보세요';
-  if (s.doneToday) sub = '오늘 공부 완료!';
-  else if (s.count) sub = `오늘 풀면 ${s.count + 1}일째`;
-  return `<div class="tiles">
-    ${examTile}
-    <div class="card tile">
-      <p class="tile-label">연속 학습</p>
-      <p class="tile-value">🔥 ${s.count}일</p>
-      <p class="tile-sub">${sub}</p>
+  const goal = getGoal();
+  const cut = CUTS[goal];
+  const last = latestScore();
+  let msg = '목표 급수를 고르면 남은 점수를 알려 드려요.';
+  if (last && cut) msg = last.score >= cut ? `목표 ${goal}급 합격선을 넘었어요. 이 실력을 지켜요.` : `목표 ${goal}급까지 <b>${cut - last.score}점</b> 남았어요.`;
+  else if (last) msg = `최근 ${last.label} ${last.score}점이에요.`;
+  else if (cut) msg = `목표 ${goal}급은 ${cut}점 이상이에요. 지금 실력부터 재 볼까요?`;
+  const marks = Object.entries(CUTS).map(([g, c]) => `<span class="goal-mark ${Number(g) === goal ? 'is-goal' : ''}" style="left:${c}%"><i></i>${g}급</span>`).join('');
+  return `<section class="card goal">
+    <div class="goal-top">
+      <div>
+        <p class="goal-label">${exam ? `제${exam.round}회 ${esc(exam.level)} · ${formatShort(exam.date)}` : '다음 시험 일정 대기'}</p>
+        <p class="goal-dday">${exam ? dday(daysBetween(today, exam.date)) : '—'}</p>
+      </div>
+      <div class="goal-pick" role="group" aria-label="목표 급수">
+        ${[1, 2, 3].map(g => `<button type="button" data-goal="${g}" aria-pressed="${g === goal}" class="${g === goal ? 'is-on' : ''}">${g}급</button>`).join('')}
+      </div>
     </div>
+    <div class="goal-track" aria-hidden="true">
+      <div class="goal-fill" style="width:${last ? Math.min(100, last.score) : 0}%"></div>
+      ${marks}
+    </div>
+    <p class="goal-msg">${msg}${last && cut ? ` <span>(${last.label} ${last.score}점)</span>` : ''}</p>
+    <a class="btn btn-block goal-btn" href="#/quiz?mode=test">${last ? '10문항으로 다시 재기' : '10문항으로 실력 재기'} · 약 5분</a>
+  </section>`;
+}
+
+// 오늘의 공부: 1문제, 오답 복습, 빈출 세트. 끝낸 것은 체크로 보여요.
+function todayHTML(today) {
+  const daily = store.dailyFor(today);
+  const dailyDone = daily?.q === data.dailyQuestion(today).id && daily.graded;
+  const due = store.dueIds(today).filter(id => data.getQuestion(id)).length;
+  const attempts = store.getState().attempts.filter(a => a.day === today);
+  const hotDone = attempts.some(a => a.mode === 'hot');
+  const items = [
+    { done: dailyDone, title: '오늘의 1문제', sub: dailyDone ? '풀었어요' : '1분이면 끝나요', attrs: 'data-act="go-daily"' },
+    { done: due === 0, title: '오답 복습', sub: due ? `다시 풀 문제 ${due}개` : '오늘은 복습할 문제가 없어요', attrs: due ? 'href="#/quiz?mode=review"' : 'href="#/notebook"' },
+    { done: hotDone, title: '빈출 예상 10문제', sub: '81회에 나올 만한 주제부터', attrs: 'href="#/quiz?mode=hot"' },
+  ];
+  const s = store.streak(today);
+  const row = it => {
+    const tag = it.attrs.startsWith('href') ? 'a' : 'button';
+    return `<li><${tag} class="todo ${it.done ? 'is-done' : ''}" ${tag === 'button' ? 'type="button" ' : ''}${it.attrs}>
+      <span class="todo-check" aria-hidden="true">${it.done ? '✓' : ''}</span>
+      <span class="grow"><b>${it.title}</b><small>${it.sub}</small></span><span class="muted" aria-hidden="true">›</span></${tag}></li>`;
+  };
+  return `<section class="card">
+    <div class="card-title"><span>오늘의 공부 <span class="muted">${items.filter(i => i.done).length}/3</span></span>
+      <span class="muted small">오늘 ${attempts.length}문제 · 연속 ${s.count}일</span></div>
+    <ul class="list">${items.map(row).join('')}</ul>
+  </section>`;
+}
+
+function toolsHTML() {
+  const past = data.pastExams().length;
+  const tool = (href, title, sub) => `<a class="tool" href="${href}"><b>${title}</b><span>${sub}</span></a>`;
+  return `<div class="tools">
+    ${tool('#/exam', past ? '기출·모의고사' : '실전 모의고사', past ? `기출 ${past}회분 · 50문항 80분` : '50문항 · 80분')}
+    ${tool('#/hot', '81회 빈출 예측', '57~80회 24번 분석')}
+    ${tool('#/quiz?mode=test', '과거 시험 10문항', '급제 칭호·홍패')}
+    ${tool('#/quiz?mode=more', '문제 더 풀기', '안 푼 문제부터 3개')}
   </div>`;
 }
 
@@ -159,58 +215,6 @@ function dailyHTML(today) {
     ${state.viewed && !state.graded ? explanationHTML(q, null) : ''}
     ${state.viewed ? '<p class="muted small mt">해설을 보고 푼 문제는 정답률에 넣지 않아요.</p>' : ''}
     ${actions}`;
-}
-
-function reviewHTML(today) {
-  const due = store.dueIds(today).filter(id => data.getQuestion(id));
-  return `<section class="card row-card">
-    <div class="grow">
-      <b>오답 복습</b>
-      <p class="muted small">${due.length ? `오늘 다시 풀 문제가 ${due.length}개 있어요` : '오늘 복습할 문제가 없어요 👍'}</p>
-    </div>
-    ${due.length
-      ? '<a class="btn btn-primary btn-sm" href="#/quiz?mode=review">복습 시작</a>'
-      : '<a class="btn btn-ghost btn-sm" href="#/notebook">오답노트</a>'}
-  </section>`;
-}
-
-// 첫 화면 3칸: 01 실력 진단 / 02 매일 공부 / 03 친구와 함께
-function lobbyHTML() {
-  const row = (attrs, title, sub) => {
-    const tag = attrs.startsWith('href') ? 'a' : 'button';
-    return `<li><${tag} class="lobby-row" ${tag === 'button' ? 'type="button" ' : ''}${attrs}>
-      <span><b>${title}</b><small>${sub}</small></span><span aria-hidden="true">→</span></${tag}></li>`;
-  };
-  const past = data.pastExams().length;
-  return `<section class="lobby">
-    <div class="lobby-card lobby-1">
-      <span class="lobby-no">01</span>
-      <h2>실력 진단</h2>
-      <p>시대별로 고른 10문항. 끝나면 급제 칭호와 홍패를 드려요.</p>
-      <a class="lobby-btn is-dark" href="#/quiz?mode=test"><b>과거 시험 보기</b><span>10문항 · 약 5분</span></a>
-      <a class="lobby-btn is-color" href="#/exam"><b>${past ? '기출·실전 모의고사' : '실전 모의고사'}</b><span>50문항 · 80분</span></a>
-    </div>
-    <div class="lobby-card lobby-2">
-      <span class="lobby-no">02</span>
-      <h2>매일 공부</h2>
-      <p>하루 1문제와 빈출 주제로 꾸준히 해요.</p>
-      <ul class="lobby-list">
-        ${row('data-act="go-daily"', '오늘의 1문제', '매일 바뀌어요')}
-        ${row('href="#/hot"', '81회 빈출 예측', '57~80회 24번 분석')}
-        ${row('href="#/quiz?mode=more"', '문제 더 풀기', '안 푼 문제부터 3문제씩')}
-        ${row('href="#/notebook"', '오답노트', '틀린 문제는 다시 나와요')}
-      </ul>
-    </div>
-    <div class="lobby-card lobby-3">
-      <span class="lobby-no">03</span>
-      <h2>친구와 함께</h2>
-      <p>링크 하나로 같이 해요. 단톡방에 올리기 좋아요.</p>
-      <ul class="lobby-list">
-        ${row('data-act="challenge"', '과거 시험 도전장 보내기', '친구도 10문항으로 응시해요')}
-        ${row('href="#/quiz?mode=test"', '홍패 받아서 자랑하기', '급제하면 합격증 이미지를 드려요')}
-      </ul>
-    </div>
-  </section>`;
 }
 
 function erasHTML() {

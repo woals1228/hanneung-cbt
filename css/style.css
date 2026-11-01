@@ -248,24 +248,41 @@ button { touch-action: manipulation; }
 .row-card { display: flex; align-items: center; gap: 12px; }
 .row-card b { display: block; }
 
-/* 첫 화면 3칸(과거 시험장): 두꺼운 테두리 + 색 그림자 */
-.home-tag { margin-top: 2px; font-size: 13px; font-weight: 700; color: var(--accent); }
-.lobby { display: grid; gap: 16px; margin: 4px 6px 20px 0; }
-.lobby-card { --pop: #ffd84d; position: relative; padding: 18px 16px 14px; border: 2px solid var(--ink); border-radius: 14px; background: var(--surface); box-shadow: 6px 6px 0 var(--pop); }
-.lobby-2 { --pop: #f6a9b6; }
-.lobby-3 { --pop: #8fdcc0; }
-.lobby-no { display: inline-block; padding: 2px 8px; border-radius: 6px; background: var(--pop); color: #1d232b; font-size: 12px; font-weight: 800; }
-.lobby-card h2 { margin: 8px 0 2px; font-size: 20px; letter-spacing: -0.02em; }
-.lobby-card > p { margin-bottom: 10px; font-size: 13.5px; color: var(--muted); }
-.lobby-btn { display: flex; align-items: center; justify-content: space-between; gap: 8px; min-height: 54px; margin-top: 8px; padding: 0 16px; border: 2px solid var(--ink); border-radius: 10px; text-decoration: none; }
-.lobby-btn span { font-size: 12.5px; font-weight: 600; opacity: 0.85; }
-.lobby-btn.is-dark { background: var(--ink); color: var(--bg); }
-.lobby-btn.is-color { background: var(--pop); color: #1d232b; }
-.lobby-list { margin: 0; padding: 0; list-style: none; border-top: 2px solid var(--ink); }
-.lobby-row { display: flex; align-items: center; justify-content: space-between; gap: 12px; width: 100%; padding: 12px 2px; border: 0; border-bottom: 1px solid var(--line); background: none; color: inherit; font: inherit; text-align: left; text-decoration: none; cursor: pointer; }
-.lobby-list li:last-child .lobby-row { border-bottom: 0; }
-.lobby-row b { display: block; font-size: 15.5px; }
-.lobby-row small { display: block; font-size: 12.5px; color: var(--muted); }
+.home-tag { margin-top: 2px; font-size: 13px; font-weight: 600; color: var(--muted); }
+
+/* 목표 카드: 먹(짙은 바탕) 위에 인주(붉은) D-day, 합격선 눈금 위에 내 실력 */
+.goal { background: #1f2a36; border-color: transparent; color: #f3efe6; padding: 18px 16px 16px; }
+.goal-top { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; }
+.goal-label { font-size: 12.5px; color: #b9c2cc; }
+.goal-dday { display: inline-block; margin-top: 6px; padding: 2px 10px; border: 2px solid #e2574c; border-radius: 6px; color: #ff8a7d; font-size: 28px; font-weight: 800; letter-spacing: -0.02em; font-variant-numeric: tabular-nums; transform: rotate(-2deg); }
+.goal-pick { display: flex; gap: 4px; padding: 3px; border-radius: 10px; background: rgb(255 255 255 / 0.08); }
+.goal-pick button { min-width: 44px; min-height: 34px; border: 0; border-radius: 8px; background: none; color: #b9c2cc; font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; }
+.goal-pick button.is-on { background: #f3efe6; color: #1f2a36; }
+.goal-track { position: relative; height: 10px; margin: 22px 0 26px; border-radius: 999px; background: rgb(255 255 255 / 0.12); }
+.goal-fill { height: 100%; border-radius: inherit; background: linear-gradient(90deg, #c9a45c, #e8c06a); }
+.goal-mark { position: absolute; top: -6px; transform: translateX(-50%); font-size: 11px; color: #8e99a5; text-align: center; }
+.goal-mark i { display: block; width: 2px; height: 22px; margin: 0 auto 2px; background: #8e99a5; }
+.goal-mark.is-goal { color: #ff8a7d; font-weight: 700; }
+.goal-mark.is-goal i { background: #ff8a7d; }
+.goal-msg { font-size: 15px; }
+.goal-msg b { color: #e8c06a; }
+.goal-msg span { font-size: 12.5px; color: #b9c2cc; }
+.goal-btn { margin-top: 12px; background: #f3efe6; color: #1f2a36; }
+
+/* 오늘의 공부 체크리스트 */
+.todo { display: flex; align-items: center; gap: 12px; width: 100%; padding: 12px 0; border: 0; border-bottom: 1px solid var(--line); background: none; color: inherit; font: inherit; text-align: left; text-decoration: none; cursor: pointer; }
+.list li:last-child .todo { border-bottom: 0; }
+.todo b { display: block; font-size: 15.5px; }
+.todo small { display: block; font-size: 12.5px; color: var(--muted); }
+.todo-check { display: grid; place-items: center; flex: none; width: 24px; height: 24px; border: 2px solid var(--line); border-radius: 50%; color: #fff; font-size: 13px; font-weight: 800; }
+.todo.is-done .todo-check { border-color: var(--ok); background: var(--ok); }
+.todo.is-done b { color: var(--muted); }
+
+/* 도구 4칸 */
+.tools { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
+.tool { display: flex; flex-direction: column; gap: 2px; padding: 14px; border: 1px solid var(--line); border-left: 3px solid var(--primary); border-radius: 12px; background: var(--surface); text-decoration: none; }
+.tool b { font-size: 15px; }
+.tool span { font-size: 12.5px; color: var(--muted); }
 
 /* 홍패(과거 시험 결과): 붉은 종이에 금색 테두리 */
 .hongpae { margin-bottom: 12px; padding: 26px 18px 18px; border-radius: 14px; background: #a3201f; color: #fff; text-align: center; outline: 3px solid #e8c06a; outline-offset: -10px; }
