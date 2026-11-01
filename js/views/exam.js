@@ -7,6 +7,7 @@ import * as store from '../store.js';
 import { formatShort, toDateStr, todayStr } from '../dates.js';
 import { esc, questionHTML, explanationHTML, shuffle, confirmModal, closeModal, barRowHTML, toast, CIRCLED } from '../ui.js';
 import { track, logAnswers } from '../track.js';
+import { hongpaeHTML, shareHongpae, shareChallenge, challengeUrl, tierOf } from '../gwageo.js';
 
 const GRADES = [[80, '1급'], [70, '2급'], [60, '3급']];
 const gradeOf = score => GRADES.find(([min]) => score >= min)?.[1] ?? '불합격';
@@ -432,6 +433,7 @@ function renderResult(el, id) {
         ${r.viewedCount ? '<p class="muted small">해설을 보고 푼 문제는 점수와 정답률에서 뺐어요.</p>' : ''}
         ${wrongIds.length ? '<p class="small">틀린 문제는 오답노트에 넣었어요.</p>' : ''}
       </section>
+      ${r.kind === 'test' ? hongpaeHTML(r, rate) : ''}
       ${isExam && byEra.length ? `<h2 class="section-title">시대별 결과</h2>
       <section class="card">${byEra.map(x => barRowHTML(x.era, x.ok / x.total, `${x.ok}/${x.total}`, { tip: `${x.era}: ${x.total}문항 중 ${x.ok}개 정답` })).join('')}</section>` : ''}
       <h2 class="section-title">문항별 결과 <span class="muted">(내 답 / 정답) · 눌러서 해설 보기</span></h2>
@@ -439,14 +441,26 @@ function renderResult(el, id) {
       <div class="stack">
         ${wrongIds.length ? `<button type="button" class="btn btn-primary btn-block" data-act="retry">틀리거나 안 푼 문제 다시 풀기 (${wrongIds.length})</button>` : ''}
         ${moreEra ? `<a class="btn btn-ghost btn-block" href="#/quiz?mode=more&era=${encodeURIComponent(moreEra)}">더 풀어보기</a>` : ''}
-        ${isExam ? '<a class="btn btn-ghost btn-block" href="#/exam">다시 응시하기</a>' : '<a class="btn btn-ghost btn-block" href="#/quiz?mode=more">문제 더 풀기</a>'}
+        ${isExam ? '<a class="btn btn-ghost btn-block" href="#/exam">다시 응시하기</a>'
+          : r.kind === 'test' ? '<a class="btn btn-ghost btn-block" href="#/quiz?mode=test">새 문제로 다시 응시하기</a>'
+          : '<a class="btn btn-ghost btn-block" href="#/quiz?mode=more">문제 더 풀기</a>'}
         <a class="btn btn-ghost btn-block" href="#/">홈으로</a>
       </div>`;
   }
 
-  el.addEventListener('click', e => {
+  el.addEventListener('click', async e => {
     if (e.target.closest('[data-act="retry"]')) {
       startSession('study', { title: '틀린 문제 다시 풀기', ids: wrongIds, kind: 'retry', key: `retry:${r.id}` });
+      return;
+    }
+    if (e.target.closest('[data-act="hongpae"]')) {
+      const how = await shareHongpae(r, rate);
+      if (how === 'saved') toast('홍패 이미지를 저장했어요');
+      return;
+    }
+    if (e.target.closest('[data-act="challenge"]')) {
+      const how = await shareChallenge(`한능검 과거 시험에서 ${tierOf(rate).name}! 나는 ${r.correct}개 맞혔어. 같은 문제로 겨뤄 볼래?`, challengeUrl(r.ids, r.correct));
+      if (how === 'copied') toast('도전장 링크를 복사했어요. 단톡방에 붙여 넣어 주세요');
       return;
     }
     const toggle = e.target.closest('[data-toggle]');

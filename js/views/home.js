@@ -4,6 +4,7 @@ import * as store from '../store.js';
 import { todayStr, dateOverride, daysBetween, formatLong, formatShort, dday } from '../dates.js';
 import { esc, questionHTML, explanationHTML, installInfo, promptInstall, toast } from '../ui.js';
 import { track, logAnswers } from '../track.js';
+import { shareChallenge, challengeUrl } from '../gwageo.js';
 
 const INSTALL_DISMISSED = 'hcbt.installDismissed';
 
@@ -14,10 +15,11 @@ export function render(el) {
     el.innerHTML = `
       ${headerHTML(today)}
       ${specialCardsHTML(today)}
+      ${lobbyHTML()}
       ${tilesHTML(today)}
       <section class="card" id="daily">${dailyHTML(today)}</section>
       ${reviewHTML(today)}
-      ${shortcutsHTML()}
+      ${erasHTML()}
       ${upcomingHTML(today)}
       <div id="install-slot">${installHTML()}</div>`;
   }
@@ -46,6 +48,11 @@ export function render(el) {
       track('answer');
       draw();
       el.querySelector('#daily .explain')?.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+    } else if (act === 'go-daily') {
+      el.querySelector('#daily').scrollIntoView({ behavior: 'smooth', block: 'start' });
+    } else if (act === 'challenge') {
+      const how = await shareChallenge('한능검 과거 시험 10문항, 나랑 같이 응시해 볼래? 끝나면 급제 칭호가 나와.', challengeUrl());
+      if (how === 'copied') toast('도전장 링크를 복사했어요. 단톡방에 붙여 넣어 주세요');
     } else if (act === 'install') {
       if (await promptInstall()) toast('홈 화면에 설치했어요!');
       el.querySelector('#install-slot').innerHTML = installHTML();
@@ -61,8 +68,10 @@ export function render(el) {
 }
 
 function headerHTML(today) {
+  const exam = data.nextExam(today);
   return `<header class="home-head">
-    <div><p class="date">${formatLong(today)}</p><h1>한국사 CBT</h1></div>
+    <div><p class="date">${formatLong(today)}</p><h1>한국사 CBT</h1>
+      <p class="home-tag">${exam ? `제${exam.round}회 ` : ''}한능검 과거 시험장 · 응시생 상시 모집</p></div>
     ${dateOverride() ? '<a class="test-badge" href="#/settings">🧪 테스트 날짜</a>' : ''}
   </header>`;
 }
@@ -165,14 +174,47 @@ function reviewHTML(today) {
   </section>`;
 }
 
-function shortcutsHTML() {
-  return `
-    <h2 class="section-title">바로 풀기</h2>
-    <div class="shortcuts">
-      <a class="shortcut" href="#/quiz?mode=more"><span class="shortcut-icon">⚡</span><b>문제 더 풀기</b><span>안 푼 문제부터 3문제씩</span></a>
-      <a class="shortcut" href="#/exam"><span class="shortcut-icon">📝</span><b>기출·모의고사</b><span>${data.pastExams().length ? `기출 ${data.pastExams().length}회분 · 50문항 CBT` : '50문항 · 80분 CBT'}</span></a>
-      <a class="shortcut shortcut-wide" href="#/hot"><span class="shortcut-icon">🎯</span><b>81회 빈출 예측</b><span>57~80회 24번 분석 · 최근 늘어난 주제</span></a>
+// 첫 화면 3칸: 01 실력 진단 / 02 매일 공부 / 03 친구와 함께
+function lobbyHTML() {
+  const row = (attrs, title, sub) => {
+    const tag = attrs.startsWith('href') ? 'a' : 'button';
+    return `<li><${tag} class="lobby-row" ${tag === 'button' ? 'type="button" ' : ''}${attrs}>
+      <span><b>${title}</b><small>${sub}</small></span><span aria-hidden="true">→</span></${tag}></li>`;
+  };
+  const past = data.pastExams().length;
+  return `<section class="lobby">
+    <div class="lobby-card lobby-1">
+      <span class="lobby-no">01</span>
+      <h2>실력 진단</h2>
+      <p>시대별로 고른 10문항. 끝나면 급제 칭호와 홍패를 드려요.</p>
+      <a class="lobby-btn is-dark" href="#/quiz?mode=test"><b>과거 시험 보기</b><span>10문항 · 약 5분</span></a>
+      <a class="lobby-btn is-color" href="#/exam"><b>${past ? '기출·실전 모의고사' : '실전 모의고사'}</b><span>50문항 · 80분</span></a>
     </div>
+    <div class="lobby-card lobby-2">
+      <span class="lobby-no">02</span>
+      <h2>매일 공부</h2>
+      <p>하루 1문제와 빈출 주제로 꾸준히 해요.</p>
+      <ul class="lobby-list">
+        ${row('data-act="go-daily"', '오늘의 1문제', '매일 바뀌어요')}
+        ${row('href="#/hot"', '81회 빈출 예측', '57~80회 24번 분석')}
+        ${row('href="#/quiz?mode=more"', '문제 더 풀기', '안 푼 문제부터 3문제씩')}
+        ${row('href="#/notebook"', '오답노트', '틀린 문제는 다시 나와요')}
+      </ul>
+    </div>
+    <div class="lobby-card lobby-3">
+      <span class="lobby-no">03</span>
+      <h2>친구와 함께</h2>
+      <p>링크 하나로 같이 해요. 단톡방에 올리기 좋아요.</p>
+      <ul class="lobby-list">
+        ${row('data-act="challenge"', '과거 시험 도전장 보내기', '친구도 10문항으로 응시해요')}
+        ${row('href="#/quiz?mode=test"', '홍패 받아서 자랑하기', '급제하면 합격증 이미지를 드려요')}
+      </ul>
+    </div>
+  </section>`;
+}
+
+function erasHTML() {
+  return `
     <h2 class="section-title">시대별로 풀기</h2>
     <div class="chips">
       ${data.ERAS.map(era => `<a class="chip" href="#/quiz?mode=era&era=${encodeURIComponent(era)}">${esc(era)}</a>`).join('')}

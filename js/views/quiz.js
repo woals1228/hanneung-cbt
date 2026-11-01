@@ -6,6 +6,7 @@ import { todayStr } from '../dates.js';
 import { esc, shuffle, goBack } from '../ui.js';
 import { track } from '../track.js';
 import { startSession } from './exam.js';
+import { testSet } from '../gwageo.js';
 
 const MORE_COUNT = 3;
 const SET_LIMIT = 10;
@@ -67,6 +68,12 @@ function buildSet(mode, params, today) {
       const exam = data.nextExam(today);
       return { title: exam ? `제${exam.round}회 전야제 문제` : '전야제 문제', ids: exam ? ids(data.eveQuestions(exam, today)) : [] };
     }
+    case 'test': {
+      // 과거 시험 10문항. 친구 도전장(ids, vs)으로 오면 같은 문제로 겨뤄요.
+      const vs = params.get('vs');
+      const ids = testSet(today, (params.get('ids') ?? '').split(','));
+      return { title: vs != null ? `도전장: 친구는 ${Number(vs) || 0}개 맞혔어요` : '과거 시험 10문항', ids };
+    }
     case 'one': {
       const id = params.get('id');
       return { title: '다시 풀기', ids: data.getQuestion(id) ? [id] : [] };
@@ -81,7 +88,7 @@ const EVENT_OF = { more: 'more', hot: 'more', weak: 'more', anniv: 'anniv', eve:
 export function render(el, route) {
   const today = todayStr();
   const mode = route.params.get('mode') ?? 'more';
-  const key = [mode, route.params.get('era'), route.params.get('date'), route.params.get('id'), route.params.get('t'), route.params.get('field')].filter(Boolean).join(':');
+  const key = [mode, route.params.get('era'), route.params.get('date'), route.params.get('id'), route.params.get('t'), route.params.get('field'), route.params.get('ids')].filter(Boolean).join(':');
 
   // 같은 묶음을 풀던 중이면 이어서 풀어요.
   if (store.getDraft('study')?.key === key) {
