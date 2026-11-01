@@ -329,6 +329,23 @@ button { touch-action: manipulation; }
 .mb { margin-bottom: 10px; }
 #paste { min-width: 0; font-size: 15px; }
 
+/* 순서 맞히기 */
+.q-text { margin-bottom: 10px; font-weight: 700; }
+.order-card { display: flex; align-items: center; gap: 12px; width: 100%; padding: 14px 12px; border: 1px solid var(--line); border-radius: 12px; background: var(--surface); color: inherit; font: inherit; text-align: left; cursor: pointer; }
+.order-card b { display: block; font-size: 15.5px; }
+.order-card small { display: block; margin-top: 2px; font-size: 12.5px; color: var(--muted); }
+.order-badge { display: grid; place-items: center; flex: none; width: 28px; height: 28px; border: 2px solid var(--line); border-radius: 50%; font-weight: 800; }
+.order-card.is-picked { border-color: var(--primary); }
+.order-card.is-picked .order-badge { border-color: var(--primary); background: var(--primary); color: var(--on-primary); }
+.order-card.is-ok { border-color: var(--ok); background: var(--ok-soft); }
+.order-card.is-ok .order-badge { border-color: var(--ok); background: var(--ok); }
+.order-card.is-bad { border-color: var(--bad); background: var(--bad-soft); }
+.order-card.is-bad .order-badge { border-color: var(--bad); background: var(--bad); }
+.order-card:disabled { cursor: default; opacity: 1; }
+.order-result { margin: 12px 0 10px; font-weight: 700; }
+.order-result.is-ok { color: var(--ok); }
+.order-result.is-bad { color: var(--bad); }
+
 /* 업데이트 노트 */
 .updates ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; font-size: 13.5px; }
 .updates span { display: inline-block; min-width: 44px; margin-right: 6px; color: var(--muted); font-variant-numeric: tabular-nums; }

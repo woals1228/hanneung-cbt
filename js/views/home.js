@@ -12,6 +12,7 @@ import { GRADE } from './grade.js';
 const INSTALL_DISMISSED = 'hcbt.installDismissed';
 // 홈 맨 아래 업데이트 노트 (새 기능을 넣으면 맨 위에 한 줄 추가)
 const UPDATES = [
+  ['11.1', '순서 맞히기 훈련(근대부터, 시대 계속 추가)'],
   ['11.1', `제${GRADE.round}회 가채점: 내 답을 미리 넣어 두면 정답 발표 즉시 점수`],
   ['11.1', '합격 플랜, 나의 한국사 명식표(마이), 목표 급수와 합격선'],
   ['11.1', '과거 시험 10문항과 홍패, 친구 도전장'],
@@ -220,6 +221,8 @@ function toolsHTML() {
     ${tool('#/hot', '81회 빈출 예측', '57~80회 24번 분석')}
     ${tool('#/quiz?mode=test', '과거 시험 10문항', '급제 칭호·홍패')}
     ${tool('#/quiz?mode=more', '문제 더 풀기', '안 푼 문제부터 3개')}
+    ${tool('#/order', '순서 맞히기', '사건 4개 순서대로 · 1분')}
+    ${tool('#/grade', `${GRADE.round}회 가채점`, '내 답 미리 넣어 두기')}
   </div>`;
 }
 

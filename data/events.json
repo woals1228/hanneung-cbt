@@ -1,0 +1,272 @@
+[
+ {
+  "id": "ev-001",
+  "era": "근대",
+  "name": "병인박해",
+  "year": 1866,
+  "month": 1,
+  "note": "흥선 대원군의 천주교 탄압, 프랑스 신부 9명 처형",
+  "ref": "https://ko.wikipedia.org/wiki/병인박해"
+ },
+ {
+  "id": "ev-002",
+  "era": "근대",
+  "name": "제너럴셔먼호 사건",
+  "year": 1866,
+  "month": 7,
+  "note": "미국 상선이 대동강에서 불탐, 평안 감사 박규수",
+  "ref": "https://ko.wikipedia.org/wiki/제너럴셔먼호_사건"
+ },
+ {
+  "id": "ev-003",
+  "era": "근대",
+  "name": "병인양요",
+  "year": 1866,
+  "month": 9,
+  "note": "프랑스 강화도 침략, 양헌수 정족산성, 외규장각 도서 약탈",
+  "ref": "https://ko.wikipedia.org/wiki/병인양요"
+ },
+ {
+  "id": "ev-004",
+  "era": "근대",
+  "name": "오페르트 도굴 사건",
+  "year": 1868,
+  "month": 4,
+  "note": "독일 상인이 남연군 묘 도굴 시도",
+  "ref": "https://ko.wikipedia.org/wiki/남연군_분묘_도굴_사건"
+ },
+ {
+  "id": "ev-005",
+  "era": "근대",
+  "name": "신미양요",
+  "year": 1871,
+  "month": 4,
+  "note": "미국 강화도 침략, 어재연 광성보, 척화비 건립",
+  "ref": "https://ko.wikipedia.org/wiki/신미양요"
+ },
+ {
+  "id": "ev-006",
+  "era": "근대",
+  "name": "강화도 조약",
+  "year": 1876,
+  "month": 2,
+  "note": "운요호 사건 뒤 조일 수호 조규, 부산 외 2곳 개항",
+  "ref": "https://ko.wikipedia.org/wiki/강화도_조약"
+ },
+ {
+  "id": "ev-007",
+  "era": "근대",
+  "name": "『조선책략』 유입",
+  "year": 1880,
+  "month": 8,
+  "note": "제2차 수신사 김홍집이 들여옴, 미국과 수교 주장",
+  "ref": "https://ko.wikipedia.org/wiki/조선책략"
+ },
+ {
+  "id": "ev-008",
+  "era": "근대",
+  "name": "통리기무아문 설치",
+  "year": 1880,
+  "month": 12,
+  "note": "개화 정책을 맡은 첫 근대 기구, 12사",
+  "ref": "https://ko.wikipedia.org/wiki/통리기무아문"
+ },
+ {
+  "id": "ev-009",
+  "era": "근대",
+  "name": "영선사 파견",
+  "year": 1881,
+  "month": 9,
+  "note": "김윤식, 청 톈진에서 무기 제조 기술 학습 → 기기창",
+  "ref": "https://ko.wikipedia.org/wiki/영선사"
+ },
+ {
+  "id": "ev-010",
+  "era": "근대",
+  "name": "조미 수호 통상 조약",
+  "year": 1882,
+  "month": 4,
+  "note": "서양과 맺은 첫 조약, 거중 조정·최혜국 대우",
+  "ref": "https://ko.wikipedia.org/wiki/조미_수호_통상_조약"
+ },
+ {
+  "id": "ev-011",
+  "era": "근대",
+  "name": "임오군란",
+  "year": 1882,
+  "month": 6,
+  "note": "구식 군인 차별에 반발, 흥선 대원군 재집권, 청군 개입",
+  "ref": "https://ko.wikipedia.org/wiki/임오군란"
+ },
+ {
+  "id": "ev-012",
+  "era": "근대",
+  "name": "제물포 조약",
+  "year": 1882,
+  "month": 7,
+  "note": "임오군란 뒤 일본과 체결, 일본 공사관 경비병 주둔",
+  "ref": "https://ko.wikipedia.org/wiki/제물포_조약"
+ },
+ {
+  "id": "ev-013",
+  "era": "근대",
+  "name": "갑신정변",
+  "year": 1884,
+  "month": 10,
+  "note": "김옥균 등 급진 개화파, 우정총국 개국 축하연, 3일 만에 실패",
+  "ref": "https://ko.wikipedia.org/wiki/갑신정변"
+ },
+ {
+  "id": "ev-014",
+  "era": "근대",
+  "name": "톈진 조약",
+  "year": 1885,
+  "month": 3,
+  "note": "갑신정변 뒤 청·일이 맺음, 조선에서 함께 철병",
+  "ref": "https://ko.wikipedia.org/wiki/톈진_조약_(1885년)"
+ },
+ {
+  "id": "ev-015",
+  "era": "근대",
+  "name": "방곡령",
+  "year": 1889,
+  "month": 9,
+  "note": "함경도 관찰사 조병식이 곡물 유출 금지",
+  "ref": "https://ko.wikipedia.org/wiki/방곡령"
+ },
+ {
+  "id": "ev-016",
+  "era": "근대",
+  "name": "고부 농민 봉기",
+  "year": 1894,
+  "month": 1,
+  "note": "고부 군수 조병갑의 수탈, 전봉준이 관아 습격",
+  "ref": "https://ko.wikipedia.org/wiki/고부_민란"
+ },
+ {
+  "id": "ev-017",
+  "era": "근대",
+  "name": "전주 화약",
+  "year": 1894,
+  "month": 5,
+  "note": "농민군이 전주성 점령 뒤 정부와 화약, 집강소 설치",
+  "ref": "https://ko.wikipedia.org/wiki/전주화약"
+ },
+ {
+  "id": "ev-018",
+  "era": "근대",
+  "name": "군국기무처 설치",
+  "year": 1894,
+  "month": 6,
+  "note": "제1차 갑오개혁 시작, 과거제·신분제 폐지",
+  "ref": "https://ko.wikipedia.org/wiki/군국기무처"
+ },
+ {
+  "id": "ev-019",
+  "era": "근대",
+  "name": "우금치 전투",
+  "year": 1894,
+  "month": 11,
+  "note": "다시 일어난 농민군이 공주에서 일본군·관군에 패배",
+  "ref": "https://ko.wikipedia.org/wiki/우금치_전투"
+ },
+ {
+  "id": "ev-020",
+  "era": "근대",
+  "name": "을미사변",
+  "year": 1895,
+  "month": 8,
+  "note": "일본 공사 미우라의 지휘로 왕비 시해 → 을미의병",
+  "ref": "https://ko.wikipedia.org/wiki/을미사변"
+ },
+ {
+  "id": "ev-021",
+  "era": "근대",
+  "name": "아관 파천",
+  "year": 1896,
+  "month": 2,
+  "note": "고종이 러시아 공사관으로 거처를 옮김, 열강의 이권 침탈",
+  "ref": "https://ko.wikipedia.org/wiki/아관파천"
+ },
+ {
+  "id": "ev-022",
+  "era": "근대",
+  "name": "독립 협회 창립",
+  "year": 1896,
+  "month": 7,
+  "note": "서재필 등, 독립문 건립·만민 공동회",
+  "ref": "https://ko.wikipedia.org/wiki/독립협회"
+ },
+ {
+  "id": "ev-023",
+  "era": "근대",
+  "name": "대한 제국 수립",
+  "year": 1897,
+  "month": 10,
+  "note": "고종이 환구단에서 황제 즉위, 연호 광무",
+  "ref": "https://ko.wikipedia.org/wiki/대한제국"
+ },
+ {
+  "id": "ev-024",
+  "era": "근대",
+  "name": "관민 공동회 헌의 6조",
+  "year": 1898,
+  "month": 10,
+  "note": "독립 협회가 정부 대신과 함께 개혁안 결의",
+  "ref": "https://ko.wikipedia.org/wiki/독립협회"
+ },
+ {
+  "id": "ev-025",
+  "era": "근대",
+  "name": "을사늑약",
+  "year": 1905,
+  "month": 11,
+  "note": "외교권 박탈, 통감부 설치",
+  "ref": "https://ko.wikipedia.org/wiki/을사조약"
+ },
+ {
+  "id": "ev-026",
+  "era": "근대",
+  "name": "국채 보상 운동",
+  "year": 1907,
+  "month": 2,
+  "note": "대구 서상돈·김광제, 나랏빚 1,300만 원 갚기",
+  "ref": "https://ko.wikipedia.org/wiki/국채보상운동"
+ },
+ {
+  "id": "ev-027",
+  "era": "근대",
+  "name": "헤이그 특사",
+  "year": 1907,
+  "month": 6,
+  "note": "이상설·이준·이위종, 을사늑약의 부당함 호소 → 고종 강제 퇴위",
+  "ref": "https://ko.wikipedia.org/wiki/헤이그_특사_사건"
+ },
+ {
+  "id": "ev-028",
+  "era": "근대",
+  "name": "대한 제국 군대 해산",
+  "year": 1907,
+  "month": 8,
+  "note": "정미 7조약 뒤 해산, 박승환 자결 → 정미의병",
+  "ref": "https://ko.wikipedia.org/wiki/대한제국군_해산"
+ },
+ {
+  "id": "ev-029",
+  "era": "근대",
+  "name": "안중근의 이토 히로부미 저격",
+  "year": 1909,
+  "month": 10,
+  "note": "하얼빈역, 『동양평화론』",
+  "ref": "https://ko.wikipedia.org/wiki/이토_히로부미_저격_사건"
+ },
+ {
+  "id": "ev-030",
+  "era": "근대",
+  "name": "국권 피탈",
+  "year": 1910,
+  "month": 8,
+  "note": "한일 병합 조약, 조선 총독부 설치",
+  "ref": "https://ko.wikipedia.org/wiki/한일병합조약"
+ }
+]
