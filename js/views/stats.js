@@ -3,6 +3,7 @@ import * as data from '../data.js';
 import * as store from '../store.js';
 import { todayStr, addDays, weekday, formatShort, toDateStr } from '../dates.js';
 import { esc, barRowHTML } from '../ui.js';
+import { eraReport, myeongsikHTML } from '../report.js';
 
 // 이만큼은 풀어야 약점으로 판단해요.
 const MIN_ATTEMPTS = 3;
@@ -67,6 +68,8 @@ export function render(el) {
       <div class="card tile"><p class="tile-label">모의고사 최고</p><p class="tile-value">${best ?? '—'}${best != null ? '<span class="score-of">점</span>' : ''}</p><p class="tile-sub">${exams.length}회 응시</p></div>
     </div>
 
+    ${myeongsikHTML(eraReport())}
+
     ${weakSpots.length ? `<section class="card card-anniv">
       <p class="eyebrow">내 약점</p>
       <h2>${esc(weakSpots[0].era)} · ${esc(weakSpots[0].field)}에서 자주 틀려요 (${Math.round(weakSpots[0].rate * 100)}%)</h2>
@@ -81,14 +84,6 @@ export function render(el) {
       <a class="btn btn-primary btn-block" href="#/quiz?mode=era&era=${encodeURIComponent(weakest.era)}">${esc(weakest.era)} 문제 풀기</a>
     </section>` : ''}
 
-    <h2 class="section-title">시대별 정답률</h2>
-    <section class="card">
-      ${byEra.map(x => barRowHTML(x.era, x.rate, x.n ? `${Math.round(x.rate * 100)}% · ${x.n}회` : '기록 없음', {
-        weak: weakest?.era === x.era,
-        tip: x.n ? `${x.era}: ${x.n}번 풀어서 ${x.ok}번 정답` : `${x.era}: 아직 안 풀었어요`,
-      })).join('')}
-      <p class="muted small mt">${MIN_ATTEMPTS}번 이상 푼 시대끼리 비교해서 약점을 찾아요.</p>
-    </section>
 
     <h2 class="section-title">분야별 정답률</h2>
     <section class="card">

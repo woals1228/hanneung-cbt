@@ -1,19 +1,20 @@
 // 홈: 수험생(20~30대 공시생·취준생 중심)이 바로 쓰는 순서
-//  목표 급수와 내 실력 → 오늘의 공부 3가지 → 도구 → 오늘의 문제 → 시대별·기념일
+//  목표 급수와 내 실력 → 오늘의 공부(합격 플랜) → 도구 → 오늘의 문제 → 시대별·기념일 → 업데이트
 import * as data from '../data.js';
 import * as store from '../store.js';
 import { todayStr, dateOverride, daysBetween, formatLong, formatShort, dday } from '../dates.js';
 import { esc, questionHTML, explanationHTML, installInfo, promptInstall, toast } from '../ui.js';
 import { track, logAnswers } from '../track.js';
+import { CUTS, getGoal, setGoal } from '../report.js';
+import { getPlan, buildPlan, planDay, dayLinks } from '../plan.js';
 
 const INSTALL_DISMISSED = 'hcbt.installDismissed';
-const GOAL_KEY = 'hcbt.goal';
-// 심화 합격선: 1급 80점, 2급 70점, 3급 60점
-const CUTS = { 1: 80, 2: 70, 3: 60 };
-
-function getGoal() {
-  try { return Number(localStorage.getItem(GOAL_KEY)) || null; } catch { return null; }
-}
+// 홈 맨 아래 업데이트 노트 (새 기능을 넣으면 맨 위에 한 줄 추가)
+const UPDATES = [
+  ['11.1', '합격 플랜, 나의 한국사 명식표(마이), 목표 급수와 합격선'],
+  ['11.1', '과거 시험 10문항과 홍패, 친구 도전장'],
+  ['10.30', '심화 기출 57~80회 24회분, 81회 빈출 예측'],
+];
 
 export function render(el) {
   const today = todayStr();
@@ -28,7 +29,8 @@ export function render(el) {
       <section class="card" id="daily">${dailyHTML(today)}</section>
       ${erasHTML()}
       ${upcomingHTML(today)}
-      <div id="install-slot">${installHTML()}</div>`;
+      <div id="install-slot">${installHTML()}</div>
+      ${updatesHTML()}`;
   }
 
   draw();
@@ -58,7 +60,7 @@ export function render(el) {
     } else if (act === 'go-daily') {
       el.querySelector('#daily').scrollIntoView({ behavior: 'smooth', block: 'start' });
     } else if (e.target.closest('[data-goal]')) {
-      try { localStorage.setItem(GOAL_KEY, e.target.closest('[data-goal]').dataset.goal); } catch { /* 이번만 적용돼요 */ }
+      setGoal(e.target.closest('[data-goal]').dataset.goal);
       draw();
     } else if (act === 'install') {
       if (await promptInstall()) toast('홈 화면에 설치했어요!');
@@ -169,23 +171,35 @@ function todayHTML(today) {
   const due = store.dueIds(today).filter(id => data.getQuestion(id)).length;
   const attempts = store.getState().attempts.filter(a => a.day === today);
   const hotDone = attempts.some(a => a.mode === 'hot');
-  const items = [
-    { done: dailyDone, title: '오늘의 1문제', sub: dailyDone ? '풀었어요' : '1분이면 끝나요', attrs: 'data-act="go-daily"' },
-    { done: due === 0, title: '오답 복습', sub: due ? `다시 풀 문제 ${due}개` : '오늘은 복습할 문제가 없어요', attrs: due ? 'href="#/quiz?mode=review"' : 'href="#/notebook"' },
-    { done: hotDone, title: '빈출 예상 10문제', sub: '81회에 나올 만한 주제부터', attrs: 'href="#/quiz?mode=hot"' },
-  ];
+  const dailyItem = { done: dailyDone, title: '오늘의 1문제', sub: dailyDone ? '풀었어요' : '1분이면 끝나요', attrs: 'data-act="go-daily"' };
+  const reviewItem = { done: due === 0, title: '오답 복습', sub: due ? `다시 풀 문제 ${due}개` : '오늘은 복습할 문제가 없어요', attrs: due ? 'href="#/quiz?mode=review"' : 'href="#/notebook"' };
+  // 합격 플랜이 있으면 그날 계획이 먼저, 없으면 플랜 만들기를 권해요.
+  const exam = data.nextExam(today);
+  const plan = getPlan();
+  const days = plan && exam && plan.exam === exam.round ? buildPlan(plan, exam) : [];
+  const day = planDay(days, today);
+  const items = day
+    ? [...dayLinks(day).map(l => ({ ...l, attrs: `href="${l.href}"` })), dailyItem, ...(due ? [reviewItem] : [])]
+    : [dailyItem, reviewItem, { done: hotDone, title: '빈출 예상 10문제', sub: '81회에 나올 만한 주제부터', attrs: 'href="#/quiz?mode=hot"' }];
   const s = store.streak(today);
   const row = it => {
     const tag = it.attrs.startsWith('href') ? 'a' : 'button';
     return `<li><${tag} class="todo ${it.done ? 'is-done' : ''}" ${tag === 'button' ? 'type="button" ' : ''}${it.attrs}>
       <span class="todo-check" aria-hidden="true">${it.done ? '✓' : ''}</span>
-      <span class="grow"><b>${it.title}</b><small>${it.sub}</small></span><span class="muted" aria-hidden="true">›</span></${tag}></li>`;
+      <span class="grow"><b>${esc(it.title)}</b><small>${esc(it.sub)}</small></span><span class="muted" aria-hidden="true">›</span></${tag}></li>`;
   };
   return `<section class="card">
-    <div class="card-title"><span>오늘의 공부 <span class="muted">${items.filter(i => i.done).length}/3</span></span>
+    <div class="card-title"><span>오늘의 공부 <span class="muted">${items.filter(i => i.done).length}/${items.length}</span></span>
       <span class="muted small">오늘 ${attempts.length}문제 · 연속 ${s.count}일</span></div>
+    ${day ? `<a class="plan-head" href="#/plan"><span>📅 합격 플랜 ${days.indexOf(day) + 1}/${days.length}일째 · <b>${esc(day.title)}</b></span><span>전체 ›</span></a>` : ''}
     <ul class="list">${items.map(row).join('')}</ul>
+    ${day ? '' : `<a class="btn btn-ghost btn-block mt" href="#/plan">📅 ${exam ? `${dday(daysBetween(today, exam.date))} ` : ''}합격 플랜 만들기</a>`}
   </section>`;
+}
+
+function updatesHTML() {
+  return `<h2 class="section-title">업데이트</h2>
+    <section class="card updates"><ul>${UPDATES.map(([d, text]) => `<li><span>${d}</span>${esc(text)}</li>`).join('')}</ul></section>`;
 }
 
 function toolsHTML() {

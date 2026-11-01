@@ -10,9 +10,10 @@ import * as stats from './views/stats.js';
 import * as settings from './views/settings.js';
 import * as hot from './views/hot.js';
 import * as twostep from './views/twostep.js';
+import * as plan from './views/plan.js';
 
 // solve = 학습 모드 풀이 화면 (모의고사와 같은 화면을 써요)
-const routes = { '': home, quiz, notebook, exam, solve: exam, stats, settings, hot, twostep };
+const routes = { '': home, quiz, notebook, exam, solve: exam, stats, settings, hot, twostep, plan };
 const root = document.getElementById('app');
 const tabbar = document.getElementById('tabbar');
 let cleanup = null;
@@ -37,7 +38,7 @@ function render() {
   closeModal();
   document.body.classList.remove('focus-mode');
 
-  const activeTab = { quiz: '', solve: '', settings: 'stats', twostep: 'exam' }[route.name] ?? route.name;
+  const activeTab = { quiz: '', solve: '', plan: '', settings: 'stats', twostep: 'exam' }[route.name] ?? route.name;
   for (const link of tabbar.querySelectorAll('a')) {
     const active = link.dataset.tab === activeTab;
     link.classList.toggle('is-active', active);

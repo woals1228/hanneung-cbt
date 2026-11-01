@@ -278,6 +278,48 @@ button { touch-action: manipulation; }
 .todo.is-done .todo-check { border-color: var(--ok); background: var(--ok); }
 .todo.is-done b { color: var(--muted); }
 
+/* 나의 한국사 명식표: 시대마다 고유 색, 칸 안에 강·보통·약 글자 */
+.ms-grid { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; }
+.ms-cell { --era: #8a7a66; display: flex; flex-direction: column; align-items: center; gap: 2px; padding: 8px 2px 7px; border-top: 4px solid var(--era); border-radius: 8px; background: color-mix(in srgb, var(--era) 12%, var(--surface)); text-align: center; }
+.ms-0 { --era: #9c7a54; }
+.ms-1 { --era: #b5523b; }
+.ms-2 { --era: #3d7d6b; }
+.ms-3 { --era: #2f5d8a; }
+.ms-4 { --era: #7a5c99; }
+.ms-5 { --era: #5e6b78; }
+.ms-6 { --era: #b08a2e; }
+.ms-era { font-size: 12px; font-weight: 700; color: var(--era); }
+.ms-level { font-size: 17px; font-weight: 800; line-height: 1.3; white-space: nowrap; }
+.ms-level.is-weak { color: var(--bad); }
+.ms-level.is-strong { color: var(--ok); }
+.ms-rate { font-size: 10px; line-height: 1.3; color: var(--muted); word-break: keep-all; }
+.ms-title { margin: 16px 0 4px; font-size: 14px; }
+.ms-detail { border-bottom: 1px solid var(--line); padding: 10px 0; }
+.ms-detail:last-child { border-bottom: 0; }
+.ms-detail summary { display: flex; justify-content: space-between; align-items: baseline; gap: 8px; cursor: pointer; list-style: none; }
+.ms-detail summary::-webkit-details-marker { display: none; }
+.ms-detail p { margin-top: 6px; font-size: 14px; }
+
+/* 합격 플랜 */
+.plan-q { margin: 16px 0 8px; font-size: 15px; }
+.seg { display: flex; gap: 4px; padding: 3px; border-radius: 10px; background: var(--surface-2); }
+.seg button { flex: 1; min-height: 40px; border: 0; border-radius: 8px; background: none; color: var(--muted); font: inherit; font-size: 14px; font-weight: 700; cursor: pointer; }
+.seg button.is-on { background: var(--surface); color: var(--ink); box-shadow: var(--shadow); }
+.plan-head { display: flex; justify-content: space-between; gap: 8px; margin: -2px 0 4px; padding: 8px 10px; border-radius: 10px; background: var(--primary-soft); color: var(--ink); font-size: 13.5px; text-decoration: none; }
+.plan-head span:last-child { flex: none; color: var(--primary); font-weight: 700; }
+.plan-list { margin: 0; padding: 0; list-style: none; }
+.plan-list li { display: flex; align-items: flex-start; gap: 10px; padding: 9px 0; border-bottom: 1px solid var(--line); font-size: 14.5px; }
+.plan-list li:last-child { border-bottom: 0; }
+.plan-list small { display: block; font-size: 12px; color: var(--muted); }
+.plan-list li.is-past { color: var(--muted); }
+.plan-list li.is-today { margin: 0 -8px; padding: 9px 8px; border-radius: 8px; background: var(--primary-soft); font-weight: 700; }
+.plan-date { flex: none; width: 76px; font-size: 13px; color: var(--muted); font-variant-numeric: tabular-nums; }
+.plan-mark { flex: none; width: 18px; color: var(--ok); font-weight: 800; }
+
+/* 업데이트 노트 */
+.updates ul { margin: 0; padding: 0; list-style: none; display: grid; gap: 6px; font-size: 13.5px; }
+.updates span { display: inline-block; min-width: 44px; margin-right: 6px; color: var(--muted); font-variant-numeric: tabular-nums; }
+
 /* 도구 4칸 */
 .tools { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 12px; }
 .tool { display: flex; flex-direction: column; gap: 2px; padding: 14px; border: 1px solid var(--line); border-left: 3px solid var(--primary); border-radius: 12px; background: var(--surface); text-decoration: none; }
