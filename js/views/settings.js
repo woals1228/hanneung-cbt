@@ -85,10 +85,15 @@ export function render(el) {
     <h2 class="section-title">학습 기록</h2>
     <section class="card">
       <div class="setting-row">
-        <div class="grow"><b>기록 옮기기 (백업 코드)</b><p class="muted small">아이폰은 사파리와 홈 화면 앱의 기록이 따로예요. 사파리에서 코드를 복사해 홈 화면 앱에 붙여 넣으면 기록이 그대로 옮겨져요. 폰을 바꿀 때도 써요.</p></div>
+        <div class="grow"><b>기록 옮기기 (백업 코드)</b><p class="muted small">아이폰은 사파리와 홈 화면 앱의 기록이 따로예요. 폰을 바꿀 때도 써요.</p></div>
         <button type="button" class="btn btn-ghost btn-sm" data-act="backup-copy">코드 복사</button>
       </div>
-      <textarea id="backup-input" class="mt" rows="3" placeholder="여기에 백업 코드(HCBT1:…)를 붙여 넣으세요" aria-label="백업 코드" style="width:100%;font:inherit;font-size:13px"></textarea>
+      <ol class="muted small mt">
+        <li>[코드 복사]를 누르고 <b>메모 앱에 붙여 두세요</b>(잃어버리지 않게).</li>
+        <li>옮길 곳(홈 화면 앱·새 폰)의 이 화면에서 아래 칸을 <b>길게 눌러 붙여 넣기</b>해요.</li>
+        <li>[기록 옮기기]를 누르면 끝이에요.</li>
+      </ol>
+      <textarea id="backup-input" class="mt" rows="3" placeholder="여기를 길게 눌러 백업 코드(HCBT…)를 붙여 넣으세요" aria-label="백업 코드" style="width:100%;font:inherit;font-size:13px"></textarea>
       <button type="button" class="btn btn-ghost btn-block mt" data-act="backup-restore">붙여 넣은 코드로 기록 옮기기</button>
     </section>
     <section class="card">
@@ -147,10 +152,10 @@ export function render(el) {
       if (await promptInstall()) toast('홈 화면에 설치했어요!');
       el.querySelector('#install').innerHTML = installSectionHTML();
     } else if (act === 'backup-copy') {
-      const code = store.exportBackup();
+      const code = await store.exportBackup();
       try {
         await navigator.clipboard.writeText(code);
-        toast('백업 코드를 복사했어요. 옮길 곳의 설정 화면에 붙여 넣어 주세요');
+        toast('백업 코드를 복사했어요. 메모 앱에 먼저 붙여 두세요');
       } catch {
         // 복사가 막히면 칸에 넣고 전체 선택해 둬요(길게 눌러 복사).
         const box = el.querySelector('#backup-input');
@@ -161,7 +166,7 @@ export function render(el) {
     } else if (act === 'backup-restore') {
       let parsed;
       try {
-        parsed = store.readBackup(el.querySelector('#backup-input').value);
+        parsed = await store.readBackup(el.querySelector('#backup-input').value);
       } catch (err) {
         toast(err.message);
         return;
@@ -174,7 +179,12 @@ export function render(el) {
         danger: true,
       });
       if (!ok) return;
-      store.restoreBackup(parsed);
+      try {
+        store.restoreBackup(parsed);
+      } catch (err) {
+        toast(err.message);
+        return;
+      }
       location.reload();
     } else if (act === 'reset') {
       const ok = await confirmModal({ title: '기록을 모두 지울까요?', message: '지운 기록은 되돌릴 수 없어요.', ok: '모두 지우기', danger: true });

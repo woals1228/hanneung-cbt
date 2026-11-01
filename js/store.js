@@ -126,19 +126,20 @@ export function addResult(result) {
 }
 
 // ── 기록 백업 코드 ── 아이폰 사파리와 홈 화면 앱은 저장소가 따로라서, 코드로 기록을 옮겨요.
-// 풀이 기록·목표·계획표와 익명 ID(서버 기록이 이어지게)를 JSON으로 묶어 base64로 만들어요.
-const BACKUP_PREFIX = 'HCBT1:';
-const BACKUP_KEYS = [KEY, 'hcbt.goal', 'hcbt.plan', 'hcbt.anon'];
+// 풀이 기록·목표·계획표·가채점 답, 익명 ID와 유입 채널(서버 기록이 이어지게)을 JSON으로 묶어요.
+// gzip이 되는 브라우저는 'HCBT2:'(압축), 안 되면 'HCBT1:'(그대로) + base64예요. 읽을 때는 둘 다 받아요.
+const BACKUP_KEYS = [KEY, 'hcbt.goal', 'hcbt.plan', 'hcbt.grade81', 'hcbt.anon', 'hcbt.src'];
+const canGzip = typeof CompressionStream === 'function' && typeof DecompressionStream === 'function';
 
-const toBase64 = text => {
-  const bytes = new TextEncoder().encode(text);
+const bytesToBase64 = bytes => {
   let bin = '';
   for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
   return btoa(bin);
 };
-const fromBase64 = b64 => new TextDecoder().decode(Uint8Array.from(atob(b64), c => c.charCodeAt(0)));
+const base64ToBytes = b64 => Uint8Array.from(atob(b64), c => c.charCodeAt(0));
+const pipeBytes = async (bytes, stream) => new Uint8Array(await new Response(new Blob([bytes]).stream().pipeThrough(stream)).arrayBuffer());
 
-export function exportBackup() {
+export async function exportBackup() {
   save();
   const data = {};
   for (const key of BACKUP_KEYS) {
@@ -147,29 +148,51 @@ export function exportBackup() {
       if (value != null) data[key] = value;
     } catch {}
   }
-  return BACKUP_PREFIX + toBase64(JSON.stringify({ app: 'hcbt', v: 1, at: Date.now(), data }));
+  const bytes = new TextEncoder().encode(JSON.stringify({ app: 'hcbt', v: 1, at: Date.now(), data }));
+  if (canGzip) {
+    try {
+      return 'HCBT2:' + bytesToBase64(await pipeBytes(bytes, new CompressionStream('gzip')));
+    } catch {}
+  }
+  return 'HCBT1:' + bytesToBase64(bytes);
 }
 
-// 잘못된 코드면 Error를 던져요. 성공하면 옮긴 기록 수를 돌려줘요.
-export function readBackup(code) {
+// 잘못된 코드면 Error를 던져요. 성공하면 옮길 기록 수를 돌려줘요.
+export async function readBackup(code) {
   const text = String(code ?? '').replace(/\s+/g, '');
-  if (!text.startsWith(BACKUP_PREFIX)) throw new Error('한국사 CBT 백업 코드가 아니에요');
+  const kind = text.slice(0, 6);
+  if (kind !== 'HCBT1:' && kind !== 'HCBT2:') throw new Error('한국사 CBT 백업 코드가 아니에요');
+  if (kind === 'HCBT2:' && !canGzip) throw new Error('이 브라우저는 압축된 코드를 못 읽어요. 최신 사파리·크롬에서 열어 주세요');
   let backup;
   try {
-    backup = JSON.parse(fromBase64(text.slice(BACKUP_PREFIX.length)));
+    let bytes = base64ToBytes(text.slice(6));
+    if (kind === 'HCBT2:') bytes = await pipeBytes(bytes, new DecompressionStream('gzip'));
+    backup = JSON.parse(new TextDecoder().decode(bytes));
   } catch {
     throw new Error('코드가 잘렸거나 바뀌었어요. 처음부터 끝까지 다시 복사해 주세요');
   }
   if (backup?.app !== 'hcbt' || backup.v !== 1 || typeof backup.data?.[KEY] !== 'string') throw new Error('읽을 수 없는 백업 코드예요');
-  const records = JSON.parse(backup.data[KEY]);
+  let records;
+  try {
+    records = JSON.parse(backup.data[KEY]);
+  } catch {
+    records = null;
+  }
   if (!Array.isArray(records?.attempts)) throw new Error('읽을 수 없는 백업 코드예요');
   return { backup, attempts: records.attempts.length, exams: records.exams?.length ?? 0, at: backup.at };
 }
 
+// 중간에 저장이 실패하면(용량 부족 등) 원래 값으로 모두 되돌리고 Error를 던져요.
 export function restoreBackup({ backup }) {
-  for (const key of BACKUP_KEYS) {
-    if (typeof backup.data[key] === 'string') localStorage.setItem(key, backup.data[key]);
-    else localStorage.removeItem(key);
+  const before = new Map(BACKUP_KEYS.map(key => [key, localStorage.getItem(key)]));
+  const put = (key, value) => (value == null ? localStorage.removeItem(key) : localStorage.setItem(key, value));
+  try {
+    for (const key of BACKUP_KEYS) put(key, typeof backup.data[key] === 'string' ? backup.data[key] : null);
+  } catch {
+    for (const [key, value] of before) {
+      try { put(key, value); } catch {}
+    }
+    throw new Error('저장 공간이 부족해서 옮기지 못했어요. 지금 기록은 그대로예요');
   }
   state = load();
 }
