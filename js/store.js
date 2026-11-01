@@ -125,6 +125,55 @@ export function addResult(result) {
   save();
 }
 
+// ── 기록 백업 코드 ── 아이폰 사파리와 홈 화면 앱은 저장소가 따로라서, 코드로 기록을 옮겨요.
+// 풀이 기록·목표·계획표와 익명 ID(서버 기록이 이어지게)를 JSON으로 묶어 base64로 만들어요.
+const BACKUP_PREFIX = 'HCBT1:';
+const BACKUP_KEYS = [KEY, 'hcbt.goal', 'hcbt.plan', 'hcbt.anon'];
+
+const toBase64 = text => {
+  const bytes = new TextEncoder().encode(text);
+  let bin = '';
+  for (let i = 0; i < bytes.length; i += 0x8000) bin += String.fromCharCode(...bytes.subarray(i, i + 0x8000));
+  return btoa(bin);
+};
+const fromBase64 = b64 => new TextDecoder().decode(Uint8Array.from(atob(b64), c => c.charCodeAt(0)));
+
+export function exportBackup() {
+  save();
+  const data = {};
+  for (const key of BACKUP_KEYS) {
+    try {
+      const value = localStorage.getItem(key);
+      if (value != null) data[key] = value;
+    } catch {}
+  }
+  return BACKUP_PREFIX + toBase64(JSON.stringify({ app: 'hcbt', v: 1, at: Date.now(), data }));
+}
+
+// 잘못된 코드면 Error를 던져요. 성공하면 옮긴 기록 수를 돌려줘요.
+export function readBackup(code) {
+  const text = String(code ?? '').replace(/\s+/g, '');
+  if (!text.startsWith(BACKUP_PREFIX)) throw new Error('한국사 CBT 백업 코드가 아니에요');
+  let backup;
+  try {
+    backup = JSON.parse(fromBase64(text.slice(BACKUP_PREFIX.length)));
+  } catch {
+    throw new Error('코드가 잘렸거나 바뀌었어요. 처음부터 끝까지 다시 복사해 주세요');
+  }
+  if (backup?.app !== 'hcbt' || backup.v !== 1 || typeof backup.data?.[KEY] !== 'string') throw new Error('읽을 수 없는 백업 코드예요');
+  const records = JSON.parse(backup.data[KEY]);
+  if (!Array.isArray(records?.attempts)) throw new Error('읽을 수 없는 백업 코드예요');
+  return { backup, attempts: records.attempts.length, exams: records.exams?.length ?? 0, at: backup.at };
+}
+
+export function restoreBackup({ backup }) {
+  for (const key of BACKUP_KEYS) {
+    if (typeof backup.data[key] === 'string') localStorage.setItem(key, backup.data[key]);
+    else localStorage.removeItem(key);
+  }
+  state = load();
+}
+
 export function resetAll() {
   state = empty();
   save();
