@@ -11,7 +11,8 @@ const BEST_KEY = 'hcbt.order';
 const WINDOW = 9;
 
 const keyOf = e => e.year * 100 + (e.month ?? 0);
-const yearText = e => (e.year < 0 ? `기원전 ${-e.year}년` : `${e.year}년`) + (e.month ? ` ${e.month}월` : '');
+// 달은 순서를 가리는 데만 써요. 1895년까지는 음력이라 화면에는 연도만 보여요(박사).
+const yearText = e => (e.year < 0 ? `기원전 ${-e.year}년` : `${e.year}년`);
 
 function loadBest() {
   try { return JSON.parse(localStorage.getItem(BEST_KEY)) ?? {}; } catch { return {}; }

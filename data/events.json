@@ -1,5 +1,651 @@
 [
  {
+  "id": "ev-031",
+  "era": "고대",
+  "name": "미천왕의 낙랑군 축출",
+  "year": 313,
+  "note": "고구려가 낙랑군을 몰아내고 대동강 유역 차지",
+  "ref": "https://ko.wikipedia.org/wiki/미천왕"
+ },
+ {
+  "id": "ev-032",
+  "era": "고대",
+  "name": "근초고왕의 평양성 공격",
+  "year": 371,
+  "note": "백제가 고구려 평양성 공격, 고국원왕 전사",
+  "ref": "https://ko.wikipedia.org/wiki/근초고왕"
+ },
+ {
+  "id": "ev-033",
+  "era": "고대",
+  "name": "고구려 불교 수용·태학 설립",
+  "year": 372,
+  "note": "소수림왕, 전진에서 불교 수용, 태학 설립",
+  "ref": "https://ko.wikipedia.org/wiki/소수림왕"
+ },
+ {
+  "id": "ev-034",
+  "era": "고대",
+  "name": "광개토 대왕의 신라 구원",
+  "year": 400,
+  "note": "신라에 침입한 왜를 고구려군이 물리침",
+  "ref": "https://ko.wikipedia.org/wiki/광개토대왕"
+ },
+ {
+  "id": "ev-035",
+  "era": "고대",
+  "name": "장수왕의 평양 천도",
+  "year": 427,
+  "note": "국내성에서 평양으로, 남진 정책",
+  "ref": "https://ko.wikipedia.org/wiki/장수왕"
+ },
+ {
+  "id": "ev-036",
+  "era": "고대",
+  "name": "나제 동맹",
+  "year": 433,
+  "note": "고구려 남진에 맞선 백제 비유왕·신라 눌지 마립간",
+  "ref": "https://ko.wikipedia.org/wiki/나제동맹"
+ },
+ {
+  "id": "ev-037",
+  "era": "고대",
+  "name": "고구려의 한성 함락",
+  "year": 475,
+  "note": "장수왕이 한성 함락, 개로왕 전사 → 웅진 천도",
+  "ref": "https://ko.wikipedia.org/wiki/개로왕"
+ },
+ {
+  "id": "ev-038",
+  "era": "고대",
+  "name": "우산국 복속",
+  "year": 512,
+  "note": "지증왕 때 이사부가 우산국 정벌",
+  "ref": "https://ko.wikipedia.org/wiki/우산국"
+ },
+ {
+  "id": "ev-039",
+  "era": "고대",
+  "name": "법흥왕의 율령 반포",
+  "year": 520,
+  "note": "율령 반포와 공복 제정",
+  "ref": "https://ko.wikipedia.org/wiki/법흥왕"
+ },
+ {
+  "id": "ev-040",
+  "era": "고대",
+  "name": "금관가야 병합",
+  "year": 532,
+  "note": "법흥왕 때 금관가야가 신라에 항복",
+  "ref": "https://ko.wikipedia.org/wiki/금관가야"
+ },
+ {
+  "id": "ev-041",
+  "era": "고대",
+  "name": "백제의 사비 천도",
+  "year": 538,
+  "note": "성왕, 국호를 남부여로 고침",
+  "ref": "https://ko.wikipedia.org/wiki/성왕_(백제)"
+ },
+ {
+  "id": "ev-042",
+  "era": "고대",
+  "name": "관산성 전투",
+  "year": 554,
+  "note": "백제 성왕이 신라와 싸우다 전사, 나제 동맹 결렬",
+  "ref": "https://ko.wikipedia.org/wiki/관산성_전투"
+ },
+ {
+  "id": "ev-043",
+  "era": "고대",
+  "name": "대가야 멸망",
+  "year": 562,
+  "note": "진흥왕 때 이사부·사다함이 정복",
+  "ref": "https://ko.wikipedia.org/wiki/대가야"
+ },
+ {
+  "id": "ev-044",
+  "era": "고대",
+  "name": "살수 대첩",
+  "year": 612,
+  "note": "을지문덕이 수의 별동대를 물리침",
+  "ref": "https://ko.wikipedia.org/wiki/살수_대첩"
+ },
+ {
+  "id": "ev-045",
+  "era": "고대",
+  "name": "연개소문의 정변",
+  "year": 642,
+  "note": "영류왕을 죽이고 보장왕을 세움, 대막리지",
+  "ref": "https://ko.wikipedia.org/wiki/연개소문"
+ },
+ {
+  "id": "ev-046",
+  "era": "고대",
+  "name": "안시성 싸움",
+  "year": 645,
+  "note": "당 태종의 침입을 안시성에서 막아 냄",
+  "ref": "https://ko.wikipedia.org/wiki/안시성_전투"
+ },
+ {
+  "id": "ev-047",
+  "era": "고대",
+  "name": "백제 멸망",
+  "year": 660,
+  "note": "황산벌 전투 뒤 나당 연합군에 사비성 함락",
+  "ref": "https://ko.wikipedia.org/wiki/백제의_멸망"
+ },
+ {
+  "id": "ev-048",
+  "era": "고대",
+  "name": "고구려 멸망",
+  "year": 668,
+  "note": "나당 연합군에 평양성 함락, 당이 안동 도호부 설치",
+  "ref": "https://ko.wikipedia.org/wiki/고구려-당_전쟁"
+ },
+ {
+  "id": "ev-049",
+  "era": "고대",
+  "name": "기벌포 전투",
+  "year": 676,
+  "note": "신라가 당 수군을 물리치고 삼국 통일 완성",
+  "ref": "https://ko.wikipedia.org/wiki/기벌포_전투"
+ },
+ {
+  "id": "ev-050",
+  "era": "고대",
+  "name": "신문왕의 녹읍 폐지",
+  "year": 689,
+  "note": "관료전 지급(687) 뒤 귀족의 녹읍 폐지",
+  "ref": "https://ko.wikipedia.org/wiki/녹읍"
+ },
+ {
+  "id": "ev-051",
+  "era": "고대",
+  "name": "발해 건국",
+  "year": 698,
+  "note": "대조영이 동모산에서 건국",
+  "ref": "https://ko.wikipedia.org/wiki/발해"
+ },
+ {
+  "id": "ev-052",
+  "era": "고대",
+  "name": "독서삼품과 실시",
+  "year": 788,
+  "note": "원성왕, 유교 경전 이해로 관리 선발",
+  "ref": "https://ko.wikipedia.org/wiki/독서삼품과"
+ },
+ {
+  "id": "ev-053",
+  "era": "고대",
+  "name": "청해진 설치",
+  "year": 828,
+  "note": "장보고가 완도에 설치, 해상 무역 장악",
+  "ref": "https://ko.wikipedia.org/wiki/청해진"
+ },
+ {
+  "id": "ev-054",
+  "era": "고대",
+  "name": "원종·애노의 난",
+  "year": 889,
+  "note": "진성 여왕 때 사벌주에서 일어난 농민 봉기",
+  "ref": "https://ko.wikipedia.org/wiki/원종·애노의_난"
+ },
+ {
+  "id": "ev-055",
+  "era": "고대",
+  "name": "후백제 건국",
+  "year": 900,
+  "note": "견훤이 완산주에 도읍",
+  "ref": "https://ko.wikipedia.org/wiki/후백제"
+ },
+ {
+  "id": "ev-056",
+  "era": "고려",
+  "name": "고려 건국",
+  "year": 918,
+  "note": "왕건이 궁예를 몰아내고 건국, 연호 천수",
+  "ref": "https://ko.wikipedia.org/wiki/태조_(고려)"
+ },
+ {
+  "id": "ev-057",
+  "era": "고려",
+  "name": "후삼국 통일",
+  "year": 936,
+  "note": "일리천 전투에서 신검의 후백제군 격파",
+  "ref": "https://ko.wikipedia.org/wiki/일리천_전투"
+ },
+ {
+  "id": "ev-058",
+  "era": "고려",
+  "name": "노비안검법 실시",
+  "year": 956,
+  "note": "광종, 억울하게 노비가 된 사람을 풀어 줌",
+  "ref": "https://ko.wikipedia.org/wiki/노비안검법"
+ },
+ {
+  "id": "ev-059",
+  "era": "고려",
+  "name": "과거제 실시",
+  "year": 958,
+  "note": "광종, 쌍기의 건의",
+  "ref": "https://ko.wikipedia.org/wiki/광종_(고려)"
+ },
+ {
+  "id": "ev-060",
+  "era": "고려",
+  "name": "최승로의 시무 28조",
+  "year": 982,
+  "note": "성종에게 유교 정치 건의 → 12목 설치",
+  "ref": "https://ko.wikipedia.org/wiki/시무_28조"
+ },
+ {
+  "id": "ev-061",
+  "era": "고려",
+  "name": "서희의 외교 담판",
+  "year": 993,
+  "note": "거란 1차 침입, 강동 6주 획득",
+  "ref": "https://ko.wikipedia.org/wiki/서희"
+ },
+ {
+  "id": "ev-062",
+  "era": "고려",
+  "name": "귀주 대첩",
+  "year": 1019,
+  "note": "거란 3차 침입, 강감찬",
+  "ref": "https://ko.wikipedia.org/wiki/귀주_대첩"
+ },
+ {
+  "id": "ev-063",
+  "era": "고려",
+  "name": "동북 9성 축조",
+  "year": 1107,
+  "note": "윤관의 별무반이 여진을 몰아내고 쌓음",
+  "ref": "https://ko.wikipedia.org/wiki/동북_9성"
+ },
+ {
+  "id": "ev-064",
+  "era": "고려",
+  "name": "이자겸의 난",
+  "year": 1126,
+  "note": "인종 때 이자겸·척준경이 궁궐을 불태움",
+  "ref": "https://ko.wikipedia.org/wiki/이자겸"
+ },
+ {
+  "id": "ev-065",
+  "era": "고려",
+  "name": "묘청의 서경 천도 운동",
+  "year": 1135,
+  "note": "서경에서 국호 대위, 김부식이 진압",
+  "ref": "https://ko.wikipedia.org/wiki/묘청의_난"
+ },
+ {
+  "id": "ev-066",
+  "era": "고려",
+  "name": "『삼국사기』 편찬",
+  "year": 1145,
+  "note": "김부식, 기전체",
+  "ref": "https://ko.wikipedia.org/wiki/삼국사기"
+ },
+ {
+  "id": "ev-067",
+  "era": "고려",
+  "name": "무신 정변",
+  "year": 1170,
+  "note": "정중부·이의방 등이 문신을 죽이고 권력 장악",
+  "ref": "https://ko.wikipedia.org/wiki/무신정변"
+ },
+ {
+  "id": "ev-068",
+  "era": "고려",
+  "name": "망이·망소이의 난",
+  "year": 1176,
+  "note": "공주 명학소의 차별에 맞선 봉기",
+  "ref": "https://ko.wikipedia.org/wiki/망이·망소이의_난"
+ },
+ {
+  "id": "ev-069",
+  "era": "고려",
+  "name": "최충헌 집권",
+  "year": 1196,
+  "note": "이의민을 제거, 봉사 10조",
+  "ref": "https://ko.wikipedia.org/wiki/최충헌"
+ },
+ {
+  "id": "ev-070",
+  "era": "고려",
+  "name": "만적의 난",
+  "year": 1198,
+  "note": "최충헌의 사노비 만적이 신분 해방을 꾀함",
+  "ref": "https://ko.wikipedia.org/wiki/만적의_난"
+ },
+ {
+  "id": "ev-071",
+  "era": "고려",
+  "name": "강화도 천도",
+  "year": 1232,
+  "month": 7,
+  "note": "최우가 몽골에 맞서 도읍을 강화도로 옮김",
+  "ref": "https://ko.wikipedia.org/wiki/강화_천도"
+ },
+ {
+  "id": "ev-072",
+  "era": "고려",
+  "name": "처인성 전투",
+  "year": 1232,
+  "month": 12,
+  "note": "김윤후가 몽골 장수 살리타를 사살",
+  "ref": "https://ko.wikipedia.org/wiki/처인성_전투"
+ },
+ {
+  "id": "ev-073",
+  "era": "고려",
+  "name": "팔만대장경 완성",
+  "year": 1251,
+  "note": "대장도감에서 16년 만에 완성",
+  "ref": "https://ko.wikipedia.org/wiki/합천_해인사_대장경판"
+ },
+ {
+  "id": "ev-074",
+  "era": "고려",
+  "name": "개경 환도와 삼별초 항쟁",
+  "year": 1270,
+  "note": "몽골과 강화하고 개경 환도, 삼별초가 진도로",
+  "ref": "https://ko.wikipedia.org/wiki/삼별초_항쟁"
+ },
+ {
+  "id": "ev-075",
+  "era": "고려",
+  "name": "쌍성총관부 수복",
+  "year": 1356,
+  "note": "공민왕의 반원 개혁, 철령 이북 수복",
+  "ref": "https://ko.wikipedia.org/wiki/쌍성총관부"
+ },
+ {
+  "id": "ev-076",
+  "era": "고려",
+  "name": "『직지심체요절』 간행",
+  "year": 1377,
+  "note": "청주 흥덕사, 현존 가장 오래된 금속 활자본",
+  "ref": "https://ko.wikipedia.org/wiki/직지심체요절"
+ },
+ {
+  "id": "ev-077",
+  "era": "고려",
+  "name": "진포 대첩",
+  "year": 1380,
+  "month": 8,
+  "note": "최무선이 화포로 왜선을 불태움",
+  "ref": "https://ko.wikipedia.org/wiki/진포_해전"
+ },
+ {
+  "id": "ev-078",
+  "era": "고려",
+  "name": "황산 대첩",
+  "year": 1380,
+  "month": 9,
+  "note": "이성계가 남원 황산에서 왜구 격파",
+  "ref": "https://ko.wikipedia.org/wiki/황산대첩"
+ },
+ {
+  "id": "ev-079",
+  "era": "고려",
+  "name": "위화도 회군",
+  "year": 1388,
+  "note": "요동 정벌에 나선 이성계가 군대를 돌림",
+  "ref": "https://ko.wikipedia.org/wiki/위화도_회군"
+ },
+ {
+  "id": "ev-080",
+  "era": "고려",
+  "name": "과전법 실시",
+  "year": 1391,
+  "note": "신진 사대부의 토지 개혁, 경기 지역 수조권",
+  "ref": "https://ko.wikipedia.org/wiki/과전법"
+ },
+ {
+  "id": "ev-081",
+  "era": "조선",
+  "name": "조선 건국",
+  "year": 1392,
+  "note": "이성계 즉위",
+  "ref": "https://ko.wikipedia.org/wiki/태조_(조선)"
+ },
+ {
+  "id": "ev-082",
+  "era": "조선",
+  "name": "한양 천도",
+  "year": 1394,
+  "note": "태조가 개경에서 한양으로 도읍을 옮김",
+  "ref": "https://ko.wikipedia.org/wiki/한성부"
+ },
+ {
+  "id": "ev-083",
+  "era": "조선",
+  "name": "제1차 왕자의 난",
+  "year": 1398,
+  "note": "이방원이 정도전 등을 제거",
+  "ref": "https://ko.wikipedia.org/wiki/제1차_왕자의_난"
+ },
+ {
+  "id": "ev-084",
+  "era": "조선",
+  "name": "쓰시마 정벌",
+  "year": 1419,
+  "note": "세종 때 이종무가 왜구 근거지 토벌",
+  "ref": "https://ko.wikipedia.org/wiki/기해동정"
+ },
+ {
+  "id": "ev-085",
+  "era": "조선",
+  "name": "훈민정음 반포",
+  "year": 1446,
+  "note": "세종, 1443년 창제 뒤 반포",
+  "ref": "https://ko.wikipedia.org/wiki/훈민정음"
+ },
+ {
+  "id": "ev-086",
+  "era": "조선",
+  "name": "계유정난",
+  "year": 1453,
+  "note": "수양 대군이 김종서 등을 제거",
+  "ref": "https://ko.wikipedia.org/wiki/계유정난"
+ },
+ {
+  "id": "ev-087",
+  "era": "조선",
+  "name": "『경국대전』 반포",
+  "year": 1485,
+  "note": "성종 때 완성·시행된 기본 법전",
+  "ref": "https://ko.wikipedia.org/wiki/경국대전"
+ },
+ {
+  "id": "ev-088",
+  "era": "조선",
+  "name": "무오사화",
+  "year": 1498,
+  "note": "연산군, 김종직의 조의제문이 빌미",
+  "ref": "https://ko.wikipedia.org/wiki/무오사화"
+ },
+ {
+  "id": "ev-089",
+  "era": "조선",
+  "name": "갑자사화",
+  "year": 1504,
+  "note": "연산군, 폐비 윤씨 사건이 빌미",
+  "ref": "https://ko.wikipedia.org/wiki/갑자사화"
+ },
+ {
+  "id": "ev-090",
+  "era": "조선",
+  "name": "중종반정",
+  "year": 1506,
+  "note": "연산군 폐위, 중종 즉위",
+  "ref": "https://ko.wikipedia.org/wiki/중종반정"
+ },
+ {
+  "id": "ev-091",
+  "era": "조선",
+  "name": "기묘사화",
+  "year": 1519,
+  "note": "조광조의 위훈 삭제에 훈구가 반발",
+  "ref": "https://ko.wikipedia.org/wiki/기묘사화"
+ },
+ {
+  "id": "ev-092",
+  "era": "조선",
+  "name": "을사사화",
+  "year": 1545,
+  "note": "명종 즉위, 대윤·소윤의 다툼",
+  "ref": "https://ko.wikipedia.org/wiki/을사사화"
+ },
+ {
+  "id": "ev-093",
+  "era": "조선",
+  "name": "임진왜란 발발",
+  "year": 1592,
+  "month": 4,
+  "note": "일본군 부산 상륙, 선조 의주 피란",
+  "ref": "https://ko.wikipedia.org/wiki/임진왜란"
+ },
+ {
+  "id": "ev-094",
+  "era": "조선",
+  "name": "한산도 대첩",
+  "year": 1592,
+  "month": 7,
+  "note": "이순신, 학익진",
+  "ref": "https://ko.wikipedia.org/wiki/한산도_대첩"
+ },
+ {
+  "id": "ev-095",
+  "era": "조선",
+  "name": "행주 대첩",
+  "year": 1593,
+  "note": "권율이 행주산성에서 승리",
+  "ref": "https://ko.wikipedia.org/wiki/행주대첩"
+ },
+ {
+  "id": "ev-096",
+  "era": "조선",
+  "name": "정유재란",
+  "year": 1597,
+  "note": "일본의 재침, 이순신의 명량 해전",
+  "ref": "https://ko.wikipedia.org/wiki/정유재란"
+ },
+ {
+  "id": "ev-097",
+  "era": "조선",
+  "name": "대동법 실시",
+  "year": 1608,
+  "note": "광해군, 이원익의 건의로 경기도부터",
+  "ref": "https://ko.wikipedia.org/wiki/대동법"
+ },
+ {
+  "id": "ev-098",
+  "era": "조선",
+  "name": "인조반정",
+  "year": 1623,
+  "note": "서인이 광해군을 몰아냄",
+  "ref": "https://ko.wikipedia.org/wiki/인조반정"
+ },
+ {
+  "id": "ev-099",
+  "era": "조선",
+  "name": "정묘호란",
+  "year": 1627,
+  "note": "후금 침입, 정봉수·이립의 의병",
+  "ref": "https://ko.wikipedia.org/wiki/정묘호란"
+ },
+ {
+  "id": "ev-100",
+  "era": "조선",
+  "name": "병자호란",
+  "year": 1636,
+  "note": "청 침입, 남한산성 항전 → 삼전도 항복",
+  "ref": "https://ko.wikipedia.org/wiki/병자호란"
+ },
+ {
+  "id": "ev-101",
+  "era": "조선",
+  "name": "기해예송",
+  "year": 1659,
+  "note": "효종의 죽음 뒤 자의 대비 상복 논쟁",
+  "ref": "https://ko.wikipedia.org/wiki/예송"
+ },
+ {
+  "id": "ev-102",
+  "era": "조선",
+  "name": "경신환국",
+  "year": 1680,
+  "note": "허적의 유악 사건·허견의 역모, 서인 집권",
+  "ref": "https://ko.wikipedia.org/wiki/경신환국"
+ },
+ {
+  "id": "ev-103",
+  "era": "조선",
+  "name": "기사환국",
+  "year": 1689,
+  "note": "희빈 장씨 아들의 원자 책봉, 남인 집권",
+  "ref": "https://ko.wikipedia.org/wiki/기사환국"
+ },
+ {
+  "id": "ev-104",
+  "era": "조선",
+  "name": "갑술환국",
+  "year": 1694,
+  "note": "인현 왕후 복위, 남인 몰락",
+  "ref": "https://ko.wikipedia.org/wiki/갑술환국"
+ },
+ {
+  "id": "ev-105",
+  "era": "조선",
+  "name": "백두산정계비 건립",
+  "year": 1712,
+  "note": "숙종 때 청과 국경을 정함",
+  "ref": "https://ko.wikipedia.org/wiki/백두산정계비"
+ },
+ {
+  "id": "ev-106",
+  "era": "조선",
+  "name": "균역법 실시",
+  "year": 1750,
+  "note": "영조, 군포 2필을 1필로",
+  "ref": "https://ko.wikipedia.org/wiki/균역법"
+ },
+ {
+  "id": "ev-107",
+  "era": "조선",
+  "name": "신해통공",
+  "year": 1791,
+  "note": "정조, 육의전 외 시전의 금난전권 폐지",
+  "ref": "https://ko.wikipedia.org/wiki/신해통공"
+ },
+ {
+  "id": "ev-108",
+  "era": "조선",
+  "name": "신유박해",
+  "year": 1801,
+  "note": "순조 즉위년 천주교 탄압, 황사영 백서 사건",
+  "ref": "https://ko.wikipedia.org/wiki/신유박해"
+ },
+ {
+  "id": "ev-109",
+  "era": "조선",
+  "name": "홍경래의 난",
+  "year": 1811,
+  "note": "서북 지역 차별에 맞선 봉기, 정주성",
+  "ref": "https://ko.wikipedia.org/wiki/홍경래의_난"
+ },
+ {
+  "id": "ev-110",
+  "era": "조선",
+  "name": "임술 농민 봉기",
+  "year": 1862,
+  "note": "진주에서 시작, 백낙신의 수탈 → 삼정이정청",
+  "ref": "https://ko.wikipedia.org/wiki/임술농민봉기"
+ },
+ {
   "id": "ev-001",
   "era": "근대",
   "name": "병인박해",
@@ -268,5 +914,452 @@
   "month": 8,
   "note": "한일 병합 조약, 조선 총독부 설치",
   "ref": "https://ko.wikipedia.org/wiki/한일병합조약"
+ },
+ {
+  "id": "ev-111",
+  "era": "일제 강점기",
+  "name": "105인 사건",
+  "year": 1911,
+  "note": "데라우치 총독 암살 모의 조작, 신민회 해체",
+  "ref": "https://ko.wikipedia.org/wiki/105인_사건"
+ },
+ {
+  "id": "ev-112",
+  "era": "일제 강점기",
+  "name": "토지 조사령 공포",
+  "year": 1912,
+  "month": 8,
+  "note": "토지 조사 사업, 기한 내 신고제",
+  "ref": "https://ko.wikipedia.org/wiki/조선_토지_조사_사업"
+ },
+ {
+  "id": "ev-113",
+  "era": "일제 강점기",
+  "name": "대한 광복군 정부 수립",
+  "year": 1914,
+  "note": "연해주, 이상설·이동휘",
+  "ref": "https://ko.wikipedia.org/wiki/대한광복군_정부"
+ },
+ {
+  "id": "ev-114",
+  "era": "일제 강점기",
+  "name": "2·8 독립 선언",
+  "year": 1919,
+  "month": 2,
+  "note": "도쿄 유학생들의 독립 선언",
+  "ref": "https://ko.wikipedia.org/wiki/2·8_독립_선언"
+ },
+ {
+  "id": "ev-115",
+  "era": "일제 강점기",
+  "name": "3·1 운동",
+  "year": 1919,
+  "month": 3,
+  "note": "민족 대표 33인, 탑골 공원 만세 시위",
+  "ref": "https://ko.wikipedia.org/wiki/3·1_운동"
+ },
+ {
+  "id": "ev-116",
+  "era": "일제 강점기",
+  "name": "대한민국 임시 정부 수립",
+  "year": 1919,
+  "month": 4,
+  "note": "상하이, 민주 공화제",
+  "ref": "https://ko.wikipedia.org/wiki/대한민국_임시정부"
+ },
+ {
+  "id": "ev-117",
+  "era": "일제 강점기",
+  "name": "봉오동 전투",
+  "year": 1920,
+  "month": 6,
+  "note": "홍범도의 대한 독립군 등이 승리",
+  "ref": "https://ko.wikipedia.org/wiki/봉오동_전투"
+ },
+ {
+  "id": "ev-118",
+  "era": "일제 강점기",
+  "name": "청산리 전투",
+  "year": 1920,
+  "month": 10,
+  "note": "김좌진의 북로 군정서 등이 승리",
+  "ref": "https://ko.wikipedia.org/wiki/청산리_전투"
+ },
+ {
+  "id": "ev-119",
+  "era": "일제 강점기",
+  "name": "자유시 참변",
+  "year": 1921,
+  "month": 6,
+  "note": "러시아 자유시에서 독립군이 큰 피해",
+  "ref": "https://ko.wikipedia.org/wiki/자유시_참변"
+ },
+ {
+  "id": "ev-120",
+  "era": "일제 강점기",
+  "name": "국민 대표 회의",
+  "year": 1923,
+  "month": 1,
+  "note": "임시 정부 진로를 두고 창조파·개조파 대립",
+  "ref": "https://ko.wikipedia.org/wiki/국민대표회의"
+ },
+ {
+  "id": "ev-121",
+  "era": "일제 강점기",
+  "name": "미쓰야 협정",
+  "year": 1925,
+  "month": 6,
+  "note": "만주 군벌과 일제가 독립군 단속 협정",
+  "ref": "https://ko.wikipedia.org/wiki/미쓰야_협약"
+ },
+ {
+  "id": "ev-122",
+  "era": "일제 강점기",
+  "name": "6·10 만세 운동",
+  "year": 1926,
+  "month": 6,
+  "note": "순종의 인산일 만세 시위",
+  "ref": "https://ko.wikipedia.org/wiki/6·10_만세_운동"
+ },
+ {
+  "id": "ev-123",
+  "era": "일제 강점기",
+  "name": "신간회 창립",
+  "year": 1927,
+  "month": 2,
+  "note": "민족주의·사회주의 세력의 협동, 회장 이상재",
+  "ref": "https://ko.wikipedia.org/wiki/신간회"
+ },
+ {
+  "id": "ev-124",
+  "era": "일제 강점기",
+  "name": "광주 학생 항일 운동",
+  "year": 1929,
+  "month": 11,
+  "note": "나주역 충돌에서 시작, 신간회 진상 조사단",
+  "ref": "https://ko.wikipedia.org/wiki/광주_학생_항일_운동"
+ },
+ {
+  "id": "ev-125",
+  "era": "일제 강점기",
+  "name": "만주 사변",
+  "year": 1931,
+  "month": 9,
+  "note": "일제의 만주 침략 → 한중 연합 작전의 계기",
+  "ref": "https://ko.wikipedia.org/wiki/만주사변"
+ },
+ {
+  "id": "ev-126",
+  "era": "일제 강점기",
+  "name": "이봉창 의거",
+  "year": 1932,
+  "month": 1,
+  "note": "한인 애국단, 도쿄에서 일왕에게 폭탄",
+  "ref": "https://ko.wikipedia.org/wiki/이봉창"
+ },
+ {
+  "id": "ev-127",
+  "era": "일제 강점기",
+  "name": "윤봉길 의거",
+  "year": 1932,
+  "month": 4,
+  "note": "한인 애국단, 상하이 훙커우 공원",
+  "ref": "https://ko.wikipedia.org/wiki/훙커우_공원_사건"
+ },
+ {
+  "id": "ev-128",
+  "era": "일제 강점기",
+  "name": "대전자령 전투",
+  "year": 1933,
+  "note": "지청천의 한국 독립군이 크게 승리",
+  "ref": "https://ko.wikipedia.org/wiki/대전자령_전투"
+ },
+ {
+  "id": "ev-129",
+  "era": "일제 강점기",
+  "name": "중일 전쟁",
+  "year": 1937,
+  "month": 7,
+  "note": "전시 체제로 전환, 황국 신민 서사",
+  "ref": "https://ko.wikipedia.org/wiki/중일_전쟁"
+ },
+ {
+  "id": "ev-130",
+  "era": "일제 강점기",
+  "name": "조선 의용대 창설",
+  "year": 1938,
+  "month": 10,
+  "note": "김원봉, 중국 관내 첫 한인 무장 부대",
+  "ref": "https://ko.wikipedia.org/wiki/조선의용대"
+ },
+ {
+  "id": "ev-131",
+  "era": "일제 강점기",
+  "name": "창씨개명 시행",
+  "year": 1940,
+  "month": 2,
+  "note": "일본식 성과 이름 강요",
+  "ref": "https://ko.wikipedia.org/wiki/창씨개명"
+ },
+ {
+  "id": "ev-132",
+  "era": "일제 강점기",
+  "name": "한국광복군 창설",
+  "year": 1940,
+  "month": 9,
+  "note": "충칭의 임시 정부, 총사령관 지청천",
+  "ref": "https://ko.wikipedia.org/wiki/한국_광복군"
+ },
+ {
+  "id": "ev-133",
+  "era": "일제 강점기",
+  "name": "대한민국 건국 강령 발표",
+  "year": 1941,
+  "month": 11,
+  "note": "임시 정부, 조소앙의 삼균주의",
+  "ref": "https://ko.wikipedia.org/wiki/대한민국_건국강령"
+ },
+ {
+  "id": "ev-134",
+  "era": "일제 강점기",
+  "name": "조선어 학회 사건",
+  "year": 1942,
+  "month": 10,
+  "note": "회원을 붙잡아 학회 해산, 사전 편찬 중단",
+  "ref": "https://ko.wikipedia.org/wiki/조선어학회_사건"
+ },
+ {
+  "id": "ev-135",
+  "era": "일제 강점기",
+  "name": "조선 건국 동맹 결성",
+  "year": 1944,
+  "month": 8,
+  "note": "여운형이 국내에서 비밀리에 조직",
+  "ref": "https://ko.wikipedia.org/wiki/건국동맹"
+ },
+ {
+  "id": "ev-136",
+  "era": "현대",
+  "name": "모스크바 3국 외상 회의",
+  "year": 1945,
+  "month": 12,
+  "note": "임시 정부 수립과 최대 5년 신탁 통치 결정",
+  "ref": "https://ko.wikipedia.org/wiki/모스크바_삼국_외상_회의"
+ },
+ {
+  "id": "ev-137",
+  "era": "현대",
+  "name": "제1차 미·소 공동 위원회",
+  "year": 1946,
+  "month": 3,
+  "note": "덕수궁 석조전, 협의 대상 문제로 결렬",
+  "ref": "https://ko.wikipedia.org/wiki/미소공동위원회"
+ },
+ {
+  "id": "ev-138",
+  "era": "현대",
+  "name": "좌우 합작 7원칙 발표",
+  "year": 1946,
+  "month": 10,
+  "note": "여운형·김규식 중심",
+  "ref": "https://ko.wikipedia.org/wiki/좌우합작운동"
+ },
+ {
+  "id": "ev-139",
+  "era": "현대",
+  "name": "제주 4·3 사건",
+  "year": 1948,
+  "month": 4,
+  "note": "남한 단독 선거 반대 무장봉기와 진압",
+  "ref": "https://ko.wikipedia.org/wiki/제주_4·3_사건"
+ },
+ {
+  "id": "ev-140",
+  "era": "현대",
+  "name": "5·10 총선거",
+  "year": 1948,
+  "month": 5,
+  "note": "남한만의 첫 총선거, 제헌 국회 구성",
+  "ref": "https://ko.wikipedia.org/wiki/대한민국_제헌_국회의원_선거"
+ },
+ {
+  "id": "ev-141",
+  "era": "현대",
+  "name": "반민족 행위 처벌법 제정",
+  "year": 1948,
+  "month": 9,
+  "note": "제헌 국회, 반민특위 설치",
+  "ref": "https://ko.wikipedia.org/wiki/반민족행위처벌법"
+ },
+ {
+  "id": "ev-142",
+  "era": "현대",
+  "name": "농지 개혁법 제정",
+  "year": 1949,
+  "month": 6,
+  "note": "유상 매입·유상 분배",
+  "ref": "https://ko.wikipedia.org/wiki/농지개혁법"
+ },
+ {
+  "id": "ev-143",
+  "era": "현대",
+  "name": "6·25 전쟁 발발",
+  "year": 1950,
+  "month": 6,
+  "note": "북한군의 기습 남침",
+  "ref": "https://ko.wikipedia.org/wiki/6.25_전쟁"
+ },
+ {
+  "id": "ev-144",
+  "era": "현대",
+  "name": "발췌 개헌",
+  "year": 1952,
+  "month": 7,
+  "note": "피란지 부산, 대통령 직선제",
+  "ref": "https://ko.wikipedia.org/wiki/부산_정치_파동"
+ },
+ {
+  "id": "ev-145",
+  "era": "현대",
+  "name": "정전 협정 체결",
+  "year": 1953,
+  "month": 7,
+  "note": "판문점, 군사 분계선 설정",
+  "ref": "https://ko.wikipedia.org/wiki/한국_군사_정전에_관한_협정"
+ },
+ {
+  "id": "ev-146",
+  "era": "현대",
+  "name": "사사오입 개헌",
+  "year": 1954,
+  "month": 11,
+  "note": "초대 대통령 중임 제한 철폐",
+  "ref": "https://ko.wikipedia.org/wiki/사사오입_개헌"
+ },
+ {
+  "id": "ev-147",
+  "era": "현대",
+  "name": "4·19 혁명",
+  "year": 1960,
+  "month": 4,
+  "note": "3·15 부정 선거에 맞섬, 이승만 하야",
+  "ref": "https://ko.wikipedia.org/wiki/4·19_혁명"
+ },
+ {
+  "id": "ev-148",
+  "era": "현대",
+  "name": "5·16 군사 정변",
+  "year": 1961,
+  "month": 5,
+  "note": "박정희 등 군인이 장면 내각을 무너뜨림",
+  "ref": "https://ko.wikipedia.org/wiki/5·16_군사정변"
+ },
+ {
+  "id": "ev-149",
+  "era": "현대",
+  "name": "한일 기본 조약 체결",
+  "year": 1965,
+  "month": 6,
+  "note": "국교 정상화, 6·3 시위의 반대",
+  "ref": "https://ko.wikipedia.org/wiki/한일기본조약"
+ },
+ {
+  "id": "ev-150",
+  "era": "현대",
+  "name": "3선 개헌",
+  "year": 1969,
+  "month": 10,
+  "note": "대통령의 세 번 연임 허용",
+  "ref": "https://ko.wikipedia.org/wiki/삼선_개헌"
+ },
+ {
+  "id": "ev-151",
+  "era": "현대",
+  "name": "7·4 남북 공동 성명",
+  "year": 1972,
+  "month": 7,
+  "note": "자주·평화·민족적 대단결, 남북 조절 위원회",
+  "ref": "https://ko.wikipedia.org/wiki/7·4_남북_공동_성명"
+ },
+ {
+  "id": "ev-152",
+  "era": "현대",
+  "name": "10월 유신",
+  "year": 1972,
+  "month": 10,
+  "note": "유신 헌법, 통일 주체 국민 회의",
+  "ref": "https://ko.wikipedia.org/wiki/10월_유신"
+ },
+ {
+  "id": "ev-153",
+  "era": "현대",
+  "name": "부마 민주 항쟁",
+  "year": 1979,
+  "month": 10,
+  "note": "부산·마산의 유신 반대 시위 → 10·26 사태",
+  "ref": "https://ko.wikipedia.org/wiki/부마_민주_항쟁"
+ },
+ {
+  "id": "ev-154",
+  "era": "현대",
+  "name": "5·18 민주화 운동",
+  "year": 1980,
+  "month": 5,
+  "note": "신군부의 비상계엄 확대에 맞선 광주 시민",
+  "ref": "https://ko.wikipedia.org/wiki/5·18_광주_민주화_운동"
+ },
+ {
+  "id": "ev-155",
+  "era": "현대",
+  "name": "6월 민주 항쟁",
+  "year": 1987,
+  "month": 6,
+  "note": "박종철·이한열, 호헌 철폐 → 6·29 선언",
+  "ref": "https://ko.wikipedia.org/wiki/6월_민주_항쟁"
+ },
+ {
+  "id": "ev-156",
+  "era": "현대",
+  "name": "남북 기본 합의서 채택",
+  "year": 1991,
+  "month": 12,
+  "note": "노태우 정부, 남북한 유엔 동시 가입(9월) 뒤",
+  "ref": "https://ko.wikipedia.org/wiki/남북_기본합의서"
+ },
+ {
+  "id": "ev-157",
+  "era": "현대",
+  "name": "금융 실명제 실시",
+  "year": 1993,
+  "month": 8,
+  "note": "김영삼 정부, 대통령 긴급 명령",
+  "ref": "https://ko.wikipedia.org/wiki/금융실명제"
+ },
+ {
+  "id": "ev-158",
+  "era": "현대",
+  "name": "IMF 구제 금융 요청",
+  "year": 1997,
+  "month": 11,
+  "note": "외환 위기, 김영삼 정부 말",
+  "ref": "https://ko.wikipedia.org/wiki/대한민국의_IMF_구제금융_요청"
+ },
+ {
+  "id": "ev-159",
+  "era": "현대",
+  "name": "6·15 남북 공동 선언",
+  "year": 2000,
+  "month": 6,
+  "note": "김대중 정부, 첫 남북 정상 회담",
+  "ref": "https://ko.wikipedia.org/wiki/6·15_남북_공동선언"
+ },
+ {
+  "id": "ev-160",
+  "era": "현대",
+  "name": "10·4 남북 정상 선언",
+  "year": 2007,
+  "month": 10,
+  "note": "노무현 정부, 두 번째 남북 정상 회담",
+  "ref": "https://ko.wikipedia.org/wiki/10.4_남북정상선언"
  }
 ]
