@@ -2,6 +2,7 @@
 import * as data from '../data.js';
 import { todayStr, addDays, formatShort } from '../dates.js';
 import { esc } from '../ui.js';
+import { GRADE } from './grade.js';
 
 const rowHTML = (f, today) => {
   const n = data.topicQuestions(f, today).length;
@@ -26,6 +27,19 @@ function eveHTML() {
     : `<section class="card"><p class="small">🌙 <b>제${exam.round}회 전야제</b> — 빈출 주제로 새로 만든 50문제가 시험 전날인 ${formatShort(addDays(exam.date, -1))}에 이 화면에 열려요.</p></section>`;
 }
 
+// 공부 도구: 읽고 외우기 → 훈련. 기출·모의고사는 '기출·모의' 탭에 있어요.
+function toolsHTML() {
+  const past = data.pastExams().length;
+  const tool = (href, title, sub) => `<a class="tool" href="${href}"><b>${title}</b><span>${sub}</span></a>`;
+  return `<div class="tools">
+    ${data.concepts().length ? tool('#/concept', '📘 개념 카드', `빈출 주제 ${data.concepts().length}개 · 흐름·키워드·함정`) : ''}
+    ${past ? tool('#/cards', '🃏 암기 카드', '단서 → 정답 뒤집기') : ''}
+    ${tool('#/order', '🔢 순서 맞히기', '사건 4개 순서대로 · 1분')}
+    ${past ? tool('#/twostep', '🪜 2단계 연습', '대상 찾기 → 기출 풀기') : ''}
+    ${tool('#/grade', `📝 ${GRADE.round}회 가채점`, '시험 뒤 내 답 넣고 점수 보기')}
+  </div>`;
+}
+
 export function render(el) {
   const today = todayStr();
   const all = data.frequency();
@@ -36,10 +50,12 @@ export function render(el) {
     <section class="card"><ul class="list">${list.map(f => rowHTML(f, today)).join('')}</ul></section>` : '';
 
   el.innerHTML = `
-    <header class="page-head"><h1>81회 빈출 예측</h1></header>
+    <header class="page-head"><h1>공부</h1></header>
     ${eveHTML()}
-    ${data.pastExams().length ? `<a class="btn btn-ghost btn-block" href="#/cards">🃏 빈출 주제 암기 카드로 먼저 훑기</a>` : ""}
-    ${data.concepts().length ? `<a class="btn btn-ghost btn-block mt" href="#/concept">📘 개념 카드 ${data.concepts().length}개 보기</a>` : ""}
+    ${toolsHTML()}
+    <h2 class="section-title">시대별로 풀기</h2>
+    <div class="chips">${data.ERAS.map(era => `<a class="chip" href="#/quiz?mode=era&era=${encodeURIComponent(era)}">${esc(era)}</a>`).join('')}</div>
+    <h2 class="section-title">81회 빈출 예측</h2>
     <section class="card">
       <p>57~80회 심화 문제지 24개를 분석해서, 주제마다 몇 번 나왔는지 셌어요.</p>
       <a class="btn btn-primary btn-block mt" href="#/quiz?mode=hot">🎯 빈출 예상 10문제 풀기</a>

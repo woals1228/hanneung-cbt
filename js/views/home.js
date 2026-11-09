@@ -1,5 +1,5 @@
 // 홈: 수험생(20~30대 공시생·취준생 중심)이 바로 쓰는 순서
-//  목표 급수와 내 실력 → 오늘의 공부(합격 플랜) → 도구 → 오늘의 문제 → 시대별·기념일 → 업데이트
+//  할 일은 위에서부터 하나씩: 목표·실력 재기 → 오늘의 공부 → 오늘의 문제. 나머지 도구는 '공부' 탭(hot.js)에 있어요.
 import * as data from '../data.js';
 import * as store from '../store.js';
 import { todayStr, dateOverride, daysBetween, formatLong, formatShort, dday } from '../dates.js';
@@ -10,15 +10,6 @@ import { getPlan, buildPlan, planDay, dayLinks } from '../plan.js';
 import { GRADE } from './grade.js';
 
 const INSTALL_DISMISSED = 'hcbt.installDismissed';
-// 홈 맨 아래 업데이트 노트 (새 기능을 넣으면 맨 위에 한 줄 추가)
-const UPDATES = [
-  ['11.1', '순서 맞히기 훈련: 고대~현대 사건 160개'],
-  ['11.1', `제${GRADE.round}회 가채점: 내 답을 미리 넣어 두면 정답 발표 즉시 점수`],
-  ['11.1', '합격 플랜, 나의 한국사 명식표(마이), 목표 급수와 합격선'],
-  ['11.1', '과거 시험 10문항과 홍패, 친구 도전장'],
-  ['10.30', '심화 기출 57~80회 24회분, 81회 빈출 예측'],
-];
-
 export function render(el) {
   const today = todayStr();
 
@@ -28,12 +19,9 @@ export function render(el) {
       ${specialCardsHTML(today)}
       ${goalHTML(today)}
       ${todayHTML(today)}
-      ${toolsHTML()}
       <section class="card" id="daily">${dailyHTML(today)}</section>
-      ${erasHTML()}
-      ${upcomingHTML(today)}
       <div id="install-slot">${installHTML()}</div>
-      ${updatesHTML()}`;
+      <a class="btn btn-ghost btn-block" href="#/hot">📚 개념·암기 카드, 빈출, 시대별 풀기는 '공부' 탭에</a>`;
   }
 
   draw();
@@ -83,7 +71,7 @@ function headerHTML(today) {
   const exam = data.nextExam(today);
   return `<header class="home-head">
     <div><p class="date">${formatLong(today)}</p><h1>한국사 CBT</h1>
-      <p class="home-tag">${exam ? `제${exam.round}회 ` : ''}한능검 심화 준비</p></div>
+      <p class="home-tag">기출 24회를 실전처럼 풀고, 틀린 건 1·3·7일 뒤 자동 복습</p></div>
     ${dateOverride() ? '<a class="test-badge" href="#/settings">🧪 테스트 날짜</a>' : ''}
   </header>`;
 }
@@ -208,25 +196,6 @@ function todayHTML(today) {
   </section>`;
 }
 
-function updatesHTML() {
-  return `<h2 class="section-title">업데이트</h2>
-    <section class="card updates"><ul>${UPDATES.map(([d, text]) => `<li><span>${d}</span>${esc(text)}</li>`).join('')}</ul></section>`;
-}
-
-function toolsHTML() {
-  const past = data.pastExams().length;
-  const tool = (href, title, sub) => `<a class="tool" href="${href}"><b>${title}</b><span>${sub}</span></a>`;
-  return `<div class="tools">
-    ${tool('#/exam', past ? '기출·모의고사' : '실전 모의고사', past ? `기출 ${past}회분 · 50문항 80분` : '50문항 · 80분')}
-    ${tool('#/hot', '81회 빈출 예측', '57~80회 24번 분석')}
-    ${past ? tool('#/cards', '전날 복습 암기 카드', '빈출 주제 단서 → 정답') : ''}
-    ${tool('#/quiz?mode=test', '과거 시험 10문항', '급제 칭호·홍패')}
-    ${tool('#/quiz?mode=more', '문제 더 풀기', '안 푼 문제부터 3개')}
-    ${tool('#/order', '순서 맞히기', '사건 4개 순서대로 · 1분')}
-    ${tool('#/grade', `${GRADE.round}회 가채점`, '내 답 미리 넣어 두기')}
-  </div>`;
-}
-
 function dailyHTML(today) {
   const q = data.dailyQuestion(today);
   const daily = store.dailyFor(today);
@@ -243,25 +212,6 @@ function dailyHTML(today) {
     ${state.viewed && !state.graded ? explanationHTML(q, null) : ''}
     ${state.viewed ? '<p class="muted small mt">해설을 보고 푼 문제는 정답률에 넣지 않아요.</p>' : ''}
     ${actions}`;
-}
-
-function erasHTML() {
-  return `
-    <h2 class="section-title">시대별로 풀기</h2>
-    <div class="chips">
-      ${data.ERAS.map(era => `<a class="chip" href="#/quiz?mode=era&era=${encodeURIComponent(era)}">${esc(era)}</a>`).join('')}
-    </div>`;
-}
-
-function upcomingHTML(today) {
-  const list = data.upcomingAnniversaries(today, 4).filter(a => a.days > 0);
-  const rows = list.map(a => {
-    const inner = `<div class="grow"><b>${esc(a.name)}</b><p class="muted small">${formatShort(a.on)}</p></div><span class="dday">${dday(a.days)}</span>`;
-    return data.anniversaryQuestions(a, today).length
-      ? `<li><a class="list-row link-row" href="#/quiz?mode=anniv&date=${a.date}">${inner}</a></li>`
-      : `<li><div class="list-row">${inner}</div></li>`;
-  }).join('');
-  return `<h2 class="section-title">다가오는 기념일</h2><section class="card"><ul class="list">${rows}</ul></section>`;
 }
 
 function installHTML() {
