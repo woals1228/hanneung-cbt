@@ -7,7 +7,7 @@ const ID_KEY = 'hcbt.anon';
 const PUBLIC_HOST = 'woals1228.github.io';
 // 유입 채널: 홍보 링크의 ?s=코드 를 첫 방문 때 기억해요(supabase/source.sql).
 const SRC_KEY = 'hcbt.src';
-const SOURCES = ['et', 'cafe', 'kakao', 'blog', 'orbi', 'insta', 'etc'];
+const SOURCES = ['et', 'cafe', 'kakao', 'blog', 'orbi', 'insta', 'story', 'etc'];
 try {
   const s = new URLSearchParams(location.search).get('s');
   if (SOURCES.includes(s) && !localStorage.getItem(SRC_KEY)) localStorage.setItem(SRC_KEY, s);
