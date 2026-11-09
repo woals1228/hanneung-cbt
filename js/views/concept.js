@@ -22,7 +22,11 @@ function cardHTML(c) {
     const [cue, ...rest] = k.split('→');
     return `<li>${rest.length ? `<b>${esc(cue.trim())}</b> → ${esc(rest.join('→').trim())}` : esc(k)}</li>`;
   }).join('');
-  const pairs = (c.pairs ?? []).map(p => `<li><b>vs ${esc(p.with)}</b> ${esc(p.tip)}</li>`).join('');
+  // 헷갈리는 상대가 카드로 있으면 바로 넘어가요.
+  const pairs = (c.pairs ?? []).map(p => {
+    const name = data.concept(p.with) ? `<a href="#/concept?t=${encodeURIComponent(p.with)}">vs ${esc(p.with)} 📘</a>` : `vs ${esc(p.with)}`;
+    return `<li><b>${name}</b> ${esc(p.tip)}</li>`;
+  }).join('');
   const refs = (c.refs ?? []).filter(u => u.startsWith('https://')).map((u, i) => `<a href="${esc(u)}" target="_blank" rel="noopener">근거 ${i + 1}</a>`).join(' · ');
   return `<header class="page-head"><h1>${esc(c.topic)}</h1><button type="button" class="btn btn-ghost btn-sm" data-act="back">뒤로</button></header>
     <p class="muted small">${esc(c.era)}${c.years ? ` · ${esc(c.years)}` : ''}${f ? ` · 최근 24회 중 <b>${f.all}회</b> 출제` : ''}</p>
