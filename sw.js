@@ -1,7 +1,7 @@
 // 오프라인에서도 열리도록 앱 파일을 저장해 둬요.
 // 배포할 때마다 CACHE 이름의 숫자를 올려 주세요. 파일을 새로 추가하면 SHELL 목록에도 넣어요.
 // 개인용 기출(data/past/…)은 공개하지 않으니 여기에 넣지 않아요.
-const CACHE = 'hcbt-v48';
+const CACHE = 'hcbt-v49';
 const SHELL = [
   './',
   'index.html',
@@ -29,6 +29,8 @@ const SHELL = [
   'js/views/hot.js',
   'js/views/twostep.js',
   'js/views/cards.js',
+  'js/views/concept.js',
+  'data/concepts.json',
   'js/views/plan.js',
   'js/views/grade.js',
   'js/views/order.js',

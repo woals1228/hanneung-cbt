@@ -567,3 +567,5 @@ input[type="date"], input[type="text"] {
 .flashcard { cursor: pointer; min-height: 180px; }
 .flash-cue { font-size: 18px; line-height: 1.6; margin-top: 8px; }
 .flash-answer { margin-top: 14px; padding: 12px; border-radius: 10px; background: var(--primary-soft); color: var(--primary); font-weight: 700; font-size: 17px; }
+.concept-list { margin: 6px 0 0; padding-left: 18px; display: grid; gap: 8px; line-height: 1.55; }
+.concept-list b { color: var(--primary); }

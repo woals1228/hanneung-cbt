@@ -9,6 +9,7 @@ const rowHTML = (f, today) => {
   const inner = `<div class="grow"><b>${trend}${esc(f.topic)}</b>
       <p class="muted small">${esc(f.era)} · 24회 중 ${f.all}회 · 최근 8회 중 ${f.recent}회</p></div>
     ${n ? `<span class="btn btn-ghost btn-sm">${n}문제 풀기</span>` : ''}`;
+  if (data.concept(f.topic)) return `<li><a class="list-row link-row" href="#/concept?t=${encodeURIComponent(f.topic)}">${inner.replace('<b>', '<b>📘 ')}</a></li>`;
   return n
     ? `<li><a class="list-row link-row" href="#/quiz?mode=topic&t=${encodeURIComponent(f.topic)}">${inner}</a></li>`
     : `<li><div class="list-row">${inner}</div></li>`;
@@ -38,6 +39,7 @@ export function render(el) {
     <header class="page-head"><h1>81회 빈출 예측</h1></header>
     ${eveHTML()}
     ${data.pastExams().length ? `<a class="btn btn-ghost btn-block" href="#/cards">🃏 빈출 주제 암기 카드로 먼저 훑기</a>` : ""}
+    ${data.concepts().length ? `<a class="btn btn-ghost btn-block mt" href="#/concept">📘 개념 카드 ${data.concepts().length}개 보기</a>` : ""}
     <section class="card">
       <p>57~80회 심화 문제지 24개를 분석해서, 주제마다 몇 번 나왔는지 셌어요.</p>
       <a class="btn btn-primary btn-block mt" href="#/quiz?mode=hot">🎯 빈출 예상 10문제 풀기</a>

@@ -65,7 +65,7 @@ export function render(el, route) {
           <button type="button" class="btn btn-ghost grow" data-act="later">다시 볼래요</button>
           <button type="button" class="btn btn-primary grow" data-act="know">알아요</button>
         </div>
-        <a class="btn btn-ghost btn-block btn-sm mt" href="#/quiz?mode=topic&t=${encodeURIComponent(c.f.topic)}">'${esc(c.f.topic)}' 문제 풀기</a>` : ''}`;
+        <a class="btn btn-ghost btn-block btn-sm mt" href="#/${data.concept(c.f.topic) ? 'concept' : 'quiz?mode=topic&'}${data.concept(c.f.topic) ? '?' : ''}t=${encodeURIComponent(c.f.topic)}">'${esc(c.f.topic)}' ${data.concept(c.f.topic) ? '개념 카드 보기' : '문제 풀기'}</a>` : ''}`;
   }
 
   function start() {
