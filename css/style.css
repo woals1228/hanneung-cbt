@@ -562,3 +562,8 @@ input[type="date"], input[type="text"] {
 
 /* ── 약점 분석 ── */
 .bad-text { flex: none; color: var(--bad); font-weight: 700; font-size: 14px; white-space: nowrap; }
+
+/* 전날 복습 암기 카드 */
+.flashcard { cursor: pointer; min-height: 180px; }
+.flash-cue { font-size: 18px; line-height: 1.6; margin-top: 8px; }
+.flash-answer { margin-top: 14px; padding: 12px; border-radius: 10px; background: var(--primary-soft); color: var(--primary); font-weight: 700; font-size: 17px; }

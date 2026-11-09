@@ -219,6 +219,7 @@ function toolsHTML() {
   return `<div class="tools">
     ${tool('#/exam', past ? '기출·모의고사' : '실전 모의고사', past ? `기출 ${past}회분 · 50문항 80분` : '50문항 · 80분')}
     ${tool('#/hot', '81회 빈출 예측', '57~80회 24번 분석')}
+    ${past ? tool('#/cards', '전날 복습 암기 카드', '빈출 주제 단서 → 정답') : ''}
     ${tool('#/quiz?mode=test', '과거 시험 10문항', '급제 칭호·홍패')}
     ${tool('#/quiz?mode=more', '문제 더 풀기', '안 푼 문제부터 3개')}
     ${tool('#/order', '순서 맞히기', '사건 4개 순서대로 · 1분')}
