@@ -4,7 +4,9 @@ import { esc } from '../ui.js';
 
 function listHTML(only) {
   const all = data.concepts();
-  const rows = data.ERAS.filter(era => !only || era === only).map(era => {
+  // '통합'(지역사·주제별 통사)은 시대 목록에 없어서 맨 뒤에 따로 둬요.
+  const eras = [...data.ERAS, '통합'];
+  const rows = eras.filter(era => !only || era === only).map(era => {
     // 한 시대만 볼 때는 시작 연도 순서(흐름), 전체일 때는 출제 많은 순서
     const start = c => Number((c.years ?? '').match(/\d+/)?.[0] ?? 9999) * (/기원전/.test(c.years ?? '') ? -1 : 1);
     const list = all.filter(c => c.era === era).sort((a, b) => (only ? start(a) - start(b) : 0));
@@ -15,7 +17,7 @@ function listHTML(only) {
     }).join('')}</ul></section>` : '';
   }).join('');
   // 시대를 고르면 그 시대 카드의 흐름 한 줄이 이어져서 '시대 흐름 한 장'이 돼요.
-  const chips = `<div class="chips">${['', ...data.ERAS].map(e => `<a class="chip ${e === (only ?? '') ? 'is-active' : ''}" href="#/concept${e ? `?era=${encodeURIComponent(e)}` : ''}">${e || '전체'}</a>`).join('')}</div>`;
+  const chips = `<div class="chips">${['', ...eras.filter(e => all.some(c => c.era === e))].map(e => `<a class="chip ${e === (only ?? '') ? 'is-active' : ''}" href="#/concept${e ? `?era=${encodeURIComponent(e)}` : ''}">${e || '전체'}</a>`).join('')}</div>`;
   return `<header class="page-head"><h1>개념 카드</h1><a class="btn btn-ghost btn-sm" href="#/hot">공부</a></header>
     ${chips}<p class="muted small mt">전 주제 ${all.length}개 · 시대를 고르면 흐름까지 한 번에 읽어요.</p>${rows ||'<section class="card empty"><p>아직 카드가 없어요.</p></section>'}`;
 }
