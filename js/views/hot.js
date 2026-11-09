@@ -32,7 +32,7 @@ function toolsHTML() {
   const past = data.pastExams().length;
   const tool = (href, title, sub) => `<a class="tool" href="${href}"><b>${title}</b><span>${sub}</span></a>`;
   return `<div class="tools">
-    ${data.concepts().length ? tool('#/concept', '📘 개념 카드', `빈출 주제 ${data.concepts().length}개 · 흐름·키워드·함정`) : ''}
+    ${data.concepts().length ? tool('#/concept', '📘 개념 카드', `전 주제 ${data.concepts().length}개 · 흐름·키워드·함정`) : ''}
     ${past ? tool('#/cards', '🃏 암기 카드', '단서 → 정답 뒤집기') : ''}
     ${tool('#/order', '🔢 순서 맞히기', '사건 4개 순서대로 · 1분')}
     ${past ? tool('#/twostep', '🪜 2단계 연습', '대상 찾기 → 기출 풀기') : ''}
