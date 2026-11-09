@@ -395,6 +395,16 @@ function renderResult(el, id) {
     })
     .filter(x => x.total);
   const open = new Set();
+  // 다음 할 것: 가장 많이 틀린 시대 → 그 시대 개념 카드 → 그 시대 문제(박사·ui 의견 2026-11-09)
+  const nextStepHTML = list => {
+    const weak = list.filter(x => x.ok < x.total).sort((a, b) => (b.total - b.ok) - (a.total - a.ok) || a.ok / a.total - b.ok / b.total)[0];
+    if (!weak || !['test', 'exam', 'past'].includes(r.kind)) return '';
+    const hasCards = data.concepts().some(c => c.era === weak.era);
+    return `<section class="card mt"><p class="eyebrow">다음 할 것</p>
+      <h2>약한 시대: ${esc(weak.era)} <span class="muted small">(${weak.total}문항 중 ${weak.ok}개 정답)</span></h2>
+      ${hasCards ? `<a class="btn btn-primary btn-block mt" href="#/concept?era=${encodeURIComponent(weak.era)}">① 📘 ${esc(weak.era)} 개념 카드 훑기</a>` : ''}
+      <a class="btn btn-ghost btn-block mt" href="#/quiz?mode=era&era=${encodeURIComponent(weak.era)}">${hasCards ? '② ' : ''}${esc(weak.era)} 문제 풀기</a></section>`;
+  };
   const failed = r.grade === '불합격';
   const counts = [
     ['정답', r.correct],
@@ -434,6 +444,7 @@ function renderResult(el, id) {
         ${wrongIds.length ? '<p class="small">틀린 문제는 오답노트에 넣었어요.</p>' : ''}
       </section>
       ${r.kind === 'test' ? hongpaeHTML(r, rate) : ''}
+      ${nextStepHTML(byEra)}
       ${isExam && byEra.length ? `<h2 class="section-title">시대별 결과</h2>
       <section class="card">${byEra.map(x => barRowHTML(x.era, x.ok / x.total, `${x.ok}/${x.total}`, { tip: `${x.era}: ${x.total}문항 중 ${x.ok}개 정답` })).join('')}</section>` : ''}
       <h2 class="section-title">문항별 결과 <span class="muted">(내 답 / 정답) · 눌러서 해설 보기</span></h2>

@@ -71,7 +71,7 @@ function headerHTML(today) {
   const exam = data.nextExam(today);
   return `<header class="home-head">
     <div><p class="date">${formatLong(today)}</p><h1>한국사 CBT</h1>
-      <p class="home-tag">기출 24회를 실전처럼 풀고, 틀린 건 1·3·7일 뒤 자동 복습</p></div>
+      <p class="home-tag">기출 24회 실전 CBT · 보기마다 틀린 이유 해설 · 오답 1·3·7일 자동 복습</p></div>
     ${dateOverride() ? '<a class="test-badge" href="#/settings">🧪 테스트 날짜</a>' : ''}
   </header>`;
 }
@@ -143,6 +143,13 @@ function goalHTML(today) {
   if (last && cut) msg = last.score >= cut ? `목표 ${goal}급 합격선을 넘었어요. 이 실력을 지켜요.` : `목표 ${goal}급까지 <b>${cut - last.score}점</b> 남았어요.`;
   else if (last) msg = `최근 ${last.label} ${last.score}점이에요.`;
   else if (cut) msg = `목표 ${goal}급은 ${cut}점 이상이에요. 지금 실력부터 재 볼까요?`;
+  // 예상 급수는 실제 기출 50문항 점수로만, 3회 이상 쌓였을 때 최근 3회 평균으로 내요(사료형은 난이도가 달라서 빼요).
+  const past = store.getState().exams.filter(x => x.kind === 'past' && x.total >= 50).slice(-3);
+  if (past.length === 3) {
+    const avg = Math.round(past.reduce((s, x) => s + x.score, 0) / 3);
+    const g = Object.entries(CUTS).sort((a, b) => b[1] - a[1]).find(([, c]) => avg >= c)?.[0];
+    msg += ` <br><b>기출 실전 최근 3회 평균 ${avg}점 → 예상 ${g ? `${g}급` : '불합격'}</b>`;
+  }
   const marks = Object.entries(CUTS).map(([g, c]) => `<span class="goal-mark ${Number(g) === goal ? 'is-goal' : ''}" style="left:${c}%"><i></i>${g}급</span>`).join('');
   return `<section class="card goal">
     <div class="goal-top">

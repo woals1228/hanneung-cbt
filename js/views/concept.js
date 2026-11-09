@@ -2,18 +2,22 @@
 import * as data from '../data.js';
 import { esc } from '../ui.js';
 
-function listHTML() {
+function listHTML(only) {
   const all = data.concepts();
-  const rows = data.ERAS.map(era => {
-    const list = all.filter(c => c.era === era);
+  const rows = data.ERAS.filter(era => !only || era === only).map(era => {
+    // 한 시대만 볼 때는 시작 연도 순서(흐름), 전체일 때는 출제 많은 순서
+    const start = c => Number((c.years ?? '').match(/\d+/)?.[0] ?? 9999) * (/기원전/.test(c.years ?? '') ? -1 : 1);
+    const list = all.filter(c => c.era === era).sort((a, b) => (only ? start(a) - start(b) : 0));
     return list.length ? `<h2 class="section-title">${esc(era)}</h2><section class="card"><ul class="list">${list.map(c => {
       const f = data.frequency().find(x => x.topic === c.topic);
       return `<li><a class="list-row link-row" href="#/concept?t=${encodeURIComponent(c.topic)}"><div class="grow"><b>📘 ${esc(c.topic)}</b>
-        <p class="muted small">${esc(c.years ?? '')}${f ? ` · 24회 중 ${f.all}회` : ''}</p></div></a></li>`;
+        <p class="muted small">${esc(c.years ?? '')}${f ? ` · 24회 중 ${f.all}회` : ''}</p>${only ? `<p class="small mt">${esc(c.flow)}</p>` : ''}</div></a></li>`;
     }).join('')}</ul></section>` : '';
   }).join('');
-  return `<header class="page-head"><h1>개념 카드</h1><a class="btn btn-ghost btn-sm" href="#/hot">빈출</a></header>
-    <p class="muted small">자주 나오는 주제부터 하나씩 늘어나요. 지금 ${all.length}개.</p>${rows || '<section class="card empty"><p>아직 카드가 없어요.</p></section>'}`;
+  // 시대를 고르면 그 시대 카드의 흐름 한 줄이 이어져서 '시대 흐름 한 장'이 돼요.
+  const chips = `<div class="chips">${['', ...data.ERAS].map(e => `<a class="chip ${e === (only ?? '') ? 'is-active' : ''}" href="#/concept${e ? `?era=${encodeURIComponent(e)}` : ''}">${e || '전체'}</a>`).join('')}</div>`;
+  return `<header class="page-head"><h1>개념 카드</h1><a class="btn btn-ghost btn-sm" href="#/hot">공부</a></header>
+    ${chips}<p class="muted small mt">전 주제 ${all.length}개 · 시대를 고르면 흐름까지 한 번에 읽어요.</p>${rows ||'<section class="card empty"><p>아직 카드가 없어요.</p></section>'}`;
 }
 
 function cardHTML(c) {
@@ -41,7 +45,7 @@ function cardHTML(c) {
 
 export function render(el, route) {
   const c = data.concept(route.params.get('t') ?? '');
-  el.innerHTML = c ? cardHTML(c) : listHTML();
+  el.innerHTML = c ? cardHTML(c) : listHTML(route.params.get('era'));
   el.addEventListener('click', e => {
     if (e.target.closest('[data-act="back"]')) history.length > 1 ? history.back() : (location.hash = '#/concept');
   });
