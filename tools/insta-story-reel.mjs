@@ -73,12 +73,14 @@ async function record(withVoice) {
       g.fillStyle = S.particles === 'petal' ? 'rgba(255,190,205,0.85)' : 'rgba(255,255,255,0.85)';
       for (const q of parts) { const y = (q.y + q.v * t) % H, x = q.x + Math.sin(t * 1.3 + q.d * 6) * 30; g.beginPath(); S.particles === 'petal' ? g.ellipse(x, y, q.r * 1.6, q.r, t + q.d * 6, 0, 7) : g.arc(x, y, q.r, 0, 7); g.fill(); }
     }
+    ${fs.readFileSync(new URL('./reel-scenes.js', import.meta.url), 'utf8')}
     function frame(t) {
       const k = Math.max(0, starts.findLastIndex(s => s <= t)), s = scenes[k], p = t - starts[k];
       g.fillStyle = C.bg; g.fillRect(0, 0, W, H); g.textAlign = 'left';
-      if (pics[k] && (s.kind === 'hook' || s.kind === 'pop')) {
+      if ((pics[k] || s.draw) && (s.kind === 'hook' || s.kind === 'pop')) {
         if (s.isVideo && playing !== k) { pics[playing]?.pause?.(); playing = k; pics[k].currentTime = 0; pics[k].play(); }
-        picture(pics[k], p, dur[k]); if (!s.isVideo) particles(t);
+        if (s.draw) { const z = 1 + 0.06 * Math.min(1, p / dur[k]); g.save(); g.translate(W / 2, H / 2); g.scale(z, z); g.translate(-W / 2, -H / 2); paint(g, s.draw, t, p); g.restore(); if (S.particles) particles(t); }
+        else { picture(pics[k], p, dur[k]); if (!s.isVideo) particles(t); }
         // 아래쪽 자막 판: 반투명 검정 위에 흰 글씨
         const lines = s.text.split('\\n'); g.globalAlpha = ease(p * 3); g.fillStyle = 'rgba(0,0,0,0.55)'; g.fillRect(60, 1180, W - 120, 160 + lines.length * 110 + (s.line ? 90 : 0));
         g.textAlign = 'center'; g.fillStyle = s.color === 'acc' ? '#ffd166' : '#fff'; g.font = F('900', 88);
