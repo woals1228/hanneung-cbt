@@ -1,6 +1,7 @@
 // 인스타 '흐름 시리즈' 릴스: 대본 JSON → 9:16 MP4 (연표 애니메이션 + 윈도우 한국어 음성 내레이션).
 // 쓰는 법: node tools/insta-story-reel.mjs <대본.json> [--mute]
 //   대본: { top, hook:{text,say}, steps:[{year,title,line,say}], recap:{items:[], say}, next:{text,say} }
+//   또는 { top, particles?:"snow"|"petal", scenes:[{kind:"hook"|"pop"|"recap"|"next", img?:"그림1.png", ...}] }
 // 결과: 대본 옆에 릴스-흐름.mp4(음성), 릴스-흐름-무음.mp4(인스타 음악·TTS를 따로 붙일 때). ffmpeg 없이 크롬 MediaRecorder로 녹화해요.
 import fs from 'node:fs';
 import path from 'node:path';
@@ -16,6 +17,8 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 // 장면 목록: 훅 → 단계들 → 기억할 말 → 다음 이야기
 // '몰랐던 사실' 시리즈는 S.scenes로 장면을 직접 줘요(kind: hook·pop·recap·next).
 const scenes = S.scenes ?? [{ kind: 'hook', ...S.hook }, ...S.steps.map((s, i) => ({ kind: 'step', i, ...s })), { kind: 'recap', ...S.recap }, { kind: 'next', ...S.next }];
+// 그림 버전: 장면에 "img": "그림1.png"(대본 폴더 기준)를 주면 그 그림이 천천히 확대되는 배경이 돼요. S.particles: "snow"|"petal"
+for (const s of scenes) if (s.img) s.imgData = 'data:image/png;base64,' + fs.readFileSync(path.resolve(path.dirname(file), s.img)).toString('base64');
 
 // 윈도우 음성(Heami)으로 장면마다 wav를 만들어요.
 const ps = scenes.map((s, i) => `$s.SetOutputToWaveFile('${path.join(tmp, `${i}.wav`)}'); $s.Speak(${JSON.stringify(s.say ?? '')});`).join('\n');
@@ -50,9 +53,30 @@ async function record(withVoice) {
     const F = (w, s) => \`\${w} \${s}px "Malgun Gothic"\`;
     const wrap = (text, x, y, maxW, lh) => { let line = ''; for (const ch of text) { if (g.measureText(line + ch).width > maxW) { g.fillText(line, x, y); y += lh; line = ch.trim() ? ch : ''; } else line += ch; } g.fillText(line, x, y); return y + lh; };
     const ease = t => 1 - Math.pow(1 - Math.min(1, Math.max(0, t)), 3);
+    const pics = await Promise.all(scenes.map(s => s.imgData ? new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = s.imgData; }) : null));
+    const parts = Array.from({ length: S.particles ? 90 : 0 }, (_, i) => ({ x: (i * 397) % W, y: (i * 733) % H, r: 4 + (i % 5) * 2, v: 40 + (i % 7) * 18, d: (i % 11) / 11 }));
+    function picture(img, p, d) {
+      // 그림을 화면에 꽉 차게 놓고 장면 동안 1 → 1.08배로 천천히 확대(켄 번스)
+      const z = 1 + 0.08 * Math.min(1, p / d), sc = Math.max(W / img.width, H / img.height) * z;
+      g.drawImage(img, (W - img.width * sc) / 2, (H - img.height * sc) / 2, img.width * sc, img.height * sc);
+    }
+    function particles(t) {
+      g.fillStyle = S.particles === 'petal' ? 'rgba(255,190,205,0.85)' : 'rgba(255,255,255,0.85)';
+      for (const q of parts) { const y = (q.y + q.v * t) % H, x = q.x + Math.sin(t * 1.3 + q.d * 6) * 30; g.beginPath(); S.particles === 'petal' ? g.ellipse(x, y, q.r * 1.6, q.r, t + q.d * 6, 0, 7) : g.arc(x, y, q.r, 0, 7); g.fill(); }
+    }
     function frame(t) {
       const k = Math.max(0, starts.findLastIndex(s => s <= t)), s = scenes[k], p = t - starts[k];
       g.fillStyle = C.bg; g.fillRect(0, 0, W, H); g.textAlign = 'left';
+      if (pics[k] && (s.kind === 'hook' || s.kind === 'pop')) {
+        picture(pics[k], p, dur[k]); particles(t);
+        // 아래쪽 자막 판: 반투명 검정 위에 흰 글씨
+        const lines = s.text.split('\\n'); g.globalAlpha = ease(p * 3); g.fillStyle = 'rgba(0,0,0,0.55)'; g.fillRect(60, 1180, W - 120, 160 + lines.length * 110 + (s.line ? 90 : 0));
+        g.textAlign = 'center'; g.fillStyle = s.color === 'acc' ? '#ffd166' : '#fff'; g.font = F('900', 88);
+        let y = 1300; lines.forEach(l => { g.fillText(l, W / 2, y); y += 110; });
+        if (s.line) { g.fillStyle = '#e8e8e8'; g.font = F('500', 44); wrap(s.line, W / 2, y + 10, W - 200, 60); }
+        g.globalAlpha = 1; g.fillStyle = 'rgba(31,78,121,0.85)'; g.fillRect(0, 0, W, 200); g.fillStyle = '#fff'; g.font = F('bold', 50); g.fillText(S.top, W / 2, 120);
+        return;
+      }
       g.fillStyle = C.pri; g.fillRect(0, 0, W, 200); g.fillStyle = '#fff'; g.font = F('bold', 50); g.textAlign = 'center'; g.fillText(S.top, W / 2, 120); g.textAlign = 'left';
       if (s.kind === 'hook') {
         g.fillStyle = C.ink; g.font = F('900', 96); g.textAlign = 'center';
