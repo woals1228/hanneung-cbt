@@ -14,7 +14,8 @@ const tmp = fs.mkdtempSync(path.join(os.tmpdir(), 'story-'));
 const sleep = ms => new Promise(r => setTimeout(r, ms));
 
 // 장면 목록: 훅 → 단계들 → 기억할 말 → 다음 이야기
-const scenes = [{ kind: 'hook', ...S.hook }, ...S.steps.map((s, i) => ({ kind: 'step', i, ...s })), { kind: 'recap', ...S.recap }, { kind: 'next', ...S.next }];
+// '몰랐던 사실' 시리즈는 S.scenes로 장면을 직접 줘요(kind: hook·pop·recap·next).
+const scenes = S.scenes ?? [{ kind: 'hook', ...S.hook }, ...S.steps.map((s, i) => ({ kind: 'step', i, ...s })), { kind: 'recap', ...S.recap }, { kind: 'next', ...S.next }];
 
 // 윈도우 음성(Heami)으로 장면마다 wav를 만들어요.
 const ps = scenes.map((s, i) => `$s.SetOutputToWaveFile('${path.join(tmp, `${i}.wav`)}'); $s.Speak(${JSON.stringify(s.say ?? '')});`).join('\n');
@@ -40,7 +41,7 @@ async function record(withVoice) {
     const ac = new AudioContext(); await ac.resume();
     const bufs = await Promise.all(wavs.map(u => fetch(u).then(r => r.arrayBuffer()).then(b => ac.decodeAudioData(b))));
     // 장면 길이 = 음성 길이 + 여유(최소 길이 보장)
-    const MIN = { hook: 2.2, step: 3.2, recap: 3.5, next: 3 };
+    const MIN = { hook: 2.2, step: 3.2, pop: 3, recap: 3.5, next: 3 };
     const dur = scenes.map((s, i) => Math.max(MIN[s.kind], bufs[i].duration + 0.45));
     const starts = dur.map((_, i) => dur.slice(0, i).reduce((a, b) => a + b, 0));
     const total = starts.at(-1) + dur.at(-1) + 0.3;
@@ -66,8 +67,15 @@ async function record(withVoice) {
         g.fillStyle = C.ink; g.font = F('bold', 74); const y2 = wrap(s.title, x, 840, W - x - 60, 92);
         g.fillStyle = C.mute; g.font = F('500', 46); wrap(s.line, x, y2 + 30, W - x - 60, 66); g.globalAlpha = 1;
         g.fillStyle = C.pri; g.font = F('bold', 40); g.textAlign = 'center'; g.fillText(\`\${s.i + 1} / \${n}\`, W / 2, H - 300);
+      } else if (s.kind === 'pop') {
+        // 이모지가 통통 튀어 들어오고, 큰 글자 → 설명 순서로 나타나요.
+        const sp = p < 0.6 ? 1 + Math.sin(p / 0.6 * Math.PI) * 0.25 * (1 - p / 0.6) : 1, sc = ease(p * 3) * sp;
+        g.textAlign = 'center'; g.save(); g.translate(W / 2, 640); g.scale(sc, sc); g.rotate(Math.sin(p * 5) * 0.06); g.font = F('', 300); g.fillText(s.emoji ?? '💡', 0, 100); g.restore();
+        g.globalAlpha = ease(p * 2.5 - 0.6); g.fillStyle = s.color === 'acc' ? C.acc : C.ink; g.font = F('900', 88);
+        let y = 1000; s.text.split('\\n').forEach(l => { g.fillText(l, W / 2, y); y += 112; });
+        g.globalAlpha = ease(p * 2.5 - 1.2); g.fillStyle = C.mute; g.font = F('500', 48); s.line && wrap(s.line, W / 2, y + 20, W - 200, 68); g.globalAlpha = 1;
       } else if (s.kind === 'recap') {
-        g.fillStyle = C.pri; g.font = F('900', 80); g.textAlign = 'center'; g.fillText('📌 기억할 말', W / 2, 420);
+        g.fillStyle = C.pri; g.font = F('900', 80); g.textAlign = 'center'; g.fillText(s.title ?? '📌 기억할 말', W / 2, 420);
         s.items.forEach((it, i) => { g.globalAlpha = ease(p * 3 - i * 0.35); g.fillStyle = '#fff'; g.fillRect(120, 520 + i * 150, W - 240, 120); g.fillStyle = C.ink; g.font = F('bold', 56); g.fillText(it, W / 2, 600 + i * 150); }); g.globalAlpha = 1;
       } else {
         g.fillStyle = C.mute; g.font = F('bold', 50); g.textAlign = 'center'; g.fillText('다음 이야기', W / 2, 640);
