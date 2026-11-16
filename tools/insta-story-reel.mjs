@@ -18,7 +18,13 @@ const sleep = ms => new Promise(r => setTimeout(r, ms));
 // '몰랐던 사실' 시리즈는 S.scenes로 장면을 직접 줘요(kind: hook·pop·recap·next).
 const scenes = S.scenes ?? [{ kind: 'hook', ...S.hook }, ...S.steps.map((s, i) => ({ kind: 'step', i, ...s })), { kind: 'recap', ...S.recap }, { kind: 'next', ...S.next }];
 // 그림 버전: 장면에 "img": "그림1.png"(대본 폴더 기준)를 주면 그 그림이 천천히 확대되는 배경이 돼요. S.particles: "snow"|"petal"
-for (const s of scenes) if (s.img) s.imgData = 'data:image/png;base64,' + fs.readFileSync(path.resolve(path.dirname(file), s.img)).toString('base64');
+// AI 영상 클립(.mp4/.webm)도 같은 자리에 줄 수 있어요. 클립이 장면보다 짧으면 반복 재생해요.
+for (const s of scenes) if (s.img) {
+  const ext = path.extname(s.img).slice(1).toLowerCase();
+  const mime = { mp4: 'video/mp4', webm: 'video/webm', jpg: 'image/jpeg', jpeg: 'image/jpeg', webp: 'image/webp' }[ext] ?? 'image/png';
+  s.imgData = `data:${mime};base64,` + fs.readFileSync(path.resolve(path.dirname(file), s.img)).toString('base64');
+  s.isVideo = mime.startsWith('video/');
+}
 
 // 윈도우 음성(Heami)으로 장면마다 wav를 만들어요.
 const ps = scenes.map((s, i) => `$s.SetOutputToWaveFile('${path.join(tmp, `${i}.wav`)}'); $s.Speak(${JSON.stringify(s.say ?? '')});`).join('\n');
@@ -53,7 +59,10 @@ async function record(withVoice) {
     const F = (w, s) => \`\${w} \${s}px "Malgun Gothic"\`;
     const wrap = (text, x, y, maxW, lh) => { let line = ''; for (const ch of text) { if (g.measureText(line + ch).width > maxW) { g.fillText(line, x, y); y += lh; line = ch.trim() ? ch : ''; } else line += ch; } g.fillText(line, x, y); return y + lh; };
     const ease = t => 1 - Math.pow(1 - Math.min(1, Math.max(0, t)), 3);
-    const pics = await Promise.all(scenes.map(s => s.imgData ? new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = s.imgData; }) : null));
+    const pics = await Promise.all(scenes.map(s => !s.imgData ? null : s.isVideo
+      ? new Promise(r => { const v = document.createElement('video'); v.muted = true; v.loop = true; v.playsInline = true; v.preload = 'auto'; v.oncanplaythrough = () => { v.width = v.videoWidth; v.height = v.videoHeight; r(v); }; v.src = s.imgData; })
+      : new Promise(r => { const i = new Image(); i.onload = () => r(i); i.src = s.imgData; })));
+    let playing = -1;
     const parts = Array.from({ length: S.particles ? 90 : 0 }, (_, i) => ({ x: (i * 397) % W, y: (i * 733) % H, r: 4 + (i % 5) * 2, v: 40 + (i % 7) * 18, d: (i % 11) / 11 }));
     function picture(img, p, d) {
       // 그림을 화면에 꽉 차게 놓고 장면 동안 1 → 1.08배로 천천히 확대(켄 번스)
@@ -68,7 +77,8 @@ async function record(withVoice) {
       const k = Math.max(0, starts.findLastIndex(s => s <= t)), s = scenes[k], p = t - starts[k];
       g.fillStyle = C.bg; g.fillRect(0, 0, W, H); g.textAlign = 'left';
       if (pics[k] && (s.kind === 'hook' || s.kind === 'pop')) {
-        picture(pics[k], p, dur[k]); particles(t);
+        if (s.isVideo && playing !== k) { pics[playing]?.pause?.(); playing = k; pics[k].currentTime = 0; pics[k].play(); }
+        picture(pics[k], p, dur[k]); if (!s.isVideo) particles(t);
         // 아래쪽 자막 판: 반투명 검정 위에 흰 글씨
         const lines = s.text.split('\\n'); g.globalAlpha = ease(p * 3); g.fillStyle = 'rgba(0,0,0,0.55)'; g.fillRect(60, 1180, W - 120, 160 + lines.length * 110 + (s.line ? 90 : 0));
         g.textAlign = 'center'; g.fillStyle = s.color === 'acc' ? '#ffd166' : '#fff'; g.font = F('900', 88);
